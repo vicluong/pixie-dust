@@ -34,7 +34,12 @@ class ProductionTab(QtWidgets.QWidget):
     def create_widgets(self):
         """Create all widgets for the UI"""
         # Tab 3: Assignment
-        self.assignee_tasks_le = QtWidgets.QLineEdit()
+        with open(str(self.assignment_data_path), 'r') as file:
+            assignment_data = json.load(file)
+            self.users = assignment_data["users"]
+
+        self.current_user_dropdown = QtWidgets.QComboBox()
+        self.current_user_dropdown.addItems([x for x in self.users])
 
             # Assets Tab
         self.assets_tree = QtWidgets.QTreeWidget()
@@ -66,7 +71,9 @@ class ProductionTab(QtWidgets.QWidget):
         # Tab 3: Production
         production_layout = QtWidgets.QVBoxLayout(self)
 
-        production_layout.addWidget(self.assignee_tasks_le)
+        current_user_layout = QtWidgets.QFormLayout()
+        current_user_layout.addRow("Current User:", self.current_user_dropdown)
+        production_layout.addLayout(current_user_layout)
 
         production_main_tab = QtWidgets.QTabWidget()
         production_tasks_tab = QtWidgets.QWidget()
@@ -101,22 +108,39 @@ class ProductionTab(QtWidgets.QWidget):
     def create_connections(self):
         """Create all connections for the UI"""
         # self.get_tasks_btn.pressed.connect(self.show_tasks_table)
+        self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_table)
         self.new_file_btn.pressed.connect(self.create_new_file)
 
     def show_tasks_table(self):
+        self.clear_layout(self.production_tasks_layout)
+
         with open(self.assignment_data_path, 'r') as file:
             data = json.load(file)
 
         card_data = []
 
         for assignment in data["assignments"]:
-            if assignment["assignee"] == self.assignee_tasks_le.text(): 
+            if assignment["assignee"] == self.current_user_dropdown.currentText(): 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 
         card_data.sort()
 
         for card in card_data:
             self.production_tasks_layout.addWidget(Card(card[0], card[1]))
+
+    def clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+
+            widget = item.widget()
+            child_layout = item.layout()
+
+            if widget is not None:
+                widget.setParent(None)
+                widget.deleteLater()
+
+            elif child_layout is not None:
+                self.clear_layout(child_layout)
 
     def show_production_assets(self):
         tree_model = self.assets_tree.model()

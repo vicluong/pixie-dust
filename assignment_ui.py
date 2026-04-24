@@ -119,6 +119,7 @@ class AssignmentTab(QtWidgets.QWidget):
 
         self.assets_tree.addTopLevelItems(top_level_items)
         self.assets_tree.expandAll()
+        self.assets_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 
     def assign_user(self):
         selected_user_item = self.users_list.currentItem()
