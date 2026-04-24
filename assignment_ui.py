@@ -155,8 +155,6 @@ class AssignmentTab(QtWidgets.QWidget):
 
         assignment_data = assignment_table_item.data(QtCore.Qt.UserRole)
 
-        print(f"First assignment: {assignment_data}")
-
         if assignment_data:
             assignment_data["assignee"] = selected_user
 
