@@ -41,7 +41,8 @@ class AssignmentTab(QtWidgets.QWidget):
 
         self.assignment_btn = QtWidgets.QPushButton("Assign")
 
-        self.assignment_table = QtWidgets.QTableWidget()
+        self.assets_tree = QtWidgets.QTreeWidget()
+        self.assets_tree.setHeaderLabels(["Assets", "Assignees"])
 
     def create_layout(self):
         assignment_layout = QtWidgets.QHBoxLayout(self)
@@ -52,7 +53,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_menu_layout.addWidget(self.assignment_btn)
 
         assignment_table_layout = QtWidgets.QVBoxLayout()
-        assignment_table_layout.addWidget(self.assignment_table)
+        assignment_table_layout.addWidget(self.assets_tree)
 
         assignment_layout.addLayout(assignment_menu_layout, 1)
         assignment_layout.addLayout(assignment_table_layout, 5)
@@ -62,53 +63,40 @@ class AssignmentTab(QtWidgets.QWidget):
         self.assignment_btn.pressed.connect(self.assign_user)
 
     def show_asset_assignment_table(self, *_):
+        tree_model = self.assets_tree.model()
+        tree_model.removeRows(0, tree_model.rowCount())
+
         self.assignment_data = hf.get_assignment_data()
 
         assets_path = self.main_folder_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
 
-        self.assignment_table.setColumnCount(4)
-        self.assignment_table.setHorizontalHeaderLabels(["Asset Type", "Asset Name", "Asset Part", "Assignees"])
-        self.assignment_table.setRowCount(0)
-        self.assignment_table.verticalHeader().setVisible(False)
+        top_level_items = []
 
+        # Loop through all of the assets folder to store assignment information 
+        # about the asset parts and display who has been assigned already
         for assets_type in assets_types:
-            index = self.assignment_table.rowCount()
-            self.assignment_table.setRowCount(index + 1)
+            asset_type_item = QtWidgets.QTreeWidgetItem()
+            asset_type_item.setText(0, assets_type.name)
 
-            asset_type_item = QtWidgets.QTableWidgetItem(assets_type.name)
-            self.assignment_table.setItem(index, 0, asset_type_item)
-            self.assignment_table.setSpan(index, 0, 1, 3)
-
-            n_a_item = QtWidgets.QTableWidgetItem("N/A")
-            self.assignment_table.setItem(index, 3, n_a_item)
+            top_level_items.append(asset_type_item)
 
             assets = [x for x in assets_type.iterdir() if x.is_dir()]
 
             for asset in assets:
-                index = self.assignment_table.rowCount()
-                self.assignment_table.setRowCount(index + 1)
-
-                asset_item = QtWidgets.QTableWidgetItem(asset.name)
-                self.assignment_table.setItem(index, 1, asset_item)
-                self.assignment_table.setSpan(index, 1, 1, 2)
-
-                n_a_item = QtWidgets.QTableWidgetItem("N/A")
-                self.assignment_table.setItem(index, 3, n_a_item)
+                asset_name_item = QtWidgets.QTreeWidgetItem()
+                asset_name_item.setText(0, asset.name)
+                asset_type_item.addChild(asset_name_item)
 
                 asset_parts = [x for x in asset.iterdir() if x.is_dir()]
 
                 for asset_part in asset_parts:
-                    index = self.assignment_table.rowCount()
-                    self.assignment_table.setRowCount(index + 1)
-
-                    asset_part_item = QtWidgets.QTableWidgetItem(asset_part.name)
-                    self.assignment_table.setItem(index, 2, asset_part_item)
+                    asset_part_item = QtWidgets.QTreeWidgetItem()
+                    asset_part_item.setText(0, asset_part.name)
+                    asset_name_item.addChild(asset_part_item)
 
                     assignments = self.assignment_data["assignments"]
-
                     assignees = []
-
                     for assignment in assignments:
                         if (assignment["main_type"] == "asset" 
                             and assignment["asset_type"] == assets_type.name
@@ -116,9 +104,10 @@ class AssignmentTab(QtWidgets.QWidget):
                             and assignment["asset_part"] == asset_part.name 
                             ):
                             assignees.append(assignment["assignee"])
-                    
-                    assignment_item = QtWidgets.QTableWidgetItem(", ".join(assignees))
 
+                            asset_part_item.setText(1, ", ".join(assignees))
+
+                    # Store assignment information in all asset part cells for later use
                     assignment_data = {
                         "main_type": "asset",
                         "asset_type": assets_type.name,
@@ -126,10 +115,10 @@ class AssignmentTab(QtWidgets.QWidget):
                         "asset_part": asset_part.name
                     }
 
-                    assignment_item.setData(QtCore.Qt.UserRole, assignment_data)
-                    self.assignment_table.setItem(index, 3, assignment_item)
+                    asset_part_item.setData(1, QtCore.Qt.UserRole, assignment_data)
 
-        self.assignment_table.resizeColumnsToContents()
+        self.assets_tree.addTopLevelItems(top_level_items)
+        self.assets_tree.expandAll()
 
     def assign_user(self):
         selected_user_item = self.users_list.currentItem()
@@ -142,17 +131,26 @@ class AssignmentTab(QtWidgets.QWidget):
             return
 
         selected_user = selected_user_item.text()
-        assignment_table_item = self.assignment_table.currentItem()
+        assignment_table_item = self.assets_tree.currentItem()
+        assignment_table_item_index = self.assets_tree.currentIndex()
 
-        if not assignment_table_item:
+        # Checks that there must be at least two parents to signify that a
+        # asset part has been selected
+        count = 0
+        while assignment_table_item_index.parent().isValid():
+            count += 1
+            assignment_table_item_index = assignment_table_item_index.parent()
+
+        if count != 2:
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Assignment Error", 
-                "Select an assignee cell next to the asset part you want to assign the user to."
+                "Select an asset part."
             )
             return
 
-        assignment_data = assignment_table_item.data(QtCore.Qt.UserRole)
+        # Gather assignment data from an asset part cell for comparison
+        assignment_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_data:
             assignment_data["assignee"] = selected_user
@@ -170,6 +168,7 @@ class AssignmentTab(QtWidgets.QWidget):
                         "Assignee already assigned to this asset part."
                         )
                         return
+                    
                 data["assignments"].append(assignment_data)
 
             with open(self.assignment_data_path, 'w') as file:
@@ -183,6 +182,6 @@ class AssignmentTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Assignment Error", 
-                "Select a valid assignee cell."
+                "Select a valid cell in the assignee column."
             )
             return

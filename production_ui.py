@@ -158,8 +158,6 @@ class ProductionTab(QtWidgets.QWidget):
                             and assignment["asset_part"] == asset_part.name 
                             ):
                             assignees.append(assignment["assignee"])
-                    
-                    asset_part_item.setText(3, ", ".join(assignees))
 
         self.assets_tree.addTopLevelItems(top_level_items)
         self.assets_tree.expandAll()
