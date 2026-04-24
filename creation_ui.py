@@ -46,7 +46,9 @@ class CreationTab(QtWidgets.QWidget):
         self.create_shot_le = QtWidgets.QLineEdit()
         self.create_shot_btn = QtWidgets.QPushButton("Create Shot")
 
-        self.creation_table = QtWidgets.QTableWidget()
+        self.creation_tree = QtWidgets.QTableWidget()
+        self.creation_tree = QtWidgets.QTreeWidget()
+        self.creation_tree.setHeaderLabels(["Assets"])
 
     def create_layout(self):
         # Tab 1: Creation
@@ -54,11 +56,11 @@ class CreationTab(QtWidgets.QWidget):
 
         creation_menu_layout = QtWidgets.QVBoxLayout()
 
-        creation_table_layout = QtWidgets.QVBoxLayout()
-        creation_table_layout.addWidget(self.creation_table)
+        creation_tree_layout = QtWidgets.QVBoxLayout()
+        creation_tree_layout.addWidget(self.creation_tree)
 
         creation_layout.addLayout(creation_menu_layout)
-        creation_layout.addLayout(creation_table_layout)
+        creation_layout.addLayout(creation_tree_layout)
 
         creation_type__form_layout = QtWidgets.QFormLayout()
         creation_type__form_layout.addRow("Create:", self.creation_type_dropdown)
@@ -126,48 +128,49 @@ class CreationTab(QtWidgets.QWidget):
     def switch_creation_type(self, *_):
         creation_type = self.creation_type_dropdown.currentText()
 
-        self.creation_table.verticalHeader().setVisible(False)
+        # self.creation_tree.verticalHeader().setVisible(False)
         self.creation_asset_widget.setVisible(False)
         self.creation_shot_sequence_widget.setVisible(False)
 
         if creation_type == "Asset":
+            self.creation_asset_widget.setVisible(True)
             self.show_creation_asset_widgets()
         elif creation_type == "Sequence/Shot":
+            self.creation_shot_sequence_widget.setVisible(True)
             self.show_creation_shot_sequence_widgets()  
 
     def show_creation_asset_widgets(self):
-        self.creation_asset_widget.setVisible(True)
+        tree_model = self.creation_tree.model()
+        tree_model.removeRows(0, tree_model.rowCount())
 
-        asset_path = self.main_folder_path / "assets"
-        asset_types = [x for x in asset_path.iterdir() if x.is_dir()]
+        self.assignment_data = hf.get_assignment_data()
 
-        self.creation_table.setColumnCount(2)
-        self.creation_table.setHorizontalHeaderLabels(["Asset Type", "Asset Name"])
-        self.creation_table.setRowCount(0)
+        assets_path = self.main_folder_path / "assets"
+        assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
 
-        for asset_type in asset_types:
-            index = self.creation_table.rowCount()
-            self.creation_table.setRowCount(index + 1)
+        top_level_items = []
 
-            asset_type_item = QtWidgets.QTableWidgetItem(asset_type.name)
-            self.creation_table.setItem(index, 0, asset_type_item)
-            self.creation_table.setSpan(index, 0, 1, 2)
+        for assets_type in assets_types:
+            asset_type_item = QtWidgets.QTreeWidgetItem()
+            asset_type_item.setText(0, assets_type.name)
 
-            asset_type_path = asset_path / f"{asset_type.name}"
-            asset_names = [x for x in asset_type_path.iterdir() if x.is_dir()]
+            top_level_items.append(asset_type_item)
 
-            for asset_name in asset_names:
-                index = self.creation_table.rowCount()
-                self.creation_table.setRowCount(index + 1)
+            assets = [x for x in assets_type.iterdir() if x.is_dir()]
 
-                name_le = QtWidgets.QLabel()
-                name_le.setText(asset_name.name) 
-                self.creation_table.setCellWidget(index, 1, name_le)
+            for asset in assets:
+                asset_name_item = QtWidgets.QTreeWidgetItem()
+                asset_name_item.setText(0, asset.name)
+                asset_type_item.addChild(asset_name_item)
 
-        self.creation_table.resizeColumnsToContents()
+        self.creation_tree.addTopLevelItems(top_level_items)
+        self.creation_tree.expandAll()
 
     def show_creation_shot_sequence_widgets(self):
-        self.creation_shot_sequence_widget.setVisible(True)
+        tree_model = self.creation_tree.model()
+        tree_model.removeRows(0, tree_model.rowCount())
+
+        self.assignment_data = hf.get_assignment_data()
 
         sequences_path = self.main_folder_path / "sequences"
         sequences = [x for x in sequences_path.iterdir() if x.is_dir()]
@@ -177,29 +180,24 @@ class CreationTab(QtWidgets.QWidget):
         self.create_shot_dropdown.addItems([x.name for x in sequences])
         self.create_shot_dropdown.setCurrentText(current_sequence)
 
-        self.creation_table.setColumnCount(2)
-        self.creation_table.setHorizontalHeaderLabels(["Sequences", "Shots"])
-        self.creation_table.setRowCount(0)
+        top_level_items = []
 
         for sequence in sequences:
-            index = self.creation_table.rowCount()
-            self.creation_table.setRowCount(index + 1)
+            sequence_item = QtWidgets.QTreeWidgetItem()
+            sequence_item.setText(0, sequence.name)
 
-            sequence_item = QtWidgets.QTableWidgetItem(sequence.name)
-            self.creation_table.setItem(index, 0, sequence_item)
-            self.creation_table.setSpan(index, 0, 1, 2)
+            top_level_items.append(sequence_item)
 
             shots = [x for x in sequence.iterdir() if x.is_dir()]
 
             for shot in shots:
-                index = self.creation_table.rowCount()
-                self.creation_table.setRowCount(index + 1)
+                shot_item = QtWidgets.QTreeWidgetItem()
+                shot_item.setText(0, shot.name)
+                sequence_item.addChild(shot_item)
 
-                name_le = QtWidgets.QLabel()
-                name_le.setText(shot.name) 
-                self.creation_table.setCellWidget(index, 1, name_le)
 
-        self.creation_table.resizeColumnsToContents()
+        self.creation_tree.addTopLevelItems(top_level_items)
+        self.creation_tree.expandAll()
 
     def create_asset(self):
         asset_type = self.create_asset_dropdown.currentText()
