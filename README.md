@@ -2,7 +2,21 @@
 
 Pipeline for the Friday Short Film at ALA 2026
 
+## Top Priority
+
+Get a way to only choose either WIP or published
+Get versioning/saving working
+Get load versions working
+Get publishing working
+Get .lock files and gaurd against multiple users saving at the same time (Low priority realistically)
+Get shots and sequences working for assignment and production
+
 ## Ideas
+
+## Faster Saving
+
+Give a checkbox if they want to receive the window each time they save or not
+A notification will still pop up saying they have saved
 
 ### Preferences
 
