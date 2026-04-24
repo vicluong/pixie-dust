@@ -14,12 +14,9 @@ def get_main_folder_path():
 
     with open(str(config_path), 'r') as file:
         config_data = json.load(file)
-        assignment_data_path = Path(config_data["assignment_data_path"])
+        main_folder_path = Path(config_data["main_folder_path"])
 
-    with open(str(assignment_data_path), 'r') as file:
-        assignment_data = json.load(file)
-
-    return assignment_data
+    return main_folder_path
 
 def get_assignment_data():
     config_path = get_code_dir() / "config.json"
@@ -84,6 +81,3 @@ def create_shot_folders(shot_path: Path):
         publishes_path.mkdir()
         wip_path = shot_department_path / "wip"
         wip_path.mkdir()
-
-def populate_assets_treeview():
-    pass

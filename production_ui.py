@@ -9,6 +9,8 @@ except:
     from PySide2 import QtCore
     from PySide2 import QtWidgets
 
+import maya.cmds as cmds
+
 import helper_functions as hf
 
 
@@ -32,29 +34,32 @@ class ProductionTab(QtWidgets.QWidget):
     def create_widgets(self):
         """Create all widgets for the UI"""
         # Tab 3: Assignment
-        self.assets_tree = QtWidgets.QTreeWidget()
-        self.assets_tree.setHeaderLabels(["Assets", "Latest WIP Version", "Latest Publish Version", "Assignees"])
-        main_type_tree_item = QtWidgets.QTreeWidgetItem()
-        main_type_tree_item.setText(0, "Asset")
-        main_type_tree_item2 = QtWidgets.QTreeWidgetItem()
-        main_type_tree_item2.setText(0, "Asset2")
-        main_type_tree_item.addChild(main_type_tree_item2)
-        self.assets_tree.addTopLevelItems([main_type_tree_item])
-        self.assets_tree.expandAll()
-        self.assets_tree.setItemsExpandable(False)
-
-        # self.tasks_cards = QtWidgets.QListView()
-        # self.tasks_cards.setViewMode(QtWidgets.QListView.ViewMode.IconMode)
-        # model = QtGui.QStandardItemModel()
-        # item = QtGui.QStandardItem("New Item Text")
-        # model.appendRow(item)
-        # self.tasks_cards.setModel(model)
-
         self.assignee_tasks_le = QtWidgets.QLineEdit()
 
-        self.get_tasks_btn = QtWidgets.QPushButton("Get Tasks")
+            # Assets Tab
+        self.assets_tree = QtWidgets.QTreeWidget()
+        self.assets_tree.setHeaderLabels(["Assets"])
+        self.show_production_assets()
+
+        self.wip_label = QtWidgets.QLabel("WIP Versions")
+        self.wip_label.setAlignment(QtCore.Qt.AlignCenter) 
+        self.wip_list = QtWidgets.QTreeWidget()
+        self.wip_list.setHeaderLabels(["Version", "Creator"])
+        item = QtWidgets.QTreeWidgetItem(["v001", "Jim"])
+        self.wip_list.addTopLevelItem(item)
+
+        self.publish_label = QtWidgets.QLabel("Published Versions")
+        self.publish_label.setAlignment(QtCore.Qt.AlignCenter) 
+        self.publish_list = QtWidgets.QTreeWidget()
+        self.publish_list.setHeaderLabels(["Version", "Creator"])
+        item = QtWidgets.QTreeWidgetItem(["v001", "Jim"])
+        self.publish_list.addTopLevelItem(item)
+
         self.new_file_btn = QtWidgets.QPushButton("New File")
         self.open_file_btn = QtWidgets.QPushButton("Open File")
+
+            # Bottom File Buttons
+        self.get_tasks_btn = QtWidgets.QPushButton("Get Tasks")
 
     def create_layout(self):
         """Create all layouts and add widgets to them"""
@@ -73,23 +78,30 @@ class ProductionTab(QtWidgets.QWidget):
         production_layout.addWidget(production_main_tab)
 
         self.production_tasks_layout = QtWidgets.QVBoxLayout(production_tasks_tab)
-        # production_tasks_layout.addWidget(self.tasks_cards)
-        # production_tasks_layout.addWidget(self.card1)
-        # production_tasks_layout.addWidget(self.card2)
 
         assets_layout = QtWidgets.QVBoxLayout(production_assets_tab)
-        assets_layout.addWidget(self.assets_tree)
+        assets_info_layout = QtWidgets.QHBoxLayout()
+        assets_info_layout.addWidget(self.assets_tree)
+        assets_wip_layout = QtWidgets.QVBoxLayout(production_assets_tab)
+        assets_wip_layout.addWidget(self.wip_label)
+        assets_wip_layout.addWidget(self.wip_list)
+        assets_info_layout.addLayout(assets_wip_layout)
+        assets_publish_layout = QtWidgets.QVBoxLayout(production_assets_tab)
+        assets_publish_layout.addWidget(self.publish_label)
+        assets_publish_layout.addWidget(self.publish_list)
+        assets_info_layout.addLayout(assets_publish_layout)
+        assets_layout.addLayout(assets_info_layout)
 
-        file_creation_layout = QtWidgets.QHBoxLayout(self)
-        file_creation_layout.addWidget(self.get_tasks_btn)
+        file_creation_layout = QtWidgets.QHBoxLayout()
+        # file_creation_layout.addWidget(self.get_tasks_btn)
         file_creation_layout.addWidget(self.new_file_btn)
         file_creation_layout.addWidget(self.open_file_btn)
-        production_layout.addLayout(file_creation_layout)
+        assets_layout.addLayout(file_creation_layout)
 
     def create_connections(self):
         """Create all connections for the UI"""
-        self.get_tasks_btn.pressed.connect(self.show_tasks_table)
-
+        # self.get_tasks_btn.pressed.connect(self.show_tasks_table)
+        self.new_file_btn.pressed.connect(self.create_new_file)
 
     def show_tasks_table(self):
         with open(self.assignment_data_path, 'r') as file:
@@ -106,69 +118,86 @@ class ProductionTab(QtWidgets.QWidget):
         for card in card_data:
             self.production_tasks_layout.addWidget(Card(card[0], card[1]))
 
-        # self.tasks.setColumnCount(5)
-        # self.assignment_table.setHorizontalHeaderLabels(["Main Type", "Asset Type", "Asset Name", "Asset Part", "Assignees"])
-        # self.assignment_table.setRowCount(0)
-        # self.assignment_table.verticalHeader().setVisible(False)
+    def show_production_assets(self):
+        tree_model = self.assets_tree.model()
+        tree_model.removeRows(0, tree_model.rowCount())
 
-        # for assets_type in assets_types:
-        #     index = self.assignment_table.rowCount()
-        #     self.assignment_table.setRowCount(index + 1)
+        self.assignment_data = hf.get_assignment_data()
 
-        #     asset_type_item = QtWidgets.QTableWidgetItem(assets_type.name)
-        #     self.assignment_table.setItem(index, 0, asset_type_item)
-        #     self.assignment_table.setSpan(index, 0, 1, 3)
+        assets_path = self.main_folder_path / "assets"
+        assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
 
-        #     n_a_item = QtWidgets.QTableWidgetItem("N/A")
-        #     self.assignment_table.setItem(index, 3, n_a_item)
+        top_level_items = []
 
-        #     assets = [x for x in assets_type.iterdir() if x.is_dir()]
+        for assets_type in assets_types:
+            asset_type_item = QtWidgets.QTreeWidgetItem()
+            asset_type_item.setText(0, assets_type.name)
 
-        #     for asset in assets:
-        #         index = self.assignment_table.rowCount()
-        #         self.assignment_table.setRowCount(index + 1)
+            top_level_items.append(asset_type_item)
 
-        #         asset_item = QtWidgets.QTableWidgetItem(asset.name)
-        #         self.assignment_table.setItem(index, 1, asset_item)
-        #         self.assignment_table.setSpan(index, 1, 1, 2)
+            assets = [x for x in assets_type.iterdir() if x.is_dir()]
 
-        #         n_a_item = QtWidgets.QTableWidgetItem("N/A")
-        #         self.assignment_table.setItem(index, 3, n_a_item)
+            for asset in assets:
+                asset_name_item = QtWidgets.QTreeWidgetItem()
+                asset_name_item.setText(0, asset.name)
+                asset_type_item.addChild(asset_name_item)
 
-        #         asset_parts = [x for x in asset.iterdir() if x.is_dir()]
+                asset_parts = [x for x in asset.iterdir() if x.is_dir()]
 
-        #         for asset_part in asset_parts:
-        #             index = self.assignment_table.rowCount()
-        #             self.assignment_table.setRowCount(index + 1)
+                for asset_part in asset_parts:
+                    asset_part_item = QtWidgets.QTreeWidgetItem()
+                    asset_part_item.setText(0, asset_part.name)
+                    asset_name_item.addChild(asset_part_item)
 
-        #             asset_part_item = QtWidgets.QTableWidgetItem(asset_part.name)
-        #             self.assignment_table.setItem(index, 2, asset_part_item)
-
-        #             assignments = self.get_assignment_data()["assignments"]
-
-        #             assignees = []
-
-        #             for assignment in assignments:
-        #                 if (assignment["main_type"] == "asset" 
-        #                     and assignment["asset_type"] == assets_type.name
-        #                     and assignment["asset_name"] == asset.name
-        #                     and assignment["asset_part"] == asset_part.name 
-        #                     ):
-        #                     assignees.append(assignment["assignee"])
+                    assignments = self.assignment_data["assignments"]
+                    assignees = []
+                    for assignment in assignments:
+                        if (assignment["main_type"] == "asset" 
+                            and assignment["asset_type"] == assets_type.name
+                            and assignment["asset_name"] == asset.name
+                            and assignment["asset_part"] == asset_part.name 
+                            ):
+                            assignees.append(assignment["assignee"])
                     
-        #             assignment_item = QtWidgets.QTableWidgetItem(", ".join(assignees))
+                    asset_part_item.setText(3, ", ".join(assignees))
 
-        #             assignment_data = {
-        #                 "main_type": "asset",
-        #                 "asset_type": assets_type.name,
-        #                 "asset_name": asset.name,
-        #                 "asset_part": asset_part.name
-        #             }
+        self.assets_tree.addTopLevelItems(top_level_items)
+        self.assets_tree.expandAll()
 
-        #             assignment_item.setData(QtCore.Qt.UserRole, assignment_data)
-        #             self.assignment_table.setItem(index, 3, assignment_item)
+    def create_new_file(self):
+        asset_part_index = self.assets_tree.currentIndex()
+        asset_part = asset_part_index.data()
 
-        # self.assignment_table.resizeColumnsToContents()
+        asset_name_index = asset_part_index.parent()
+        if asset_name_index.isValid():
+            asset_name = asset_name_index.data() # Returns the text of the parent
+            print(f"Asset Name: {asset_name}")
+        else:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Wrong Selection",
+                "Please select an asset part to create a new file for."
+            )
+            return
+
+        asset_type_index = asset_name_index.parent()
+        if asset_type_index.isValid():
+            asset_type = asset_type_index.data() # Returns the text of the parent
+            print(f"Asset Type: {asset_type}")
+        else:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Wrong Selection",
+                "Please select an asset part to create a new file for."
+            )
+            return
+        
+        cmds.file(new=True, force=True)
+        main_folder_path = hf.get_main_folder_path()
+        file_path = str(main_folder_path / "assets" / asset_type / asset_name / asset_part 
+                        / "wip" / f"{asset_name}_{asset_type}_{asset_part}.mb")
+
+        cmds.file(rename=f"{str(file_path)}")
 
 class Card(QtWidgets.QFrame):
     def __init__(self, title, content):

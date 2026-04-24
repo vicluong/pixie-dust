@@ -63,7 +63,6 @@ class AssignmentTab(QtWidgets.QWidget):
 
     def show_asset_assignment_table(self, *_):
         self.assignment_data = hf.get_assignment_data()
-        print(self.assignment_data)
 
         assets_path = self.main_folder_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
