@@ -3,24 +3,15 @@ import json
 import sys
 
 try:
-    from PySide6 import QtCore
     from PySide6 import QtWidgets
-    from PySide6 import QtGui
-    from shiboken6 import wrapInstance
 except:
-    from PySide2 import QtCore
     from PySide2 import QtWidgets
-    from PySide2 import QtGui
-    from shiboken2 import wrapInstance
-
-from functools import partial
-
-import maya.OpenMayaUI as omui
 
 code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
 sys.path.append(str(code_dir))
 
 import helper_functions as hf
+
 
 class CreationTab(QtWidgets.QWidget):
     def __init__(self):
