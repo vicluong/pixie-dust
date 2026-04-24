@@ -7,9 +7,6 @@ try:
 except:
     from PySide2 import QtWidgets
 
-code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
-sys.path.append(str(code_dir))
-
 import helper_functions as hf
 
 
