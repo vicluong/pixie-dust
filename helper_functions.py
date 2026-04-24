@@ -1,4 +1,37 @@
 from pathlib import Path
+import json
+import sys
+
+def get_code_dir():
+    code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
+    return code_dir
+
+def path_append_code_dir():
+    sys.path.append(str(get_code_dir()))
+
+def get_main_folder_path():
+    config_path = get_code_dir() / "config.json"
+
+    with open(str(config_path), 'r') as file:
+        config_data = json.load(file)
+        assignment_data_path = Path(config_data["assignment_data_path"])
+
+    with open(str(assignment_data_path), 'r') as file:
+        assignment_data = json.load(file)
+
+    return assignment_data
+
+def get_assignment_data():
+    config_path = get_code_dir() / "config.json"
+
+    with open(str(config_path), 'r') as file:
+        config_data = json.load(file)
+        assignment_data_path = Path(config_data["assignment_data_path"])
+
+    with open(str(assignment_data_path), 'r') as file:
+        assignment_data = json.load(file)
+
+    return assignment_data
 
 def create_asset_folders(main_folder_path: Path, asset_type: str, asset_name: str):
     asset_path = main_folder_path / "assets" / asset_type / asset_name
@@ -51,3 +84,6 @@ def create_shot_folders(shot_path: Path):
         publishes_path.mkdir()
         wip_path = shot_department_path / "wip"
         wip_path.mkdir()
+
+def populate_assets_treeview():
+    pass
