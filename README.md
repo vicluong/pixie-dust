@@ -2,6 +2,71 @@
 
 Pipeline for the Friday Short Film at ALA 2026
 
+# Purpose
+
+What is my purpose in this project?
+
+- Allow for quicker file transfer that is supported by proper file organisation/management
+- Allow for the creation of tools that could help the project
+- Coordinate with Production and provide them with information about all files
+
+# Checklist
+
+## Completed
+
+- [x] Base folder structure complete
+- [x] Ability to create assets, shots and sequence folders complete
+- [x] Ability to assign assets to users
+- [x] UI Tabs Structure finalised - Creation, Assignment, Production, Save, Publish, Import/Reference, Information
+
+## Top Priority
+
+- [] Finalise .json file structure
+- [] Find a way to not have to change a file each time I use a different setup
+  - Another startup file that is ignored by git that provides the sys path first
+- [] Get versioning complete
+- [] Get shots and sequences working for assignment and production
+- [] Find a way to show what is assigned to a user
+- [] Find a way to assign a user a name on startup
+  - Either automatically on first use or first time on every session
+  - Could be changed in the information section (?) or some sort of settings section
+- [] Further investigate and find a way to import and export of data to master production document
+- [] Get saving and publishing complete for Maya
+- [] Finalise how data will be passed between software and what software is being used
+  - Is it similar to how ALA does it?
+- [] Get Pixie Dust working as a standalone executable (for Production and Art Department)
+- Make things snake_case (or at least figure out when I should have items that are camelCase)
+
+## Middle Priority
+
+- [] Export in different file types (at least for Maya)
+- [] Get Pixie Dust working for Houdini
+- [] Get Pixie Dust working for Katana
+- [] Get Pixie Dust working for Nuke
+- [] Get USD working
+  - Seems like a large change for something that wouldn't be suitable for the time I have
+
+## Low Priority
+
+- [] Creation of a Slack/Discord bot to provide updates
+- [] Thumbnails and turntable for published items
+
+## Guard Rails
+
+- [] Clicking only in the UI - Enter could accidently press any button
+- [] Ensure two people can't manipulate/create files at the same time
+  - For now, could be as simple as creating a .lock file and checking if a .lock file exists at edit/creation time
+
+# ------------------------------------------------------------------------------
+
+# Considerations
+
+## Important Note
+
+- Publishes are for review
+- Given we have no USD (as for now), all items NEED TO BE FINALISED AND APPROVED before being passed on
+  - prop_test_01 prop_test_approved which then becomes prop_test when given to another department
+
 ## Top Priority
 
 Get a way to only choose either WIP or published
