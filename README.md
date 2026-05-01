@@ -7,6 +7,7 @@ Pipeline for the Friday Short Film at ALA 2026
 What is my purpose in this project?
 
 - Allow for quicker file transfer that is supported by proper file organisation/management
+- Create an streamlined flow of data between each department
 - Allow for the creation of tools that could help the project
 - Coordinate with Production and provide them with information about all files
 
