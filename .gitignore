@@ -1,6 +1,7 @@
 # Specific
 assignment.json
 config.json
+users.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

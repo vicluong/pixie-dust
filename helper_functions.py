@@ -31,11 +31,18 @@ def get_assignment_data():
     return assignment_data
 
 def get_users():
-    assignment_data = get_assignment_data()
+    config_path = get_code_dir() / "config.json"
+
+    with open(str(config_path), 'r') as file:
+        config_data = json.load(file)
+        users_data_path = Path(config_data["users_data_path"])
+
+    with open(str(users_data_path), 'r') as file:
+        users_data = json.load(file)
+
     users = []
 
-    for uid_info in assignment_data["users"].values():
-        print(uid_info)
+    for uid_info in users_data.values():
         users.append(uid_info["name"])
 
     return users
