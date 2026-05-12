@@ -26,6 +26,7 @@ class ProductionTab(QtWidgets.QWidget):
             self.assignment_data_path = Path(config_data["assignment_data_path"])
 
         self.assignment_data = hf.get_assignment_data()
+        self.users = hf.get_users()
 
         self.create_widgets()
         self.create_layout()
@@ -34,10 +35,6 @@ class ProductionTab(QtWidgets.QWidget):
     def create_widgets(self):
         """Create all widgets for the UI"""
         # Tab 3: Assignment
-        with open(str(self.assignment_data_path), 'r') as file:
-            assignment_data = json.load(file)
-            self.users = assignment_data["users"]
-
         self.current_user_dropdown = QtWidgets.QComboBox()
         self.current_user_dropdown.addItems([x for x in self.users])
 

@@ -30,6 +30,16 @@ def get_assignment_data():
 
     return assignment_data
 
+def get_users():
+    assignment_data = get_assignment_data()
+    users = []
+
+    for uid_info in assignment_data["users"].values():
+        print(uid_info)
+        users.append(uid_info["name"])
+
+    return users
+
 def create_asset_folders(main_folder_path: Path, asset_type: str, asset_name: str):
     asset_path = main_folder_path / "assets" / asset_type / asset_name
     asset_path.mkdir()

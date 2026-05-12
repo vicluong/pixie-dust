@@ -25,6 +25,8 @@ class AssignmentTab(QtWidgets.QWidget):
 
         self.assignment_data = hf.get_assignment_data()
 
+        self.users = hf.get_users()
+
         self.create_widgets()
         self.create_layout()
         self.create_connections()
@@ -37,7 +39,7 @@ class AssignmentTab(QtWidgets.QWidget):
         self.assignment_type_dropdown.addItems(["Asset", "Sequence/Shot"])
 
         self.users_list = QtWidgets.QListWidget()
-        self.users_list.addItems(self.assignment_data["users"])
+        self.users_list.addItems(self.users)
 
         self.assignment_btn = QtWidgets.QPushButton("Assign")
 
