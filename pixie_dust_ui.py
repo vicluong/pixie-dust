@@ -16,9 +16,6 @@ except:
 
 import maya.OpenMayaUI as omui
 
-code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
-sys.path.append(str(code_dir))
-
 import helper_functions as hf
 from creation_ui import CreationTab
 from assignment_ui import AssignmentTab
