@@ -12,7 +12,11 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def create_new_file(self) -> str:
+    def verify_file(self) -> str:
+        pass
+
+    @abstractmethod
+    def create_new_asset_file(self) -> str:
         pass
 
     @abstractmethod

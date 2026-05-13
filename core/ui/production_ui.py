@@ -215,7 +215,7 @@ class ProductionTab(QtWidgets.QWidget):
             )
             return
         
-        self.dcc_interface.create_new_file(asset_type, asset_name, asset_part)
+        self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_part)
 
 class Card(QtWidgets.QFrame):
     def __init__(self, title, content):
