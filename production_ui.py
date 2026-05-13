@@ -81,7 +81,7 @@ class ProductionTab(QtWidgets.QWidget):
         production_main_tab.addTab(production_shots_tab, "Shots / Sequences")
         production_layout.addWidget(production_main_tab)
 
-        self.production_tasks_layout = QtWidgets.QVBoxLayout(production_tasks_tab)
+        self.production_tasks_layout = QtWidgets.QHBoxLayout(production_tasks_tab)
 
         assets_layout = QtWidgets.QVBoxLayout(production_assets_tab)
         assets_info_layout = QtWidgets.QHBoxLayout()
@@ -111,19 +111,21 @@ class ProductionTab(QtWidgets.QWidget):
     def show_tasks_table(self):
         self.clear_layout(self.production_tasks_layout)
 
-        with open(self.assignment_data_path, 'r') as file:
-            data = json.load(file)
-
         card_data = []
 
-        for assignment in data["assignments"]:
+        for assignment in self.assignment_data.values():
             if assignment["assignee"] == self.current_user_dropdown.currentText(): 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 
         card_data.sort()
 
         for card in card_data:
-            self.production_tasks_layout.addWidget(Card(card[0], card[1]))
+            card_widget = Card(card[0], card[1])
+            card_widget.setMaximumWidth(300)
+            card_widget.setMaximumHeight(200)
+            self.production_tasks_layout.addWidget(card_widget)
+        
+        self.production_tasks_layout.addStretch()
 
     def clear_layout(self, layout):
         while layout.count():
@@ -170,9 +172,9 @@ class ProductionTab(QtWidgets.QWidget):
                     asset_part_item.setText(0, asset_part.name)
                     asset_name_item.addChild(asset_part_item)
 
-                    assignments = self.assignment_data["assignments"]
+                    assignments = self.assignment_data
                     assignees = []
-                    for assignment in assignments:
+                    for assignment in assignments.values():
                         if (assignment["main_type"] == "asset" 
                             and assignment["asset_type"] == assets_type.name
                             and assignment["asset_name"] == asset.name
