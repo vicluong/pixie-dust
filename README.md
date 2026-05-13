@@ -28,6 +28,7 @@ What is my purpose in this project?
 ## Top Priority
 
 - [ ] Finalise .json / database structure
+- [ ] Investigate how they created files for shots - which file types and how did wip vs. publish look like
 - [ ] Get shots and sequences working for assignment and production
 - [ ] Get versioning complete
 - [ ] Get saving and publishing complete for Maya
