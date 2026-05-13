@@ -10,3 +10,15 @@ class DCCInterface(ABC):
     @abstractmethod
     def get_main_window(self) -> QtWidgets.QWidget:
         pass
+
+    @abstractmethod
+    def create_new_file(self) -> str:
+        pass
+
+    @abstractmethod
+    def save_file(self) -> str:
+        pass
+
+    @abstractmethod
+    def publish_file(self) -> str:
+        pass

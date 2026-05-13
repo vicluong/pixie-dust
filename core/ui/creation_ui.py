@@ -7,14 +7,14 @@ try:
 except:
     from PySide2 import QtWidgets
 
-import utils.file_folder_utils as hf
+import utils.file_folder_utils as ffu
 
 
 class CreationTab(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        config_path = hf.get_code_dir() / "config.json"
+        config_path = ffu.get_code_dir() / "config.json"
 
         with open(str(config_path), 'r') as file:
             config_data = json.load(file)
@@ -143,7 +143,7 @@ class CreationTab(QtWidgets.QWidget):
         tree_model = self.creation_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = hf.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data()
 
         assets_path = self.main_folder_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
@@ -170,7 +170,7 @@ class CreationTab(QtWidgets.QWidget):
         tree_model = self.creation_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = hf.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data()
 
         sequences_path = self.main_folder_path / "sequences"
         sequences = [x for x in sequences_path.iterdir() if x.is_dir()]
@@ -212,7 +212,7 @@ class CreationTab(QtWidgets.QWidget):
             return
 
         try:
-            hf.create_asset_folders(self.main_folder_path, asset_type, asset_name)
+            ffu.create_asset_folders(self.main_folder_path, asset_type, asset_name)
             QtWidgets.QMessageBox.information(
                 None, 
                 "Creation Succeeded", 
@@ -287,7 +287,7 @@ class CreationTab(QtWidgets.QWidget):
             return
 
         try:
-            hf.create_shot_folders(shot_path)
+            ffu.create_shot_folders(shot_path)
             QtWidgets.QMessageBox.information(
                 None, 
                 "Creation Succeeded", 

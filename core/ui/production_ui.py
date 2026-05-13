@@ -9,24 +9,25 @@ except:
     from PySide2 import QtCore
     from PySide2 import QtWidgets
 
-import maya.cmds as cmds
-
-import utils.file_folder_utils as hf
+import utils.file_folder_utils as ffu
+from dcc_manager.dcc_interface import DCCInterface
 
 
 class ProductionTab(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, dcc_interface: DCCInterface):
         super().__init__()
 
-        config_path = hf.get_code_dir() / "config.json"
+        self.dcc_interface = dcc_interface
+
+        config_path = ffu.get_code_dir() / "config.json"
 
         with open(str(config_path), 'r') as file:
             config_data = json.load(file)
             self.main_folder_path = Path(config_data["main_folder_path"])
             self.assignment_data_path = Path(config_data["assignment_data_path"])
 
-        self.assignment_data = hf.get_assignment_data()
-        self.users = hf.get_users()
+        self.assignment_data = ffu.get_assignment_data()
+        self.users = ffu.get_users()
 
         self.create_widgets()
         self.create_layout()
@@ -114,7 +115,7 @@ class ProductionTab(QtWidgets.QWidget):
         card_data = []
 
         for assignment in self.assignment_data.values():
-            current_assignee_uid = hf.get_uid(self.current_user_dropdown.currentText())
+            current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
             if assignment["assignee"] == current_assignee_uid: 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 
@@ -146,7 +147,7 @@ class ProductionTab(QtWidgets.QWidget):
         tree_model = self.assets_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = hf.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data()
 
         assets_path = self.main_folder_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
@@ -214,12 +215,7 @@ class ProductionTab(QtWidgets.QWidget):
             )
             return
         
-        cmds.file(new=True, force=True)
-        main_folder_path = hf.get_main_folder_path()
-        file_path = str(main_folder_path / "assets" / asset_type / asset_name / asset_part 
-                        / "wip" / f"{asset_name}_{asset_type}_{asset_part}_v000.mb")
-
-        cmds.file(rename=f"{str(file_path)}")
+        self.dcc_interface.create_new_file(asset_type, asset_name, asset_part)
 
 class Card(QtWidgets.QFrame):
     def __init__(self, title, content):

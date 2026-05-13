@@ -14,7 +14,7 @@ except:
     from PySide2 import QtGui
     from shiboken2 import wrapInstance
 
-import utils.file_folder_utils as hf
+import utils.file_folder_utils as ffu
 from dcc_manager.dcc_interface import DCCInterface
 from ui.creation_ui import CreationTab
 from ui.assignment_ui import AssignmentTab
@@ -52,14 +52,14 @@ class PixieDustDialog(QtWidgets.QDialog):
         if sys.platform == "darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
-        config_path = hf.get_code_dir() / "config.json"
+        config_path = ffu.get_code_dir() / "config.json"
 
         with open(str(config_path), 'r') as file:
             config_data = json.load(file)
             self.main_folder_path = Path(config_data["main_folder_path"])
             self.assignment_data_path = Path(config_data["assignment_data_path"])
 
-        self.assignment_data = hf.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data()
 
         self.create_widgets()
         self.create_layout()
@@ -89,7 +89,7 @@ class PixieDustDialog(QtWidgets.QDialog):
         self.main_tab_widget.addTab(self.assignment_tab, "Assignment")
 
         # Tab 3: Production
-        self.production_tab = ProductionTab()
+        self.production_tab = ProductionTab(self.dcc_interface)
         self.main_tab_widget.addTab(self.production_tab, "Production")
 
         # Tab 4: Save

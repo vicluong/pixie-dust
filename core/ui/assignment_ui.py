@@ -9,23 +9,23 @@ except:
     from PySide2 import QtCore
     from PySide2 import QtWidgets
 
-import utils.file_folder_utils as hf
+import utils.file_folder_utils as ffu
 
 
 class AssignmentTab(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        config_path = hf.get_code_dir() / "config.json"
+        config_path = ffu.get_code_dir() / "config.json"
 
         with open(str(config_path), 'r') as file:
             config_data = json.load(file)
             self.main_folder_path = Path(config_data["main_folder_path"])
             self.assignment_data_path = Path(config_data["assignment_data_path"])
 
-        self.assignment_data = hf.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data()
 
-        self.users = hf.get_users()
+        self.users = ffu.get_users()
 
         self.create_widgets()
         self.create_layout()
@@ -68,7 +68,7 @@ class AssignmentTab(QtWidgets.QWidget):
         tree_model = self.assets_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = hf.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data()
 
         assets_path = self.main_folder_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
@@ -106,7 +106,7 @@ class AssignmentTab(QtWidgets.QWidget):
                             and assignment["asset_part"] == asset_part.name 
                             ):
 
-                            assignee = hf.get_user_name(assignment["assignee"])
+                            assignee = ffu.get_user_name(assignment["assignee"])
                             assignees.append(assignee)
 
                             asset_part_item.setText(1, ", ".join(assignees))
@@ -135,7 +135,7 @@ class AssignmentTab(QtWidgets.QWidget):
             )
             return
 
-        selected_user = hf.get_uid(selected_user_item.text())
+        selected_user = ffu.get_uid(selected_user_item.text())
         assignment_table_item = self.assets_tree.currentItem()
         assignment_table_item_index = self.assets_tree.currentIndex()
 
@@ -160,7 +160,7 @@ class AssignmentTab(QtWidgets.QWidget):
         if assignment_cell_data:
             assignment_cell_data["assignee"] = selected_user
 
-            self.assignment_data = hf.get_assignment_data()
+            self.assignment_data = ffu.get_assignment_data()
 
             for assignment in self.assignment_data.values():
                 if (assignment["entity_type"] == assignment_cell_data["entity_type"]
