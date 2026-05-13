@@ -19,28 +19,33 @@ What is my purpose in this project?
 - [x] Ability to create assets, shots and sequence folders complete
 - [x] Ability to assign assets to users
 - [x] UI Tabs Structure finalised - Creation, Assignment, Production, Save, Publish, Import/Reference, Information
+- [x] Find a way to not have to change a file each time I use a different setup
+  - Another startup file that is ignored by git that provides the sys path first
+- [x] Find a way to show what is assigned to a user
+- [x] Finalise how data will be passed between software and what software is being used
+  - Is it similar to how ALA does it?
 
 ## Top Priority
 
-- [ ] Finalise .json file structure
-- [ ] Find a way to not have to change a file each time I use a different setup
-  - Another startup file that is ignored by git that provides the sys path first
+- [ ] Finalise .json / database structure
 - [ ] Get versioning complete
 - [ ] Get shots and sequences working for assignment and production
-- [ ] Find a way to show what is assigned to a user
-- [ ] Find a way to assign a user a name on startup
-  - Either automatically on first use or first time on every session
-  - Could be changed in the information section (?) or some sort of settings section
-- [ ] Further investigate and find a way to import and export of data to master production document
 - [ ] Get saving and publishing complete for Maya
-- [ ] Finalise how data will be passed between software and what software is being used
-  - Is it similar to how ALA does it?
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
 - Make things snake_case (or at least figure out when I should have items that are camelCase)
+- [ ] Further investigate and find a way to import and export data to master production document
 
 ## Middle Priority
 
+- [ ] Investigate SQLite as a database system for:
+  - Assets / Shots
+  - Users
+  - Assignments
+- [ ] Find a way to assign a user a name on startup
+  - Either automatically on first use or first time on every session
+  - Could be changed in the information section (?) or some sort of settings section
 - [ ] Export in different file types (at least for Maya)
+- [ ] Implement USD exports too
 - [ ] Get Pixie Dust working for Houdini
 - [ ] Get Pixie Dust working for Katana
 - [ ] Get Pixie Dust working for Nuke
