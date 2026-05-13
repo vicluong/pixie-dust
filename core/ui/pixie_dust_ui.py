@@ -16,10 +16,10 @@ except:
 
 import maya.OpenMayaUI as omui
 
-import helper_functions as hf
-from creation_ui import CreationTab
-from assignment_ui import AssignmentTab
-from production_ui import ProductionTab
+import core.utils.file_folder_utils as hf
+from core.ui.creation_ui import CreationTab
+from core.ui.assignment_ui import AssignmentTab
+from core.ui.production_ui import ProductionTab
 
 def maya_main_window():
     main_window_ptr = omui.MQtUtil.mainWindow()

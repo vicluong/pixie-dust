@@ -11,7 +11,7 @@ except:
 
 import maya.cmds as cmds
 
-import helper_functions as hf
+import core.utils.file_folder_utils as hf
 
 
 class ProductionTab(QtWidgets.QWidget):
@@ -114,7 +114,8 @@ class ProductionTab(QtWidgets.QWidget):
         card_data = []
 
         for assignment in self.assignment_data.values():
-            if assignment["assignee"] == self.current_user_dropdown.currentText(): 
+            current_assignee_uid = hf.get_uid(self.current_user_dropdown.currentText())
+            if assignment["assignee"] == current_assignee_uid: 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 
         card_data.sort()
@@ -175,7 +176,7 @@ class ProductionTab(QtWidgets.QWidget):
                     assignments = self.assignment_data
                     assignees = []
                     for assignment in assignments.values():
-                        if (assignment["main_type"] == "asset" 
+                        if (assignment["entity_type"] == "asset" 
                             and assignment["asset_type"] == assets_type.name
                             and assignment["asset_name"] == asset.name
                             and assignment["asset_part"] == asset_part.name 

@@ -7,7 +7,7 @@ try:
 except:
     from PySide2 import QtWidgets
 
-import helper_functions as hf
+import core.utils.file_folder_utils as hf
 
 
 class CreationTab(QtWidgets.QWidget):
