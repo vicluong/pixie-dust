@@ -83,10 +83,10 @@ root_folder = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
 
 for folder in root_folder.rglob("*"):
     if folder.is_dir():
-        reload_modules(folder)
+        reload_modules(str(folder))
 
-code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\core\\pixie-dust")
+code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust\\core")
 sys.path.append(str(code_dir))
 
-import core.main as main
-main.start_up()
+import main
+main.start_up("maya")
