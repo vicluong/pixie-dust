@@ -9,7 +9,7 @@ except:
     from PySide2 import QtCore
     from PySide2 import QtWidgets
 
-import core.utils.file_folder_utils as hf
+import utils.file_folder_utils as hf
 
 
 class AssignmentTab(QtWidgets.QWidget):

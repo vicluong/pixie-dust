@@ -28,8 +28,8 @@ What is my purpose in this project?
 ## Top Priority
 
 - [ ] Finalise .json / database structure
-- [ ] Get versioning complete
 - [ ] Get shots and sequences working for assignment and production
+- [ ] Get versioning complete
 - [ ] Get saving and publishing complete for Maya
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
 - Make things snake_case (or at least figure out when I should have items that are camelCase)

@@ -1,4 +1,5 @@
-from core.ui.pixie_dust_ui import PixieDustDialog
+from dcc_manager.dcc_manager import DCCManager
 
-def start_up():
-    PixieDustDialog.show_dialog()
+def start_up(dcc: str):
+    dcc_manager = DCCManager(dcc)
+    dcc_manager.create_ui()

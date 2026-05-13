@@ -11,7 +11,7 @@ except:
 
 import maya.cmds as cmds
 
-import core.utils.file_folder_utils as hf
+import utils.file_folder_utils as hf
 
 
 class ProductionTab(QtWidgets.QWidget):

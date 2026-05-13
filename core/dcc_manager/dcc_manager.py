@@ -1,20 +1,20 @@
-from ..ui.pixie_dust_ui import PixieDustDialog
+from ui.pixie_dust_ui import PixieDustDialog
 
 class DCCManager:
     """Interface for DCC operations."""
     def __init__(self, dcc: str):
         dcc_key = dcc.lower()
-        self._netcopy = self._get_dcc_interface(dcc_key)
+        self._dcc_interface = self._get_dcc_interface(dcc_key)
 
         # if not self._netcopy:
         #     raise ModuleNotFoundError("The specificed DCC could not be imported properly.")
 
     def create_ui(self):
-        PixieDustDialog.show_dialog(self._netcopy)
+        PixieDustDialog.show_dialog(self._dcc_interface)
 
     def _get_dcc_interface(self, dcc: str):
         if dcc == "maya":
-            from maya.maya_interface import MayaInterface
+            from dcc_manager.maya.maya_interface import MayaInterface
             return MayaInterface()
         # elif dcc == "houdini":
         #     from houdini_pipeline.houdini_tools.netcopy_houdini import HoudiniNetCopy
@@ -23,4 +23,4 @@ class DCCManager:
         #     from nuke_pipeline.netcopy_nuke import NukeNetCopy
         #     return NukeInterface()
         else:
-            raise ValueError(f"DCC '{dcc}' is not supported by NetCopy.")
+            raise ValueError(f"DCC '{dcc}' is not supported by DCCManager.")

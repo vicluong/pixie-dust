@@ -14,24 +14,20 @@ except:
     from PySide2 import QtGui
     from shiboken2 import wrapInstance
 
-import maya.OpenMayaUI as omui
+import utils.file_folder_utils as hf
+from dcc_manager.dcc_interface import DCCInterface
+from ui.creation_ui import CreationTab
+from ui.assignment_ui import AssignmentTab
+from ui.production_ui import ProductionTab
 
-import core.utils.file_folder_utils as hf
-from core.ui.creation_ui import CreationTab
-from core.ui.assignment_ui import AssignmentTab
-from core.ui.production_ui import ProductionTab
-
-def maya_main_window():
-    main_window_ptr = omui.MQtUtil.mainWindow()
-    return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
 class PixieDustDialog(QtWidgets.QDialog):
     dlg_instance = None
     
     @classmethod
-    def show_dialog(cls):
+    def show_dialog(cls, dcc_interface: DCCInterface):
         if not cls.dlg_instance:
-            cls.dlg_instance = PixieDustDialog()
+            cls.dlg_instance = PixieDustDialog(dcc_interface)
             
         if cls.dlg_instance.isHidden():
             cls.dlg_instance.show()
@@ -39,13 +35,16 @@ class PixieDustDialog(QtWidgets.QDialog):
             cls.dlg_instance.raise_()
             cls.dlg_instance.activateWindow()
 
-    def __init__(self, parent=maya_main_window()):
+    def __init__(self, dcc_interface: DCCInterface):
         """Initialise PixieDustDialog"""
-        super(PixieDustDialog, self).__init__(parent)
+        super(PixieDustDialog, self).__init__()
 
         self.setWindowTitle("Pixie Dust")
 
-        size = maya_main_window().screen().size()
+        self.dcc_interface = dcc_interface
+        self.main_window = self.dcc_interface.get_main_window()
+
+        size = self.main_window.screen().size()
         screen_w, screen_h = size.width(), size.height()
         self.resize(int(screen_w * 0.3), int(screen_h * 0.5))
         

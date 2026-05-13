@@ -7,7 +7,7 @@ except:
 
 import maya.OpenMayaUI as omui
 
-from ..dcc_interface import DCCInterface
+from dcc_manager.dcc_interface import DCCInterface
 
 
 class MayaInterface(DCCInterface):
