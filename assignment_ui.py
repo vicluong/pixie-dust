@@ -97,21 +97,23 @@ class AssignmentTab(QtWidgets.QWidget):
                     asset_part_item.setText(0, asset_part.name)
                     asset_name_item.addChild(asset_part_item)
 
-                    assignments = self.assignment_data["assignments"]
+                    assignments = self.assignment_data
                     assignees = []
-                    for assignment in assignments:
-                        if (assignment["main_type"] == "asset" 
+                    for assignment in assignments.values():
+                        if (assignment["entity_type"] == "asset" 
                             and assignment["asset_type"] == assets_type.name
                             and assignment["asset_name"] == asset.name
                             and assignment["asset_part"] == asset_part.name 
                             ):
-                            assignees.append(assignment["assignee"])
+
+                            assignee = hf.get_user_name(assignment["assignee"])
+                            assignees.append(assignee)
 
                             asset_part_item.setText(1, ", ".join(assignees))
 
                     # Store assignment information in all asset part cells for later use
                     assignment_data = {
-                        "main_type": "asset",
+                        "entity_type": "asset",
                         "asset_type": assets_type.name,
                         "asset_name": asset.name,
                         "asset_part": asset_part.name
@@ -133,7 +135,7 @@ class AssignmentTab(QtWidgets.QWidget):
             )
             return
 
-        selected_user = selected_user_item.text()
+        selected_user = hf.get_uid(selected_user_item.text())
         assignment_table_item = self.assets_tree.currentItem()
         assignment_table_item_index = self.assets_tree.currentIndex()
 
@@ -153,32 +155,34 @@ class AssignmentTab(QtWidgets.QWidget):
             return
 
         # Gather assignment data from an asset part cell for comparison
-        assignment_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
+        assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
-        if assignment_data:
-            assignment_data["assignee"] = selected_user
+        if assignment_cell_data:
+            assignment_cell_data["assignee"] = selected_user
 
-            with open(self.assignment_data_path, 'r') as file:
-                data = json.load(file)
-                for assignment in data["assignments"]:
-                    if (assignment["main_type"] == assignment_data["main_type"]
-                        and assignment["asset_name"] == assignment_data["asset_name"]
-                        and assignment["asset_part"] == assignment_data["asset_part"]
-                        and assignment["assignee"] == selected_user):
-                        QtWidgets.QMessageBox.warning(
-                        None, 
-                        "Assignment Error", 
-                        "Assignee already assigned to this asset part."
-                        )
-                        return
+            self.assignment_data = hf.get_assignment_data()
+
+            for assignment in self.assignment_data.values():
+                if (assignment["entity_type"] == assignment_cell_data["entity_type"]
+                    and assignment["asset_name"] == assignment_cell_data["asset_name"]
+                    and assignment["asset_part"] == assignment_cell_data["asset_part"]
+                    and assignment["assignee"] == selected_user):
+                    QtWidgets.QMessageBox.warning(
+                    None, 
+                    "Assignment Error", 
+                    "Assignee already assigned to this asset part."
+                    )
+                    return
                     
-                data["assignments"].append(assignment_data)
+            padded_value = f"{len(self.assignment_data)+1:04d}"
+            self.assignment_data[f"ass{padded_value}"] = assignment_cell_data
+
+            print(self.assignment_data)
 
             with open(self.assignment_data_path, 'w') as file:
-                json.dump(data, file, indent=4)
+                json.dump(self.assignment_data, file, indent=4)
 
-            self.assignment_data = data
-            print(f"Assigned: {assignment_data}")
+            print(f"Assigned: {assignment_cell_data}")
 
             self.show_asset_assignment_table(1)
         else:

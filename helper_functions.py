@@ -30,7 +30,7 @@ def get_assignment_data():
 
     return assignment_data
 
-def get_users():
+def get_users_data():
     config_path = get_code_dir() / "config.json"
 
     with open(str(config_path), 'r') as file:
@@ -40,12 +40,35 @@ def get_users():
     with open(str(users_data_path), 'r') as file:
         users_data = json.load(file)
 
+    return users_data
+
+def get_users():
+    users_data = get_users_data()
+
     users = []
 
     for uid_info in users_data.values():
         users.append(uid_info["name"])
 
     return users
+
+def get_user_name(uid: str):
+    users_data = get_users_data()
+
+    user_name = users_data[uid]["name"]
+
+    return user_name
+
+def get_uid(name: str):
+    users_data = get_users_data()
+
+    for uid, data in users_data.items():
+        if data["name"] == name:
+            return uid
+    
+    raise ValueError("Wrong UID provided")
+
+# ---------------------------FOLDER CREATION ----------------------------
 
 def create_asset_folders(main_folder_path: Path, asset_type: str, asset_name: str):
     asset_path = main_folder_path / "assets" / asset_type / asset_name
