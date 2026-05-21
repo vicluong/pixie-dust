@@ -85,8 +85,4 @@ for folder in root_folder.rglob("*"):
     if folder.is_dir():
         reload_modules(str(folder))
 
-code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust\\core")
-sys.path.append(str(code_dir))
-
-import main
-main.start_up("maya")
+print("All reloads complete!")

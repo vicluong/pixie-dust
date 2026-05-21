@@ -124,9 +124,6 @@ class SaveDialog(QtWidgets.QDialog):
         self.cancel_btn.clicked.connect(self.close)
         self.save_btn.clicked.connect(self.save_file)
 
-    # --------------------------------------------------
-    # LOGIC
-    # --------------------------------------------------
     def toggle_version_spin(self):
         self.version_spin.setEnabled(
             not self.next_version_check.isChecked()
