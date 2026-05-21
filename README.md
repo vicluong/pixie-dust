@@ -32,13 +32,14 @@ What is my purpose in this project?
 - [ ] Investigate how they created files for shots - which file types and how did wip vs. publish look like
 - [ ] Get shots and sequences working for assignment and production
 - [ ] Get versioning complete
-- [ ] Get saving and publishing complete for Maya
+- [ ] Get saving complete for Maya
   - Make sure there are changes to be saved before saving
   - Check that it is either "assets" or "sequences" for the first part then check the folder path vs. the name
     - Use the verify_file method
     - This can be changed when the database is made
+- [ ] Get publishing complete for Maya
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
-- Make things snake_case (or at least figure out when I should have items that are camelCase)
+- [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
 - [ ] Further investigate and find a way to import and export data to master production document
 
 ## Middle Priority
