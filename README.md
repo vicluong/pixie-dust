@@ -30,6 +30,7 @@ What is my purpose in this project?
 - [ ] Finalise .json structure
   - Finish shot schema
 - [ ] Investigate how they created files for shots - which file types and how did wip vs. publish look like
+  - /mnt/ala/mav/2025/jobs/s125/sequences/pst01/pst01_020/departments/light/lighting/source/pst01_020_light_lighting.v010.katana
 - [ ] Get shots and sequences working for assignment and production
 - [ ] Get versioning complete
 - [ ] Get saving complete for Maya

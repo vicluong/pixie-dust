@@ -1,16 +1,17 @@
 {
     "ass0001": {
         "sequence_name": "seq010",
-        "shot_part": "animation",
         "shot_name": "shot0010",
+        "shot_dep": "fx",
+        "task_name": "fxCoinFlip",
         "entity_type": "shot",
         "assignee": "u0003",
         "completed": false
     },
     "ass0002": {
+        "asset_type": "camera",
         "asset_name": "camera01",
         "asset_part": "rig",
-        "asset_type": "camera",
         "entity_type": "asset",
         "assignee": "u0985",
         "completed": false
