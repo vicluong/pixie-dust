@@ -48,14 +48,14 @@ class ProductionTab(QtWidgets.QWidget):
         self.wip_label.setAlignment(QtCore.Qt.AlignCenter) 
         self.wip_list = QtWidgets.QTreeWidget()
         self.wip_list.setHeaderLabels(["Version", "Creator"])
-        item = QtWidgets.QTreeWidgetItem(["v001", "Jim"])
+        item = QtWidgets.QTreeWidgetItem(["v0001", "Jim"])
         self.wip_list.addTopLevelItem(item)
 
         self.publish_label = QtWidgets.QLabel("Published Versions")
         self.publish_label.setAlignment(QtCore.Qt.AlignCenter) 
         self.publish_list = QtWidgets.QTreeWidget()
         self.publish_list.setHeaderLabels(["Version", "Creator"])
-        item = QtWidgets.QTreeWidgetItem(["v001", "Jim"])
+        item = QtWidgets.QTreeWidgetItem(["v0001", "Jim"])
         self.publish_list.addTopLevelItem(item)
 
         self.new_file_btn = QtWidgets.QPushButton("New File")

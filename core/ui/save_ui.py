@@ -12,6 +12,7 @@ except:
 import maya.cmds as cmds
 import maya.OpenMayaUI as omui
 
+import utils.file_folder_utils as ffu
 
 def get_main_window() -> QtWidgets.QWidget:
     main_window_ptr = omui.MQtUtil.mainWindow()
@@ -59,7 +60,7 @@ class SaveDialog(QtWidgets.QDialog):
         self.version_spin = QtWidgets.QSpinBox()
         self.version_spin.setMinimum(1)
         self.version_spin.setValue(1)
-        self.version_spin.setMaximum(999)
+        self.version_spin.setMaximum(9999)
         self.version_spin.setEnabled(False)
         self.next_version_check = QtWidgets.QCheckBox(
             "Use Next Available Version"
@@ -80,7 +81,7 @@ class SaveDialog(QtWidgets.QDialog):
         self.workarea_label = QtWidgets.QLabel("Work Area")
         self.workarea_edit = QtWidgets.QLineEdit()
         self.workarea_edit.setReadOnly(True)
-        self.workarea_edit.setText("C:/template/test/")
+        self.workarea_edit.setText("C:/template/test/wip")
 
         self.save_btn = QtWidgets.QPushButton("Save")
         self.cancel_btn = QtWidgets.QPushButton("Cancel")
@@ -137,14 +138,15 @@ class SaveDialog(QtWidgets.QDialog):
         if "ASCII" in self.filetype_combo.currentText():
             extension = ".ma"
 
-        filename = f"{name}.v{version:03}{extension}"
+        filename = f"{name}_v{version:04}{extension}"
 
-        full_path = Path(self.workarea_edit.text()) / filename
-
-        self.preview_edit.setText(str(full_path))
+        self.preview_edit.setText(filename)
 
     def save_file(self):
         path = self.preview_edit.text()
+
+        ffu.verify_file(Path(cmds.file(q=True, sceneName=True)), "wip", ".mb")
+        # Make this non-reliant on maya
 
         cmds.confirmDialog(
             title="Saved",

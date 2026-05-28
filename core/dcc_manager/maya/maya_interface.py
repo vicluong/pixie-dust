@@ -23,7 +23,7 @@ class MayaInterface(DCCInterface):
         cmds.file(new=True)
         main_folder_path = ffu.get_main_folder_path()
         file_path = str(main_folder_path / "assets" / asset_type / asset_name / asset_part 
-                        / "wip" / f"{asset_name}_{asset_type}_{asset_part}_v000.mb")
+                        / "wip" / f"{asset_name}_{asset_type}_{asset_part}_v0000.mb")
 
         cmds.file(rename=f"{str(file_path)}")
 

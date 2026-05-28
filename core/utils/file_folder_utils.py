@@ -121,3 +121,22 @@ def create_shot_folders(shot_path: Path):
         publishes_path.mkdir()
         wip_path = shot_department_path / "wip"
         wip_path.mkdir()
+
+# ---------------------------FILE SAVING / PUBLISHING----------------------------
+def verify_file(scene_path, action_type, file_type):
+    main_folder_path = get_main_folder_path()
+    relative_path = scene_path.relative_to(main_folder_path)
+    relative_parts = relative_path.parts
+
+    file_name = relative_path.name
+    file_parts = file_name.split("_")
+
+    file_ext = scene_path.suffix
+    file_stem = scene_path.stem.split("_")[-1]
+
+    if relative_parts[0] == "assets":
+        if file_parts[0] == relative_parts[2] and  file_parts[1] == relative_parts[1] and  file_parts[2] == relative_parts[3] and relative_parts[4] == action_type:
+            if file_stem[0] == "v" and len(file_stem[1:]) == 4 and file_stem[1:].isdigit() and file_ext == file_type:
+                print("Success")
+
+    # Find a better name for action_type
