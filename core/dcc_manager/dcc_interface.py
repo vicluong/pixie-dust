@@ -41,6 +41,10 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
+    def open_file(self, file_path: Path) -> str:
+        pass
+
+    @abstractmethod
     def save_file(self, file_path: Path) -> str:
         pass
 

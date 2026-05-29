@@ -29,6 +29,8 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         self.assignment_data = ffu.get_assignment_data()
         self.users = ffu.get_users()
 
+        self.focused_version_item = None
+
         self.create_widgets()
         self.create_layout()
         self.create_connections()
@@ -88,7 +90,17 @@ class ProductionAssetsTab(QtWidgets.QWidget):
     def create_connections(self):
         """Create all connections for the UI"""
         self.assets_tree.itemClicked.connect(self.show_asset_versions)
+        self.wip_list.itemClicked.connect(self.focus_list)
+        self.publish_list.itemClicked.connect(self.focus_list)
         self.new_file_btn.pressed.connect(self.create_new_file)
+        self.open_file_btn.pressed.connect(self.open_file)
+
+    def focus_list(self, list_item_widget):
+        self.wip_list.clearSelection()
+        self.publish_list.clearSelection()
+
+        list_item_widget.treeWidget().setCurrentItem(list_item_widget)
+        self.focused_version_item = list_item_widget
 
     def show_asset_versions(self, tree_item):
         parents = 0
@@ -117,18 +129,20 @@ class ProductionAssetsTab(QtWidgets.QWidget):
                 return
             
             wip_asset_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "wip")
-            wip_asset_versions = [f.stem.rsplit("_", 1)[1] for f in wip_asset_files]
-
-            published_asset_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "publishes")
-            published_asset_versions = [f.stem.rsplit("_", 1)[1] for f in published_asset_files]
-
             self.wip_list.clear()
-            for wip_asset_version in reversed(wip_asset_versions):
-                self.wip_list.addTopLevelItem(QtWidgets.QTreeWidgetItem([wip_asset_version]))
-
+            for wip_asset_file in reversed(wip_asset_files):
+                wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
+                wip_asset_item = QtWidgets.QTreeWidgetItem([wip_asset_version])
+                wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
+                self.wip_list.addTopLevelItem(wip_asset_item)
+                
+            published_asset_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "publishes")
             self.publish_list.clear()
-            for published_asset_version in reversed(published_asset_versions):
-                self.publish_list.addTopLevelItem(QtWidgets.QTreeWidgetItem([published_asset_version]))
+            for published_asset_file in reversed(published_asset_files):
+                published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
+                published_asset_item = QtWidgets.QTreeWidgetItem([published_asset_version])
+                published_asset_item.setData(0, QtCore.Qt.UserRole, published_asset_file)
+                self.publish_list.addTopLevelItem(published_asset_item)
 
     def create_new_file(self):
         asset_part_index = self.assets_tree.currentIndex()
@@ -159,6 +173,10 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             return
         
         self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_part)
+
+    def open_file(self):
+        file_path = self.focused_version_item.data(0, QtCore.Qt.UserRole)
+        self.dcc_interface.open_file(file_path)
 
     def show_production_assets(self):
         tree_model = self.assets_tree.model()

@@ -109,6 +109,9 @@ class MayaInterface(DCCInterface):
 
         return latest_version + 1
 
+    def open_file(self, file_path: Path) -> str:
+        cmds.file(str(file_path), open=True)
+
     def save_file(self, file_path: Path) -> str:
         if cmds.file(q=True, modified=True):
             cmds.file(rename=file_path)
