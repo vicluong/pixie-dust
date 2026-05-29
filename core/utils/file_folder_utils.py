@@ -117,7 +117,12 @@ def create_shot_folders(shot_path: Path):
     for department in departments:
         shot_department_path = shot_departments_path / department
         shot_department_path.mkdir()
-        publishes_path = shot_department_path / "publishes"
-        publishes_path.mkdir()
-        wip_path = shot_department_path / "wip"
-        wip_path.mkdir()
+
+def create_shot_task_folders(shot_task_path: Path):
+    shot_task_path.mkdir()
+
+    publishes_path = shot_task_path / "publishes"
+    publishes_path.mkdir()
+    
+    wip_path = shot_task_path / "wip"
+    wip_path.mkdir()

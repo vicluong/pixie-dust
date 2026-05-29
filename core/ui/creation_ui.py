@@ -42,9 +42,14 @@ class CreationTab(QtWidgets.QWidget):
         self.create_sequence_btn = QtWidgets.QPushButton("Create Sequence")
 
             # Shot
-        self.create_shot_dropdown = QtWidgets.QComboBox()
         self.create_shot_le = QtWidgets.QLineEdit()
+        self.create_shot_label = QtWidgets.QLabel("Select a sequence")
         self.create_shot_btn = QtWidgets.QPushButton("Create Shot")
+
+            # Shot Task
+        self.create_shot_task_le = QtWidgets.QLineEdit()
+        self.create_shot_task_label = QtWidgets.QLabel("Select a shot department")
+        self.create_shot_task_btn = QtWidgets.QPushButton("Create Shot Task")
 
         self.creation_tree = QtWidgets.QTableWidget()
         self.creation_tree = QtWidgets.QTreeWidget()
@@ -103,7 +108,7 @@ class CreationTab(QtWidgets.QWidget):
         creation_shot_layout = QtWidgets.QVBoxLayout()
 
         creation_shot_form_layout = QtWidgets.QFormLayout()
-        creation_shot_form_layout.addRow("Sequence:", self.create_shot_dropdown)
+        creation_shot_form_layout.addWidget(self.create_shot_label)
         creation_shot_form_layout.addRow("Shot Name:", self.create_shot_le)
 
         creation_shot_layout.addLayout(creation_shot_form_layout)
@@ -111,9 +116,23 @@ class CreationTab(QtWidgets.QWidget):
 
         creation_shot_group.setLayout(creation_shot_layout)
 
+            # Shot Task Layout
+        creation_shot_task_group = QtWidgets.QGroupBox("Shot Task")
+        creation_shot_task_layout = QtWidgets.QVBoxLayout()
+
+        creation_shot_task_form_layout = QtWidgets.QFormLayout()
+        creation_shot_task_form_layout.addWidget(self.create_shot_task_label)
+        creation_shot_task_form_layout.addRow("Shot Task Name:", self.create_shot_task_le)
+
+        creation_shot_task_layout.addLayout(creation_shot_task_form_layout)
+        creation_shot_task_layout.addWidget(self.create_shot_task_btn)
+
+        creation_shot_task_group.setLayout(creation_shot_task_layout)
+
             # Add Groups
         self.creation_shot_sequence_layout.addWidget(creation_sequence_group)
         self.creation_shot_sequence_layout.addWidget(creation_shot_group)
+        self.creation_shot_sequence_layout.addWidget(creation_shot_task_group)
         self.creation_shot_sequence_layout.addStretch()
 
         creation_menu_layout.addWidget(self.creation_shot_sequence_widget)
@@ -124,6 +143,7 @@ class CreationTab(QtWidgets.QWidget):
         self.create_asset_btn.pressed.connect(self.create_asset)
         self.create_sequence_btn.pressed.connect(self.create_sequence)
         self.create_shot_btn.pressed.connect(self.create_shot)
+        self.create_shot_task_btn.pressed.connect(self.create_shot_task)
 
     def switch_creation_type(self, *_):
         creation_type = self.creation_type_dropdown.currentText()
@@ -142,6 +162,7 @@ class CreationTab(QtWidgets.QWidget):
     def show_creation_asset_widgets(self):
         tree_model = self.creation_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
+        self.creation_tree.headerItem().setText(0, "Assets")
 
         self.assignment_data = ffu.get_assignment_data()
 
@@ -169,16 +190,12 @@ class CreationTab(QtWidgets.QWidget):
     def show_creation_shot_sequence_widgets(self):
         tree_model = self.creation_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
+        self.creation_tree.headerItem().setText(0, "Shot Tasks")
 
         self.assignment_data = ffu.get_assignment_data()
 
         sequences_path = self.main_folder_path / "sequences"
         sequences = [x for x in sequences_path.iterdir() if x.is_dir()]
-
-        current_sequence = self.create_shot_dropdown.currentText()
-        self.create_shot_dropdown.clear()
-        self.create_shot_dropdown.addItems([x.name for x in sequences])
-        self.create_shot_dropdown.setCurrentText(current_sequence)
 
         top_level_items = []
 
@@ -195,9 +212,25 @@ class CreationTab(QtWidgets.QWidget):
                 shot_item.setText(0, shot.name)
                 sequence_item.addChild(shot_item)
 
+                department_path = shot / "departments"
+
+                departments = [x for x in department_path.iterdir() if x.is_dir()]
+
+                for department in departments:
+                    department_item = QtWidgets.QTreeWidgetItem()
+                    department_item.setText(0, department.name)
+                    shot_item.addChild(department_item)
+
+                    tasks = [x for x in department.iterdir() if x.is_dir()]
+
+                    for task in tasks:
+                        task_item = QtWidgets.QTreeWidgetItem()
+                        task_item.setText(0, task.name)
+                        department_item.addChild(task_item)
 
         self.creation_tree.addTopLevelItems(top_level_items)
         self.creation_tree.expandAll()
+        self.creation_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 
     def create_asset(self):
         asset_type = self.create_asset_dropdown.currentText()
@@ -266,43 +299,98 @@ class CreationTab(QtWidgets.QWidget):
         self.show_creation_shot_sequence_widgets()
 
     def create_shot(self):
-        sequence_name = self.create_shot_dropdown.currentText()
-        shot_name = self.create_shot_le.text()
-        shot_path = self.main_folder_path / "sequences" / sequence_name / shot_name
+        selected_item = self.creation_tree.currentItem()
 
-        if not sequence_name:
+        if not selected_item.parent():
+            sequence_name = selected_item.text(0)
+            shot_name = self.create_shot_le.text()
+            shot_path = self.main_folder_path / "sequences" / sequence_name / shot_name
+
+            if not shot_name:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"Please input a name for the shot."
+                )
+                return
+
+            try:
+                ffu.create_shot_folders(shot_path)
+                QtWidgets.QMessageBox.information(
+                    None, 
+                    "Creation Succeeded", 
+                    f"Shot {shot_name} has been created."
+                )
+            except FileNotFoundError as e:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"{e}"
+                )
+            except FileExistsError as e:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"There is already a shot called {shot_name}."
+                )
+        else:
             QtWidgets.QMessageBox.warning(
                 None, 
-                "File Error", 
-                f"Make sure a sequence exists first."
+                "Selection Error", 
+                f"Select a sequence."
+            )
+
+        self.show_creation_shot_sequence_widgets()
+
+    def create_shot_task(self):
+        selected_item = self.creation_tree.currentItem()
+
+        count = 0
+        item_iter = selected_item
+        while item_iter.parent():
+            count += 1
+            item_iter = item_iter.parent()
+
+        if count == 2:
+            shot_task_name = self.create_shot_task_le.text()
+            dep_name = selected_item.text(0)
+            shot_name = selected_item.parent().text(0)
+            sequence_name = selected_item.parent().parent().text(0)
+            shot_task_path = self.main_folder_path / "sequences" / sequence_name / shot_name / "departments" / dep_name / shot_task_name
+
+            if not shot_task_name:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"Please input a name for the shot task."
+                )
+                return
+
+            try:
+                ffu.create_shot_task_folders(shot_task_path)
+                QtWidgets.QMessageBox.information(
+                    None, 
+                    "Creation Succeeded", 
+                    f"Shot task {shot_task_name} has been created."
+                )
+            except FileNotFoundError as e:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"{e}"
+                )
+            except FileExistsError as e:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"There is already a shot task called {shot_task_name}."
+                )
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Assignment Error", 
+                "Select a department of a shot."
             )
             return
 
-        if not shot_name:
-            QtWidgets.QMessageBox.warning(
-                None, 
-                "File Error", 
-                f"Please input a name for the shot."
-            )
-            return
-
-        try:
-            ffu.create_shot_folders(shot_path)
-            QtWidgets.QMessageBox.information(
-                None, 
-                "Creation Succeeded", 
-                f"Shot {shot_name} has been created."
-            )
-        except FileNotFoundError as e:
-            QtWidgets.QMessageBox.warning(
-                None, 
-                "File Error", 
-                f"{e}"
-            )
-        except FileExistsError as e:
-            QtWidgets.QMessageBox.warning(
-                None, 
-                "File Error", 
-                f"There is already a shot called {shot_name}."
-            )
         self.show_creation_shot_sequence_widgets()
