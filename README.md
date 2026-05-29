@@ -39,6 +39,7 @@ What is my purpose in this project?
 
 ## Specific Priority
 
+- [ ] Needs to be properly renamed to the original/published mb file once complete & USD naming needs to be fixed
 - [ ] Decide if I should use just ".ma" files
 - [ ] Clean up unused imports and variables
 - [ ] Remove "**main**" and "**name**"
