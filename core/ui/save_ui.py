@@ -15,11 +15,6 @@ import maya.OpenMayaUI as omui
 from dcc_manager.dcc_interface import DCCInterface
 
 
-def get_main_window() -> QtWidgets.QWidget:
-    main_window_ptr = omui.MQtUtil.mainWindow()
-    return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
-
-
 class SaveDialog(QtWidgets.QDialog):
     dlg_instance = None
 
@@ -35,7 +30,7 @@ class SaveDialog(QtWidgets.QDialog):
             cls.dlg_instance.activateWindow()
 
     def __init__(self, dcc_interface: DCCInterface):
-        super(SaveDialog, self).__init__(get_main_window())
+        super(SaveDialog, self).__init__()
 
         self.setWindowTitle("File Save")
 
