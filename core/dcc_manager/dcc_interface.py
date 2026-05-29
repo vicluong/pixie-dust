@@ -53,5 +53,5 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def publish_file(self, file_path: Path) -> bool:
+    def publish_file(self, publishes_folder: Path, extension: str) -> bool:
         pass

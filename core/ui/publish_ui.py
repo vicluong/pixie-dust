@@ -68,18 +68,17 @@ class PublishDialog(QtWidgets.QDialog):
         self.export_checkboxes = {}
 
         self.file_types = {
-            ".ma": "Maya ASCII Scene",
             ".mb": "Maya Binary Scene",
-            ".fbx": "FBX Exchange Format",
-            ".abc": "Alembic Cache",
-            ".obj": "Wavefront OBJ Geometry",
             ".usd": "Universal Scene Description",
+            ".fbx": "FBX Exchange Format",
+            # ".abc": "Alembic Cache",
+            ".obj": "OBJ Geometry",
         }
 
         for ext, description in self.file_types.items():
             checkbox = QtWidgets.QCheckBox(f"{ext} — {description}")
-
             checkbox.setMinimumHeight(24)
+            checkbox.setChecked(True)
 
             self.export_layout.addWidget(checkbox)
             self.export_checkboxes[ext] = checkbox
@@ -139,12 +138,13 @@ class PublishDialog(QtWidgets.QDialog):
         if self.dcc_interface.verify_file():
             failed_exports = []
 
+            publishes_folder = self.dcc_interface.get_scene_folder().parent / "publishes"
             for ext in selected_types:
                 try:
                     print(f"Publishing file extension: {ext}")
-                    success = self.dcc_interface.publish_file(ext)
+                    publish_success = self.dcc_interface.publish_file(publishes_folder, ext)
 
-                    if not success:
+                    if not publish_success:
                         failed_exports.append(ext)
 
                 except Exception as error:
@@ -155,8 +155,7 @@ class PublishDialog(QtWidgets.QDialog):
                 QtWidgets.QMessageBox.warning(
                     self,
                     "Publish Complete",
-                    "Some exports failed:\n\n"
-                    + "\n".join(failed_exports)
+                    "Some exports failed:\n" + "\n".join(failed_exports)
                 )
             else:
                 cmds.confirmDialog(
