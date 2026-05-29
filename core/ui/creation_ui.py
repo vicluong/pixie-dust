@@ -8,6 +8,8 @@ except:
     from PySide2 import QtWidgets
 
 import utils.file_folder_utils as ffu
+from ui.asset_tree_ui import AssetTreeWidget
+from ui.shot_task_tree_ui import ShotTaskTreeWidget
 
 
 class CreationTab(QtWidgets.QWidget):
@@ -51,9 +53,9 @@ class CreationTab(QtWidgets.QWidget):
         self.create_shot_task_label = QtWidgets.QLabel("Select a shot department")
         self.create_shot_task_btn = QtWidgets.QPushButton("Create Shot Task")
 
-        self.creation_tree = QtWidgets.QTableWidget()
-        self.creation_tree = QtWidgets.QTreeWidget()
-        self.creation_tree.setHeaderLabels(["Assets"])
+        self.asset_tree = AssetTreeWidget(extra_info=False)
+        self.shot_tree = ShotTaskTreeWidget(extra_info=False)
+        self.shot_tree.setVisible(False)
 
     def create_layout(self):
         # Tab 1: Creation
@@ -62,7 +64,8 @@ class CreationTab(QtWidgets.QWidget):
         creation_menu_layout = QtWidgets.QVBoxLayout()
 
         creation_tree_layout = QtWidgets.QVBoxLayout()
-        creation_tree_layout.addWidget(self.creation_tree)
+        creation_tree_layout.addWidget(self.asset_tree)
+        creation_tree_layout.addWidget(self.shot_tree)
 
         creation_layout.addLayout(creation_menu_layout)
         creation_layout.addLayout(creation_tree_layout)
@@ -139,13 +142,13 @@ class CreationTab(QtWidgets.QWidget):
 
     def create_connections(self):
         """Create all connections for the UI"""
-        self.creation_type_dropdown.currentTextChanged.connect(self.switch_creation_type)
+        self.creation_type_dropdown.currentTextChanged.connect(self.show_creation_type)
         self.create_asset_btn.pressed.connect(self.create_asset)
         self.create_sequence_btn.pressed.connect(self.create_sequence)
         self.create_shot_btn.pressed.connect(self.create_shot)
         self.create_shot_task_btn.pressed.connect(self.create_shot_task)
 
-    def switch_creation_type(self, *_):
+    def show_creation_type(self):
         creation_type = self.creation_type_dropdown.currentText()
 
         # self.creation_tree.verticalHeader().setVisible(False)
@@ -154,83 +157,14 @@ class CreationTab(QtWidgets.QWidget):
 
         if creation_type == "Asset":
             self.creation_asset_widget.setVisible(True)
-            self.show_creation_asset_widgets()
+            self.asset_tree.setVisible(True)
+            self.shot_tree.setVisible(False)
+            self.asset_tree.generate_tree()
         elif creation_type == "Sequence/Shot":
             self.creation_shot_sequence_widget.setVisible(True)
-            self.show_creation_shot_sequence_widgets()  
-
-    def show_creation_asset_widgets(self):
-        tree_model = self.creation_tree.model()
-        tree_model.removeRows(0, tree_model.rowCount())
-        self.creation_tree.headerItem().setText(0, "Assets")
-
-        self.assignment_data = ffu.get_assignment_data()
-
-        assets_path = self.main_folder_path / "assets"
-        assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
-
-        top_level_items = []
-
-        for assets_type in assets_types:
-            asset_type_item = QtWidgets.QTreeWidgetItem()
-            asset_type_item.setText(0, assets_type.name)
-
-            top_level_items.append(asset_type_item)
-
-            assets = [x for x in assets_type.iterdir() if x.is_dir()]
-
-            for asset in assets:
-                asset_name_item = QtWidgets.QTreeWidgetItem()
-                asset_name_item.setText(0, asset.name)
-                asset_type_item.addChild(asset_name_item)
-
-        self.creation_tree.addTopLevelItems(top_level_items)
-        self.creation_tree.expandAll()
-
-    def show_creation_shot_sequence_widgets(self):
-        tree_model = self.creation_tree.model()
-        tree_model.removeRows(0, tree_model.rowCount())
-        self.creation_tree.headerItem().setText(0, "Shot Tasks")
-
-        self.assignment_data = ffu.get_assignment_data()
-
-        sequences_path = self.main_folder_path / "sequences"
-        sequences = [x for x in sequences_path.iterdir() if x.is_dir()]
-
-        top_level_items = []
-
-        for sequence in sequences:
-            sequence_item = QtWidgets.QTreeWidgetItem()
-            sequence_item.setText(0, sequence.name)
-
-            top_level_items.append(sequence_item)
-
-            shots = [x for x in sequence.iterdir() if x.is_dir()]
-
-            for shot in shots:
-                shot_item = QtWidgets.QTreeWidgetItem()
-                shot_item.setText(0, shot.name)
-                sequence_item.addChild(shot_item)
-
-                department_path = shot / "departments"
-
-                departments = [x for x in department_path.iterdir() if x.is_dir()]
-
-                for department in departments:
-                    department_item = QtWidgets.QTreeWidgetItem()
-                    department_item.setText(0, department.name)
-                    shot_item.addChild(department_item)
-
-                    tasks = [x for x in department.iterdir() if x.is_dir()]
-
-                    for task in tasks:
-                        task_item = QtWidgets.QTreeWidgetItem()
-                        task_item.setText(0, task.name)
-                        department_item.addChild(task_item)
-
-        self.creation_tree.addTopLevelItems(top_level_items)
-        self.creation_tree.expandAll()
-        self.creation_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+            self.asset_tree.setVisible(False)
+            self.shot_tree.setVisible(True)
+            self.shot_tree.generate_tree()
 
     def create_asset(self):
         asset_type = self.create_asset_dropdown.currentText()
@@ -263,7 +197,7 @@ class CreationTab(QtWidgets.QWidget):
                 "File Error", 
                 f"There is already an asset type of {asset_type} called {asset_name}."
             )
-        self.show_creation_asset_widgets()
+        self.show_creation_type()
 
     def create_sequence(self):
         sequence_name = self.create_sequence_le.text()
@@ -296,10 +230,10 @@ class CreationTab(QtWidgets.QWidget):
                 "File Error", 
                 f"There is already a sequence called {sequence_name}."
             )
-        self.show_creation_shot_sequence_widgets()
+        self.show_creation_type()
 
     def create_shot(self):
-        selected_item = self.creation_tree.currentItem()
+        selected_item = self.shot_tree.currentItem()
 
         if not selected_item.parent():
             sequence_name = selected_item.text(0)
@@ -340,10 +274,10 @@ class CreationTab(QtWidgets.QWidget):
                 f"Select a sequence."
             )
 
-        self.show_creation_shot_sequence_widgets()
+        self.show_creation_type()
 
     def create_shot_task(self):
-        selected_item = self.creation_tree.currentItem()
+        selected_item = self.shot_tree.currentItem()
 
         count = 0
         item_iter = selected_item
@@ -393,4 +327,4 @@ class CreationTab(QtWidgets.QWidget):
             )
             return
 
-        self.show_creation_shot_sequence_widgets()
+        self.show_creation_type()

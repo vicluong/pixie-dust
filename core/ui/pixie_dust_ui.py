@@ -65,7 +65,7 @@ class PixieDustDialog(QtWidgets.QDialog):
         self.create_layout()
         self.create_connections()
 
-        self.creation_tab.switch_creation_type(0)
+        self.creation_tab.show_creation_type()
         self.assignment_tab.show_asset_assignment_table(1)
         self.production_tab.show_tasks_table()
 
@@ -122,7 +122,7 @@ class PixieDustDialog(QtWidgets.QDialog):
 
     def create_connections(self):
         """Create all connections for the UI"""
-        self.main_tab_widget.tabBarClicked.connect(self.creation_tab.switch_creation_type)
+        self.main_tab_widget.tabBarClicked.connect(self.creation_tab.show_creation_type)
         self.main_tab_widget.tabBarClicked.connect(self.assignment_tab.show_asset_assignment_table)
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ except:
 
 import utils.file_folder_utils as ffu
 from dcc_manager.dcc_interface import DCCInterface
+from ui.asset_tree_ui import AssetTreeWidget
 
 
 class ProductionAssetsTab(QtWidgets.QWidget):
@@ -42,9 +43,8 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         self.current_user_dropdown.addItems([x for x in self.users])
 
             # Assets Tab
-        self.assets_tree = QtWidgets.QTreeWidget()
-        self.assets_tree.setHeaderLabels(["Assets"])
-        self.show_production_assets()
+        self.assets_tree = AssetTreeWidget(extra_info=False)
+        self.assets_tree.generate_tree()
 
         self.wip_label = QtWidgets.QLabel("WIP Versions")
         self.wip_label.setAlignment(QtCore.Qt.AlignCenter) 
@@ -177,51 +177,6 @@ class ProductionAssetsTab(QtWidgets.QWidget):
     def open_file(self):
         file_path = self.focused_version_item.data(0, QtCore.Qt.UserRole)
         self.dcc_interface.open_file(file_path)
-
-    def show_production_assets(self):
-        tree_model = self.assets_tree.model()
-        tree_model.removeRows(0, tree_model.rowCount())
-
-        self.assignment_data = ffu.get_assignment_data()
-
-        assets_path = self.main_folder_path / "assets"
-        assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
-
-        top_level_items = []
-
-        for assets_type in assets_types:
-            asset_type_item = QtWidgets.QTreeWidgetItem()
-            asset_type_item.setText(0, assets_type.name)
-
-            top_level_items.append(asset_type_item)
-
-            assets = [x for x in assets_type.iterdir() if x.is_dir()]
-
-            for asset in assets:
-                asset_name_item = QtWidgets.QTreeWidgetItem()
-                asset_name_item.setText(0, asset.name)
-                asset_type_item.addChild(asset_name_item)
-
-                asset_parts = [x for x in asset.iterdir() if x.is_dir()]
-
-                for asset_part in asset_parts:
-                    asset_part_item = QtWidgets.QTreeWidgetItem()
-                    asset_part_item.setText(0, asset_part.name)
-                    asset_name_item.addChild(asset_part_item)
-
-                    assignments = self.assignment_data
-                    # assignees = []
-                    for assignment in assignments.values():
-                        if (assignment["entity_type"] == "asset" 
-                            and assignment["asset_type"] == assets_type.name
-                            and assignment["asset_name"] == asset.name
-                            and assignment["asset_part"] == asset_part.name 
-                            ):
-                            # assignees.append(assignment["assignee"])
-                            print(assignment)
-
-        self.assets_tree.addTopLevelItems(top_level_items)
-        self.assets_tree.expandAll()
 
     def create_new_asset_file(self):
         asset_part_index = self.assets_tree.currentIndex()
