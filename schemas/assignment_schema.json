@@ -5,7 +5,7 @@
         "shot_dep": "fx",
         "task_name": "fxCoinFlip",
         "entity_type": "shot",
-        "assignee": "u0003",
+        "assignees": ["u0003"],
         "completed": false
     },
     "ass0002": {
@@ -13,7 +13,7 @@
         "asset_name": "camera01",
         "asset_part": "rig",
         "entity_type": "asset",
-        "assignee": "u0985",
+        "assignees": ["u0985"],
         "completed": false
     }
 }

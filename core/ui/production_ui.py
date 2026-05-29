@@ -74,7 +74,7 @@ class ProductionTab(QtWidgets.QWidget):
 
         for assignment in self.assignment_data.values():
             current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
-            if assignment["assignee"] == current_assignee_uid: 
+            if current_assignee_uid in assignment["assignees"]: 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 
         card_data.sort()
