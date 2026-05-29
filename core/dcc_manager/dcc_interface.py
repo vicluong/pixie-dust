@@ -13,7 +13,11 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, parent_folder: str) -> list[str]:
+    def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, parent_folder: str) -> list[Path]:
+        pass
+
+    @abstractmethod
+    def get_shot_task_files(self, sequence: str, shot: str, department: str, task: str, parent_folder: str) -> list[Path]:
         pass
 
     @abstractmethod
@@ -41,11 +45,11 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def open_file(self, file_path: Path) -> str:
+    def open_file(self, file_path: Path) -> None:
         pass
 
     @abstractmethod
-    def save_file(self, file_path: Path) -> str:
+    def save_file(self, file_path: Path) -> bool:
         pass
 
     @abstractmethod

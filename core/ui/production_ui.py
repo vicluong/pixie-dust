@@ -12,6 +12,7 @@ except:
 import utils.file_folder_utils as ffu
 from dcc_manager.dcc_interface import DCCInterface
 from ui.production_assets_ui import ProductionAssetsTab
+from ui.production_shot_tasks_ui import ProductionShotTasksTab
 
 class ProductionTab(QtWidgets.QWidget):
     def __init__(self, dcc_interface: DCCInterface):
@@ -54,7 +55,7 @@ class ProductionTab(QtWidgets.QWidget):
         production_main_tab = QtWidgets.QTabWidget()
         production_tasks_tab = QtWidgets.QWidget()
         production_assets_tab = ProductionAssetsTab(self.dcc_interface)
-        production_shots_tab = QtWidgets.QWidget()
+        production_shots_tab = ProductionShotTasksTab(self.dcc_interface)
         production_main_tab.addTab(production_tasks_tab, "My Tasks")
         production_main_tab.addTab(production_assets_tab, "Assets")
         production_main_tab.addTab(production_shots_tab, "Shots / Sequences")

@@ -150,22 +150,22 @@ class SaveDialog(QtWidgets.QDialog):
         path = self.scene_folder / self.preview_edit.text()
 
         if self.dcc_interface.verify_file("wip"):
-            self.dcc_interface.save_file(path)
+            if self.dcc_interface.save_file(path):
+                cmds.confirmDialog(
+                    title="Saved",
+                    message=f"Saved:\n{path}",
+                    button=["OK"]
+                )
 
-            cmds.confirmDialog(
-                title="Saved",
-                message=f"Saved:\n{path}",
-                button=["OK"]
-            )
-
-            self.close()
+                self.close()
         else:
             QtWidgets.QMessageBox.warning(
                 self,
                 "Save Error",
                 "Current file failed verification."
             )
-            return
+
+            self.close()
 
 
 if __name__ == "__main__":
