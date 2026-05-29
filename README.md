@@ -24,26 +24,25 @@ What is my purpose in this project?
 - [x] Find a way to show what is assigned to a user
 - [x] Finalise how data will be passed between software and what software is being used
   - Is it similar to how ALA does it?
-
-## Specific Priority
-
-- [ ] Change save_ui.py to utilise dcc_interface.py - no use of maya in the save_ui.py
-- [ ] Decide if I should use just ".ma" files
-- [ ] Consider changing "wip" to "saves"
-
-## Top Priority
-
-- [ ] Finalise .json structure
+- [x] Finalise .json structure
   - Finish shot schema
-- [ ] Investigate how they created files for shots - which file types and how did wip vs. publish look like
+- [x] Investigate how they created files for shots - which file types and how did wip vs. publish look like
   - /mnt/ala/mav/2025/jobs/s125/sequences/pst01/pst01_020/departments/light/lighting/source/pst01_020_light_lighting.v010.katana
-- [ ] Get shots and sequences working for assignment and production
-- [ ] Get versioning complete
-- [ ] Get saving complete for Maya
+  - Separate folders for separate file types
+- [x] Get shots and sequences working for assignment
+- [x] Get saving complete for Maya
   - Make sure there are changes to be saved before saving
   - Check that it is either "assets" or "sequences" for the first part then check the folder path vs. the name
     - Use the verify_file method
     - This can be changed when the database is made
+
+## Specific Priority
+
+- [ ] Decide if I should use just ".ma" files
+
+## Top Priority
+
+- [ ] Get shots and sequences working for production
 - [ ] Get publishing complete for Maya
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
