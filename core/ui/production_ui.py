@@ -11,7 +11,7 @@ except:
 
 import utils.file_folder_utils as ffu
 from dcc_manager.dcc_interface import DCCInterface
-
+from ui.production_assets_ui import ProductionAssetsTab
 
 class ProductionTab(QtWidgets.QWidget):
     def __init__(self, dcc_interface: DCCInterface):
@@ -39,28 +39,6 @@ class ProductionTab(QtWidgets.QWidget):
         self.current_user_dropdown = QtWidgets.QComboBox()
         self.current_user_dropdown.addItems([x for x in self.users])
 
-            # Assets Tab
-        self.assets_tree = QtWidgets.QTreeWidget()
-        self.assets_tree.setHeaderLabels(["Assets"])
-        self.show_production_assets()
-
-        self.wip_label = QtWidgets.QLabel("WIP Versions")
-        self.wip_label.setAlignment(QtCore.Qt.AlignCenter) 
-        self.wip_list = QtWidgets.QTreeWidget()
-        self.wip_list.setHeaderLabels(["Version", "Creator"])
-        item = QtWidgets.QTreeWidgetItem(["v0001", "Jim"])
-        self.wip_list.addTopLevelItem(item)
-
-        self.publish_label = QtWidgets.QLabel("Published Versions")
-        self.publish_label.setAlignment(QtCore.Qt.AlignCenter) 
-        self.publish_list = QtWidgets.QTreeWidget()
-        self.publish_list.setHeaderLabels(["Version", "Creator"])
-        item = QtWidgets.QTreeWidgetItem(["v0001", "Jim"])
-        self.publish_list.addTopLevelItem(item)
-
-        self.new_file_btn = QtWidgets.QPushButton("New File")
-        self.open_file_btn = QtWidgets.QPushButton("Open File")
-
             # Bottom File Buttons
         self.get_tasks_btn = QtWidgets.QPushButton("Get Tasks")
 
@@ -75,7 +53,7 @@ class ProductionTab(QtWidgets.QWidget):
 
         production_main_tab = QtWidgets.QTabWidget()
         production_tasks_tab = QtWidgets.QWidget()
-        production_assets_tab = QtWidgets.QWidget()
+        production_assets_tab = ProductionAssetsTab(self.dcc_interface)
         production_shots_tab = QtWidgets.QWidget()
         production_main_tab.addTab(production_tasks_tab, "My Tasks")
         production_main_tab.addTab(production_assets_tab, "Assets")
@@ -84,30 +62,10 @@ class ProductionTab(QtWidgets.QWidget):
 
         self.production_tasks_layout = QtWidgets.QHBoxLayout(production_tasks_tab)
 
-        assets_layout = QtWidgets.QVBoxLayout(production_assets_tab)
-        assets_info_layout = QtWidgets.QHBoxLayout()
-        assets_info_layout.addWidget(self.assets_tree)
-        assets_wip_layout = QtWidgets.QVBoxLayout(production_assets_tab)
-        assets_wip_layout.addWidget(self.wip_label)
-        assets_wip_layout.addWidget(self.wip_list)
-        assets_info_layout.addLayout(assets_wip_layout)
-        assets_publish_layout = QtWidgets.QVBoxLayout(production_assets_tab)
-        assets_publish_layout.addWidget(self.publish_label)
-        assets_publish_layout.addWidget(self.publish_list)
-        assets_info_layout.addLayout(assets_publish_layout)
-        assets_layout.addLayout(assets_info_layout)
-
-        file_creation_layout = QtWidgets.QHBoxLayout()
-        # file_creation_layout.addWidget(self.get_tasks_btn)
-        file_creation_layout.addWidget(self.new_file_btn)
-        file_creation_layout.addWidget(self.open_file_btn)
-        assets_layout.addLayout(file_creation_layout)
-
     def create_connections(self):
         """Create all connections for the UI"""
         # self.get_tasks_btn.pressed.connect(self.show_tasks_table)
         self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_table)
-        self.new_file_btn.pressed.connect(self.create_new_file)
 
     def show_tasks_table(self):
         self.clear_layout(self.production_tasks_layout)
@@ -142,80 +100,6 @@ class ProductionTab(QtWidgets.QWidget):
 
             elif child_layout is not None:
                 self.clear_layout(child_layout)
-
-    def show_production_assets(self):
-        tree_model = self.assets_tree.model()
-        tree_model.removeRows(0, tree_model.rowCount())
-
-        self.assignment_data = ffu.get_assignment_data()
-
-        assets_path = self.main_folder_path / "assets"
-        assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
-
-        top_level_items = []
-
-        for assets_type in assets_types:
-            asset_type_item = QtWidgets.QTreeWidgetItem()
-            asset_type_item.setText(0, assets_type.name)
-
-            top_level_items.append(asset_type_item)
-
-            assets = [x for x in assets_type.iterdir() if x.is_dir()]
-
-            for asset in assets:
-                asset_name_item = QtWidgets.QTreeWidgetItem()
-                asset_name_item.setText(0, asset.name)
-                asset_type_item.addChild(asset_name_item)
-
-                asset_parts = [x for x in asset.iterdir() if x.is_dir()]
-
-                for asset_part in asset_parts:
-                    asset_part_item = QtWidgets.QTreeWidgetItem()
-                    asset_part_item.setText(0, asset_part.name)
-                    asset_name_item.addChild(asset_part_item)
-
-                    assignments = self.assignment_data
-                    assignees = []
-                    for assignment in assignments.values():
-                        if (assignment["entity_type"] == "asset" 
-                            and assignment["asset_type"] == assets_type.name
-                            and assignment["asset_name"] == asset.name
-                            and assignment["asset_part"] == asset_part.name 
-                            ):
-                            assignees.append(assignment["assignee"])
-
-        self.assets_tree.addTopLevelItems(top_level_items)
-        self.assets_tree.expandAll()
-
-    def create_new_file(self):
-        asset_part_index = self.assets_tree.currentIndex()
-        asset_part = asset_part_index.data()
-
-        asset_name_index = asset_part_index.parent()
-        if asset_name_index.isValid():
-            asset_name = asset_name_index.data() # Returns the text of the parent
-            print(f"Asset Name: {asset_name}")
-        else:
-            QtWidgets.QMessageBox.warning(
-                self,
-                "Wrong Selection",
-                "Please select an asset part to create a new file for."
-            )
-            return
-
-        asset_type_index = asset_name_index.parent()
-        if asset_type_index.isValid():
-            asset_type = asset_type_index.data() # Returns the text of the parent
-            print(f"Asset Type: {asset_type}")
-        else:
-            QtWidgets.QMessageBox.warning(
-                self,
-                "Wrong Selection",
-                "Please select an asset part to create a new file for."
-            )
-            return
-        
-        self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_part)
 
 class Card(QtWidgets.QFrame):
     def __init__(self, title, content):

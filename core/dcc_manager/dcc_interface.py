@@ -13,7 +13,11 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def create_new_asset_file(self) -> str:
+    def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, parent_folder: str) -> list[str]:
+        pass
+
+    @abstractmethod
+    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
         pass
 
     @abstractmethod

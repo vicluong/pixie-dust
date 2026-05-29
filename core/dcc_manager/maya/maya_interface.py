@@ -19,6 +19,24 @@ class MayaInterface(DCCInterface):
         main_window_ptr = omui.MQtUtil.mainWindow()
         return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
+    def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, parent_folder: str) -> list[str]:
+        main_folder_path = ffu.get_main_folder_path()
+        folder = Path(main_folder_path) / "assets" / asset_type / asset_name / asset_part / parent_folder
+
+        pattern = re.compile(r"_v(\d{4})\.mb$")
+
+        versions = []
+
+        for file in folder.iterdir():
+            match = pattern.search(file.name)
+            if match:
+                versions.append((int(match.group(1)), file))
+
+        versions.sort(key=lambda x: x[0])
+        sorted_files = [f for _, f in versions]
+
+        return sorted_files
+
     def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
         cmds.file(new=True)
         main_folder_path = ffu.get_main_folder_path()
