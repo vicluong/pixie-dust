@@ -45,6 +45,7 @@ class SaveDialog(QtWidgets.QDialog):
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
         self.scene_folder = self.dcc_interface.get_scene_folder()
+        self.file_extensions = self.dcc_interface.get_file_extensions()
 
         self.create_widgets()
         self.create_layout()
@@ -70,10 +71,9 @@ class SaveDialog(QtWidgets.QDialog):
         )
         self.next_version_check.setChecked(True)
 
-        self.file_type_label = QtWidgets.QLabel("File Type")
-        self.file_type_combo = QtWidgets.QComboBox()
-        file_extensions = self.dcc_interface.get_file_extensions()
-        self.file_type_combo.addItems(file_extensions)
+        # self.file_type_label = QtWidgets.QLabel("File Type")
+        # self.file_type_combo = QtWidgets.QComboBox()
+        # self.file_type_combo.addItems(self.file_extensions)
 
         self.preview_label = QtWidgets.QLabel("File Preview")
         self.preview_edit = QtWidgets.QLineEdit()
@@ -102,7 +102,7 @@ class SaveDialog(QtWidgets.QDialog):
 
         form_layout.addRow(self.version_label, version_row)
 
-        form_layout.addRow(self.file_type_label, self.file_type_combo)
+        # form_layout.addRow(self.file_type_label, self.file_type_combo)
         form_layout.addRow(self.preview_label, self.preview_edit)
         form_layout.addRow(self.workarea_label, self.workarea_edit)
 
@@ -119,7 +119,7 @@ class SaveDialog(QtWidgets.QDialog):
     def create_connections(self):
         self.name_edit.textChanged.connect(self.update_filename_preview)
         self.version_spin.valueChanged.connect(self.update_filename_preview)
-        self.file_type_combo.currentIndexChanged.connect(self.update_filename_preview)
+        # self.file_type_combo.currentIndexChanged.connect(self.update_filename_preview)
 
         self.next_version_check.toggled.connect(self.toggle_next_version_spin)
 
@@ -139,7 +139,7 @@ class SaveDialog(QtWidgets.QDialog):
         scene_name = self.dcc_interface.get_scene_name().rsplit("_", 1)[0]
         version = self.version_spin.value()
 
-        extension = self.file_type_combo.currentText()
+        extension = self.file_extensions[0]
 
         file_name = f"{scene_name}_v{version:04}{extension}"
 
