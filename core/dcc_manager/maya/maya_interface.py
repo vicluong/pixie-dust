@@ -88,7 +88,7 @@ class MayaInterface(DCCInterface):
 
         return scene_folder
 
-    def verify_file(self, file_state_folder: str) -> bool:
+    def verify_file(self) -> bool:
         scene_path = Path(cmds.file(q=True, sceneName=True))
 
         main_folder_path = ffu.get_main_folder_path()
@@ -103,7 +103,7 @@ class MayaInterface(DCCInterface):
 
         if relative_parts[0] == "assets":
             # Check relative folders match with the file name
-            if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[3] and file_state_folder == relative_parts[4]:
+            if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[3] and "wip" == relative_parts[4]:
                 # Check if the version and file type are correct
                 if file_stem[0] == "v" and len(file_stem[1:]) == 4 and file_stem[1:].isdigit() and file_ext in self.get_file_extensions():
                     return True
@@ -111,7 +111,7 @@ class MayaInterface(DCCInterface):
             # Check relative folders match with the file name
             print(file_parts)
             print(relative_parts)
-            if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[4] and  file_parts[3] == relative_parts[5] and file_state_folder == relative_parts[6]:
+            if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[4] and  file_parts[3] == relative_parts[5] and "wip" == relative_parts[6]:
                 # Check if the version and file type are correct
                 if file_stem[0] == "v" and len(file_stem[1:]) == 4 and file_stem[1:].isdigit() and file_ext in self.get_file_extensions():
                     return True
@@ -159,8 +159,5 @@ class MayaInterface(DCCInterface):
             )
             return
 
-    def publish_file(self) -> str:
-        pass
-
-    def publish_file(self) -> str:
+    def publish_file(self, file_path: Path) -> bool:
         pass

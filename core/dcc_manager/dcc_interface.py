@@ -37,7 +37,7 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def verify_file(self, file_state_folder: str) -> bool:
+    def verify_file(self) -> bool:
         pass
 
     @abstractmethod
@@ -53,5 +53,5 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def publish_file(self) -> str:
+    def publish_file(self, file_path: Path) -> bool:
         pass

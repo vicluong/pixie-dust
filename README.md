@@ -35,14 +35,16 @@ What is my purpose in this project?
   - Check that it is either "assets" or "sequences" for the first part then check the folder path vs. the name
     - Use the verify_file method
     - This can be changed when the database is made
+- [x] Get shots and sequences working for production
 
 ## Specific Priority
 
 - [ ] Decide if I should use just ".ma" files
+- [ ] Clean up unused imports and variables
+- [ ] Remove "**main**" and "**name**"
 
 ## Top Priority
 
-- [ ] Get shots and sequences working for production
 - [ ] Get publishing complete for Maya
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
