@@ -49,6 +49,7 @@ class AssignmentTab(QtWidgets.QWidget):
 
         self.shot_tasks_tree = QtWidgets.QTreeWidget()
         self.shot_tasks_tree.setHeaderLabels(["Shot Tasks", "Assignees", "Progress"])
+        self.shot_tasks_tree.setVisible(False)
 
     def create_layout(self):
         assignment_layout = QtWidgets.QHBoxLayout(self)
@@ -61,6 +62,7 @@ class AssignmentTab(QtWidgets.QWidget):
 
         assignment_table_layout = QtWidgets.QVBoxLayout()
         assignment_table_layout.addWidget(self.assets_tree)
+        assignment_table_layout.addWidget(self.shot_tasks_tree)
 
         assignment_layout.addLayout(assignment_menu_layout, 1)
         assignment_layout.addLayout(assignment_table_layout, 5)
@@ -72,9 +74,13 @@ class AssignmentTab(QtWidgets.QWidget):
         self.assignment_type_dropdown.currentIndexChanged.connect(self.show_assignment_table)
 
     def show_assignment_table(self):
-        if self.assignment_type_dropdown.currentText == "Asset":
+        if self.assignment_type_dropdown.currentText() == "Asset":
+            self.assets_tree.setVisible(True)
+            self.shot_tasks_tree.setVisible(False)
             self.show_asset_assignment_table()
         else:
+            self.assets_tree.setVisible(False)
+            self.shot_tasks_tree.setVisible(True)
             self.show_shot_task_assignment_table()
 
     def show_asset_assignment_table(self, *_):
@@ -154,7 +160,6 @@ class AssignmentTab(QtWidgets.QWidget):
         self.assets_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 
     def show_shot_task_assignment_table(self):
-        """
         tree_model = self.shot_tasks_tree.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
@@ -169,7 +174,7 @@ class AssignmentTab(QtWidgets.QWidget):
         # about the shot tasks and display who has been assigned already
         for sequence in sequences:
             sequence_item = QtWidgets.QTreeWidgetItem()
-            sequence.setText(0, sequence.name)
+            sequence_item.setText(0, sequence.name)
 
             top_level_items.append(sequence_item)
 
@@ -198,6 +203,8 @@ class AssignmentTab(QtWidgets.QWidget):
 
                         assignments = self.assignment_data
                         assignees = []
+                        completed = False
+
                         for assignment in assignments.values():
                             if (assignment["entity_type"] == "shot"
                                 and assignment["sequence_name"] == sequence.name
@@ -205,15 +212,21 @@ class AssignmentTab(QtWidgets.QWidget):
                                 and assignment["shot_dep"] == department.name
                                 and assignment["task_name"] == task.name 
                                 ):
+                                assignees = assignment["assignees"]
+                                assignees_names = []
 
-                                assignee = ffu.get_user_name(assignment["assignee"])
-                                assignees.append(assignee)
+                                for assignee_uid in assignment["assignees"]:
+                                    assignee_name = ffu.get_user_name(assignee_uid)
+                                    assignees_names.append(assignee_name)
+
+                                task_item.setText(1, ", ".join(assignees_names))
+
+                                completed = assignment["completed"]
 
                                 if assignment["completed"]:
                                     task_item.setText(2, "Completed")
                                 else:
                                     task_item.setText(2, "In Progress")
-
                         # Store assignment information in all asset part cells for later use
                         assignment_data = {
                             "entity_type": "shot",
@@ -221,6 +234,8 @@ class AssignmentTab(QtWidgets.QWidget):
                             "shot_name": shot.name,
                             "shot_dep": department.name,
                             "task_name": task.name,
+                            "assignees": assignees,
+                            "completed": completed
                         }
 
                         task_item.setData(1, QtCore.Qt.UserRole, assignment_data)
@@ -228,7 +243,7 @@ class AssignmentTab(QtWidgets.QWidget):
         self.shot_tasks_tree.addTopLevelItems(top_level_items)
         self.shot_tasks_tree.expandAll()
         self.shot_tasks_tree.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-"""
+
     def assign_task_to_user(self):
         if self.assignment_type_dropdown.currentText() == "Asset":
             self.assign_asset_to_user()
