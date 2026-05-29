@@ -164,16 +164,15 @@ class MayaInterface(DCCInterface):
             folder_ext_path = publishes_folder / "mb"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name() + ".mb")
-            cmds.file(rename=str(file_path))
-            cmds.file(save=True, force=True, type="mayaBinary")
+            file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".mb")
+            cmds.file(str(file_path), exportAll=True, force=True, type="mayaBinary")
         elif extension == ".usd":
             cmds.loadPlugin("mayaUsdPlugin", quiet=True)
 
             folder_ext_path = publishes_folder / "usd"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name() + ".usd")
+            file_path = folder_ext_path / (self.get_scene_name().split(".")[0])
             cmds.mayaUSDExport(
                 file=file_path,
             )
@@ -181,16 +180,14 @@ class MayaInterface(DCCInterface):
             folder_ext_path = publishes_folder / "fbx"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name() + ".fbx")
-            cmds.file(rename=str(file_path))
-            cmds.file(save=True, force=True, type="FBX export")
+            file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".fbx")
+            cmds.file(str(file_path), exportAll=True, force=True, type="FBX export")
         elif extension == ".obj":
             folder_ext_path = publishes_folder / "obj"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name() + ".obj")
-            cmds.file(rename=str(file_path))
-            cmds.file(save=True, force=True, type="OBJexport")
+            file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".obj")
+            cmds.file(str(file_path), exportAll=True, force=True, type="OBJexport")
         else:
             # raise ValueError(f"Unsupported export: {extension}")
             return False

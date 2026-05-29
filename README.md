@@ -39,7 +39,6 @@ What is my purpose in this project?
 
 ## Specific Priority
 
-- [ ] Needs to be properly renamed to the original/published mb file once complete & USD naming needs to be fixed
 - [ ] Decide if I should use just ".ma" files
 - [ ] Clean up unused imports and variables
 - [ ] Remove "**main**" and "**name**"
@@ -47,6 +46,7 @@ What is my purpose in this project?
 ## Top Priority
 
 - [ ] Get publishing complete for Maya
+  - Get publishing showing up in production tab
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
 - [ ] Further investigate and find a way to import and export data to master production document
