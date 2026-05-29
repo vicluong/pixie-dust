@@ -312,8 +312,6 @@ class AssignmentTab(QtWidgets.QWidget):
             with open(self.assignment_data_path, 'w') as file:
                 json.dump(self.assignment_data, file, indent=4)
 
-            print(f"Toggled Assignment: {self.assignment_data}")
-
             self.show_asset_assignment_table(1)
         else:
             QtWidgets.QMessageBox.warning(
@@ -322,9 +320,78 @@ class AssignmentTab(QtWidgets.QWidget):
                 "Select a valid cell in the assignee column."
             )
             return
-
+        
     def assign_shot_task_to_user(self):
-        pass
+        selected_user_item = self.users_list.currentItem()
+        if not selected_user_item:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Assignment Error", 
+                "Please select a user to assign/unassign."
+            )
+            return
+
+        selected_user = ffu.get_uid(selected_user_item.text())
+        assignment_table_item = self.shot_tasks_tree.currentItem()
+
+        count = 0
+        item_iter = assignment_table_item
+        while item_iter.parent():
+            count += 1
+            item_iter = item_iter.parent()
+
+        if count != 3:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Assignment Error", 
+                "Select an asset part."
+            )
+            return
+
+        # Gather assignment data from a shot task cell for comparison
+        assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
+
+        if assignment_cell_data:
+            self.assignment_data = ffu.get_assignment_data()
+
+            assignment_exists = False
+            # If the assignment already exists, remove or add the uid from the existing users
+            for ass_id, assignment in self.assignment_data.items():
+                if (assignment["entity_type"] == "shot"
+                    and assignment["sequence_name"] == assignment_cell_data["sequence_name"]
+                    and assignment["shot_name"] == assignment_cell_data["shot_name"]
+                    and assignment["shot_dep"] == assignment_cell_data["shot_dep"]
+                    and assignment["task_name"] == assignment_cell_data["task_name"]
+                    ):
+                    if selected_user in assignment["assignees"]:
+                        self.assignment_data[ass_id]["assignees"].remove(selected_user)
+                    else:
+                        self.assignment_data[ass_id]["assignees"].append(selected_user)
+                    assignment_exists = True
+            
+            if not assignment_exists:
+                assignment_cell_data["assignees"].append(selected_user)
+
+                # Get latest assignment id
+                max_num = 0
+                for key in self.assignment_data.keys():
+                    num = int(key.removeprefix("ass"))
+                    max_num = max(max_num, num)
+                padded_value = f"{max_num+1:04d}"
+
+                self.assignment_data[f"ass{padded_value}"] = assignment_cell_data
+
+            with open(self.assignment_data_path, 'w') as file:
+                json.dump(self.assignment_data, file, indent=4)
+
+            self.show_shot_task_assignment_table()
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Assignment Error", 
+                "Select a valid cell in the assignee column."
+            )
+            return
 
     def toggle_progress_of_task(self):
         if self.assignment_type_dropdown.currentText() == "Asset":
@@ -334,14 +401,12 @@ class AssignmentTab(QtWidgets.QWidget):
 
     def toggle_progress_of_asset_task(self):
         assignment_table_item = self.assets_tree.currentItem()
-        assignment_table_item_index = self.assets_tree.currentIndex()
 
-        # Checks that there must be at least two parents to signify that a
-        # asset part has been selected
         count = 0
-        while assignment_table_item_index.parent().isValid():
+        item_iter = assignment_table_item
+        while item_iter.parent():
             count += 1
-            assignment_table_item_index = assignment_table_item_index.parent()
+            item_iter = item_iter.parent()
 
         if count != 2:
             QtWidgets.QMessageBox.warning(
@@ -362,16 +427,12 @@ class AssignmentTab(QtWidgets.QWidget):
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == assignment_cell_data["entity_type"]
                     and assignment["asset_name"] == assignment_cell_data["asset_name"]
-                    and assignment["asset_part"] == assignment_cell_data["asset_part"]):
-                    print("Accepted")
-                    print(assignment_cell_data["completed"])
-                    print(self.assignment_data[ass_id]["completed"])
+                    and assignment["asset_part"] == assignment_cell_data["asset_part"]
+                    ):
                     self.assignment_data[ass_id]["completed"] = not assignment_cell_data["completed"]
-                    print(self.assignment_data[ass_id]["completed"])
                     assignment_exists = True
             
             if not assignment_exists:
-                print("Not")
                 assignment_cell_data["completed"] = True
 
                 # Get latest assignment id
@@ -389,4 +450,53 @@ class AssignmentTab(QtWidgets.QWidget):
             self.show_asset_assignment_table(1)
 
     def toggle_progress_of_shot_task(self):
-        pass
+        assignment_table_item = self.shot_tasks_tree.currentItem()
+
+        count = 0
+        item_iter = assignment_table_item
+        while item_iter.parent():
+            count += 1
+            item_iter = item_iter.parent()
+
+        if count != 3:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Assignment Error", 
+                "Select an asset part."
+            )
+            return
+
+        # Gather assignment data from an asset part cell for comparison
+        assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
+
+        if assignment_cell_data:
+            self.assignment_data = ffu.get_assignment_data()
+
+            assignment_exists = False
+            # If the assignment already exists, remove or add the uid from the existing users
+            for ass_id, assignment in self.assignment_data.items():
+                if (assignment["entity_type"] == "shot"
+                    and assignment["sequence_name"] == assignment_cell_data["sequence_name"]
+                    and assignment["shot_name"] == assignment_cell_data["shot_name"]
+                    and assignment["shot_dep"] == assignment_cell_data["shot_dep"]
+                    and assignment["task_name"] == assignment_cell_data["task_name"]
+                    ):
+                    self.assignment_data[ass_id]["completed"] = not assignment_cell_data["completed"]
+                    assignment_exists = True
+            
+            if not assignment_exists:
+                assignment_cell_data["completed"] = True
+
+                # Get latest assignment id
+                max_num = 0
+                for key in self.assignment_data.keys():
+                    num = int(key.removeprefix("ass"))
+                    max_num = max(max_num, num)
+                padded_value = f"{max_num+1:04d}"
+
+                self.assignment_data[f"ass{padded_value}"] = assignment_cell_data
+
+            with open(self.assignment_data_path, 'w') as file:
+                json.dump(self.assignment_data, file, indent=4)
+
+            self.show_shot_task_assignment_table()
