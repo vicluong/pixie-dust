@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 try:
     from PySide6 import QtWidgets
@@ -12,15 +13,31 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def verify_file(self) -> str:
-        pass
-
-    @abstractmethod
     def create_new_asset_file(self) -> str:
         pass
 
     @abstractmethod
-    def save_file(self) -> str:
+    def get_file_extensions(self) -> list[str]:
+        pass
+
+    @abstractmethod
+    def get_scene_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_scene_folder(self) -> Path:
+        pass
+
+    @abstractmethod
+    def verify_file(self, file_state_folder: str) -> bool:
+        pass
+
+    @abstractmethod
+    def get_next_available_version(self) -> int:
+        pass
+
+    @abstractmethod
+    def save_file(self, file_path: Path) -> str:
         pass
 
     @abstractmethod

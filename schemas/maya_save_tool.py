@@ -7,4 +7,7 @@ if str(code_dir) not in sys.path:
     sys.path.append(str(code_dir))
 
 from ui.save_ui import SaveDialog
-SaveDialog.show_dialog()
+from dcc_manager.dcc_manager import DCCManager
+
+dcc_manager = DCCManager("maya").dcc_interface
+SaveDialog.show_dialog(dcc_manager)

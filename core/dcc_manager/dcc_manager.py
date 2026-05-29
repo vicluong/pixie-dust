@@ -4,13 +4,13 @@ class DCCManager:
     """Interface for DCC operations."""
     def __init__(self, dcc: str):
         dcc_key = dcc.lower()
-        self._dcc_interface = self._get_dcc_interface(dcc_key)
+        self.dcc_interface = self._get_dcc_interface(dcc_key)
 
         # if not self._netcopy:
         #     raise ModuleNotFoundError("The specificed DCC could not be imported properly.")
 
     def create_ui(self):
-        PixieDustDialog.show_dialog(self._dcc_interface)
+        PixieDustDialog.show_dialog(self.dcc_interface)
 
     def _get_dcc_interface(self, dcc: str):
         if dcc == "maya":

@@ -25,6 +25,12 @@ What is my purpose in this project?
 - [x] Finalise how data will be passed between software and what software is being used
   - Is it similar to how ALA does it?
 
+## Specific Priority
+
+- [ ] Change save_ui.py to utilise dcc_interface.py - no use of maya in the save_ui.py
+- [ ] Decide if I should use just ".ma" files
+- [ ] Consider changing "wip" to "saves"
+
 ## Top Priority
 
 - [ ] Finalise .json structure
