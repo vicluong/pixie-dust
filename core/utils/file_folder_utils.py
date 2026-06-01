@@ -3,7 +3,7 @@ import json
 import sys
 
 def get_code_dir():
-    code_dir = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
+    code_dir = Path("/mnt/ala/mav/2026/sandbox/friday_short_film/pixie_dust/pixie-dust")
     return code_dir
 
 def path_append_code_dir():
