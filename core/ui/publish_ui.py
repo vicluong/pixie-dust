@@ -19,16 +19,24 @@ class PublishDialog(QtWidgets.QDialog):
         if not cls.dlg_instance:
             cls.dlg_instance = PublishDialog(dcc_interface)
 
+        cls.dlg_instance.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+
         if cls.dlg_instance.isHidden():
             cls.dlg_instance.show()
         else:
             cls.dlg_instance.raise_()
             cls.dlg_instance.activateWindow()
 
+    @classmethod
+    def _clear_instance(cls):
+        cls.dlg_instance = None
+
     def __init__(self, dcc_interface: DCCInterface):
         super(PublishDialog, self).__init__()
 
         self.setWindowTitle("Publish Files")
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+        self.destroyed.connect(PublishDialog._clear_instance)
 
         self.dcc_interface = dcc_interface
         self.main_window = self.dcc_interface.get_main_window()

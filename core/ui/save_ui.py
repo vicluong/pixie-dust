@@ -4,13 +4,10 @@ import sys
 
 try:
     from PySide6 import QtWidgets, QtCore
-    from shiboken6 import wrapInstance
 except:
     from PySide2 import QtWidgets, QtCore
-    from shiboken2 import wrapInstance
 
 import maya.cmds as cmds
-import maya.OpenMayaUI as omui
 
 from dcc_manager.dcc_interface import DCCInterface
 
@@ -20,8 +17,10 @@ class SaveDialog(QtWidgets.QDialog):
 
     @classmethod
     def show_dialog(cls, dcc_interface: DCCInterface):
-        if not cls.dlg_instance:
+        if cls.dlg_instance is None:
             cls.dlg_instance = SaveDialog(dcc_interface)
+
+        cls.dlg_instance.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
 
         if cls.dlg_instance.isHidden():
             cls.dlg_instance.show()
@@ -29,10 +28,16 @@ class SaveDialog(QtWidgets.QDialog):
             cls.dlg_instance.raise_()
             cls.dlg_instance.activateWindow()
 
+    @classmethod
+    def _clear_instance(cls):
+        cls.dlg_instance = None
+
     def __init__(self, dcc_interface: DCCInterface):
         super(SaveDialog, self).__init__()
 
         self.setWindowTitle("File Save")
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+        self.destroyed.connect(SaveDialog._clear_instance)
 
         self.dcc_interface = dcc_interface
         self.main_window = self.dcc_interface.get_main_window()
@@ -164,7 +169,3 @@ class SaveDialog(QtWidgets.QDialog):
             )
 
         self.close()
-
-
-if __name__ == "__main__":
-    SaveDialog.show_dialog()
