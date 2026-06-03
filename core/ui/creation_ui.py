@@ -18,8 +18,7 @@ class CreationTab(QtWidgets.QWidget):
         super().__init__()
 
         self.dcc_interface = dcc_interface
-        self.config_path = dcc_interface.config_path
-        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
+        self.main_workspace_path = ffu.get_main_workspace_path()
 
         self.create_widgets()
         self.create_layout()
@@ -51,8 +50,8 @@ class CreationTab(QtWidgets.QWidget):
         self.create_shot_task_label = QtWidgets.QLabel("Select a shot department")
         self.create_shot_task_btn = QtWidgets.QPushButton("Create Shot Task")
 
-        self.asset_tree = AssetTreeWidget(self.dcc_interface, extra_info=False)
-        self.shot_tree = ShotTaskTreeWidget(self.dcc_interface, extra_info=True)
+        self.asset_tree = AssetTreeWidget(extra_info=False)
+        self.shot_tree = ShotTaskTreeWidget(extra_info=True)
         self.shot_tree.setVisible(False)
 
     def create_layout(self):

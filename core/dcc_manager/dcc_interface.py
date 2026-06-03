@@ -8,8 +8,8 @@ except ImportError:
 
 
 class DCCInterface(ABC):
-    def __init__(self, config_path: str):
-        self.config_path = config_path
+    # def __init__(self, config_path: str):
+    #     self.config_path = config_path
 
     @abstractmethod
     def get_main_window(self) -> QtWidgets.QWidget:

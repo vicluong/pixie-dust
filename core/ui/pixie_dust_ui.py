@@ -52,9 +52,8 @@ class PixieDustDialog(QtWidgets.QDialog):
         if sys.platform == "darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
-        self.config_path = dcc_interface.config_path
-        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
-        self.assignment_data = ffu.get_assignment_data(self.config_path)
+        self.main_workspace_path = ffu.get_main_workspace_path()
+        self.assignment_data = ffu.get_assignment_data()
 
         self.create_widgets()
         self.create_layout()

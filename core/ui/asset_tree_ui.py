@@ -14,11 +14,10 @@ from dcc_manager.dcc_interface import DCCInterface
 
 
 class AssetTreeWidget(QtWidgets.QTreeWidget):
-    def __init__(self, dcc_interface: DCCInterface, extra_info: bool = True):
+    def __init__(self, extra_info: bool = True):
         super().__init__()
 
-        self.config_path = dcc_interface.config_path
-        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
+        self.main_workspace_path = ffu.get_main_workspace_path()
         self.extra_info = extra_info
 
         if self.extra_info:
@@ -32,7 +31,7 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
         tree_model = self.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = ffu.get_assignment_data(self.config_path)
+        self.assignment_data = ffu.get_assignment_data()
 
         assets_path = self.main_workspace_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
@@ -77,7 +76,7 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                                 assignees_names = []
 
                                 for assignee_uid in assignment["assignees"]:
-                                    assignee_name = ffu.get_user_name(self.config_path, assignee_uid)
+                                    assignee_name = ffu.get_user_name(assignee_uid)
                                     assignees_names.append(assignee_name)
 
                                 asset_part_item.setText(1, ", ".join(assignees_names))

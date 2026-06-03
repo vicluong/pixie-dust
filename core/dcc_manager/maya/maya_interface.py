@@ -15,8 +15,8 @@ from dcc_manager.dcc_interface import DCCInterface
 import utils.file_folder_utils as ffu
 
 class MayaInterface(DCCInterface):
-    def __init__(self, config_path: str):
-        super().__init__(config_path)
+    # def __init__(self, config_path: str):
+    #     super().__init__(config_path)
 
     def get_main_window(self) -> QtWidgets.QWidget:
         main_window_ptr = omui.MQtUtil.mainWindow()

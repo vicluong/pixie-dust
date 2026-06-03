@@ -11,22 +11,24 @@ import sys
 
 #     return config_path
 
-def get_main_workspace_path(config_path):
-    with open(str(config_path), 'r') as file:
+from env_vars import CONFIG_PATH
+
+def get_main_workspace_path():
+    with open(str(CONFIG_PATH), 'r') as file:
         config_data = json.load(file)
         main_workspace_path = Path(config_data["main_workspace_path"])
 
     return main_workspace_path
 
-def get_assignment_data_path(config_path):
-    with open(str(config_path), 'r') as file:
+def get_assignment_data_path():
+    with open(str(CONFIG_PATH), 'r') as file:
         config_data = json.load(file)
         assignment_data_path = Path(config_data["assignment_data_path"])
 
     return assignment_data_path
 
-def get_assignment_data(config_path):
-    with open(str(config_path), 'r') as file:
+def get_assignment_data():
+    with open(str(CONFIG_PATH), 'r') as file:
         config_data = json.load(file)
         assignment_data_path = Path(config_data["assignment_data_path"])
 
@@ -35,8 +37,8 @@ def get_assignment_data(config_path):
 
     return assignment_data
 
-def get_users_data(config_path: Path):
-    with open(str(config_path), 'r') as file:
+def get_users_data():
+    with open(str(CONFIG_PATH), 'r') as file:
         config_data = json.load(file)
         users_data_path = Path(config_data["users_data_path"])
 
@@ -45,8 +47,8 @@ def get_users_data(config_path: Path):
 
     return users_data
 
-def get_users(config_path: Path):
-    users_data = get_users_data(config_path)
+def get_users():
+    users_data = get_users_data()
 
     users = []
 
@@ -55,15 +57,15 @@ def get_users(config_path: Path):
 
     return users
 
-def get_user_name(config_path: Path, uid: str):
-    users_data = get_users_data(config_path)
+def get_user_name(uid: str):
+    users_data = get_users_data()
 
     user_name = users_data[uid]["name"]
 
     return user_name
 
-def get_uid(config_path: Path, name: str):
-    users_data = get_users_data(config_path)
+def get_uid(name: str):
+    users_data = get_users_data()
 
     for uid, data in users_data.items():
         if data["name"] == name:

@@ -19,11 +19,9 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         super().__init__()
 
         self.dcc_interface = dcc_interface
-        self.config_path = dcc_interface.config_path
-        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
-
-        self.assignment_data = ffu.get_assignment_data(self.config_path)
-        self.users = ffu.get_users(self.config_path)
+        self.main_workspace_path = ffu.get_main_workspace_path()
+        self.assignment_data = ffu.get_assignment_data()
+        self.users = ffu.get_users()
 
         self.focused_version_item = None
 
@@ -36,7 +34,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         self.current_user_dropdown = QtWidgets.QComboBox()
         self.current_user_dropdown.addItems([x for x in self.users])
 
-        self.assets_tree = AssetTreeWidget(self.dcc_interface, extra_info=False)
+        self.assets_tree = AssetTreeWidget(extra_info=False)
         self.assets_tree.generate_tree()
 
         self.wip_label = QtWidgets.QLabel("WIP Versions")

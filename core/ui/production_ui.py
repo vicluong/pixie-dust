@@ -20,11 +20,10 @@ class ProductionTab(QtWidgets.QWidget):
         super().__init__()
 
         self.dcc_interface = dcc_interface
-        self.config_path = dcc_interface.config_path
-        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
+        self.main_workspace_path = ffu.get_main_workspace_path()
 
-        self.assignment_data = ffu.get_assignment_data(self.config_path)
-        self.users = ffu.get_users(self.config_path)
+        self.assignment_data = ffu.get_assignment_data()
+        self.users = ffu.get_users()
 
         self.create_widgets()
         self.create_layout()
@@ -70,7 +69,7 @@ class ProductionTab(QtWidgets.QWidget):
         card_data = []
 
         for assignment in self.assignment_data.values():
-            current_assignee_uid = ffu.get_uid(self.config_path, self.current_user_dropdown.currentText())
+            current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
             if current_assignee_uid in assignment["assignees"]: 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 
