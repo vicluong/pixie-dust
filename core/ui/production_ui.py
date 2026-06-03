@@ -48,40 +48,43 @@ class ProductionTab(QtWidgets.QWidget):
         production_layout.addLayout(current_user_layout)
 
         production_main_tab = QtWidgets.QTabWidget()
-        production_tasks_tab = QtWidgets.QWidget()
+        # production_tasks_tab = QtWidgets.QWidget()
         production_assets_tab = ProductionAssetsTab(self.dcc_interface)
         production_shots_tab = ProductionShotTasksTab(self.dcc_interface)
-        production_main_tab.addTab(production_tasks_tab, "My Tasks")
+        # production_main_tab.addTab(production_tasks_tab, "My Tasks")
         production_main_tab.addTab(production_assets_tab, "Assets")
         production_main_tab.addTab(production_shots_tab, "Shots / Sequences")
         production_layout.addWidget(production_main_tab)
 
-        self.production_tasks_layout = QtWidgets.QHBoxLayout(production_tasks_tab)
+        # self.production_tasks_layout = QtWidgets.QHBoxLayout(production_tasks_tab)
 
     def create_connections(self):
         """Create all connections for the UI"""
         # self.get_tasks_btn.pressed.connect(self.show_tasks_table)
-        self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_table)
+        # self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_table)
 
-    def show_tasks_table(self):
-        self.clear_layout(self.production_tasks_layout)
+    # def show_tasks_table(self):
+    #     self.clear_layout(self.production_tasks_layout)
 
-        card_data = []
+    #     card_data = []
 
-        for assignment in self.assignment_data.values():
-            current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
-            if current_assignee_uid in assignment["assignees"]: 
-                card_data.append((assignment["asset_name"], assignment["asset_part"]))
+    #     for assignment in self.assignment_data.values():
+    #         current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
+    #         if current_assignee_uid in assignment["assignees"]: 
+    #             if "asset_name" in assignment and "asset_part" in assignment:
+    #                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
+    #             elif "task_name" in assignment and "sequence_name" in assignment and "shot_name" in assignment:
+    #                 card_data.append((assignment["task_name"], f"{assignment['sequence_name']}, {assignment['shot_name']}"))
 
-        card_data.sort()
+    #     card_data.sort()
 
-        for card in card_data:
-            card_widget = Card(card[0], card[1])
-            card_widget.setMaximumWidth(300)
-            card_widget.setMaximumHeight(200)
-            self.production_tasks_layout.addWidget(card_widget)
+    #     for card in card_data:
+    #         card_widget = Card(card[0], card[1])
+    #         card_widget.setMaximumWidth(300)
+    #         card_widget.setMaximumHeight(200)
+    #         self.production_tasks_layout.addWidget(card_widget)
         
-        self.production_tasks_layout.addStretch()
+    #     self.production_tasks_layout.addStretch()
 
     def clear_layout(self, layout):
         while layout.count():
@@ -98,7 +101,7 @@ class ProductionTab(QtWidgets.QWidget):
                 self.clear_layout(child_layout)
 
 class Card(QtWidgets.QFrame):
-    def __init__(self, title, content):
+    def __init__(self, title: str, content: str):
         super().__init__()
 
         self.setObjectName("card")

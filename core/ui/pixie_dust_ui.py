@@ -61,7 +61,7 @@ class PixieDustDialog(QtWidgets.QDialog):
 
         self.creation_tab.show_creation_type()
         self.assignment_tab.show_asset_assignment_table(1)
-        self.production_tab.show_tasks_table()
+        # self.production_tab.show_tasks_table()
 
     def create_widgets(self):
         """Create all widgets for the UI"""
@@ -86,31 +86,33 @@ class PixieDustDialog(QtWidgets.QDialog):
         self.production_tab = ProductionTab(self.dcc_interface)
         self.main_tab_widget.addTab(self.production_tab, "Production")
 
-        # Tab 4: Save
-        save_tab = QtWidgets.QWidget()
-        save_layout = QtWidgets.QVBoxLayout(save_tab)
+        # # Tab 4: Save
+        # save_tab = QtWidgets.QWidget()
+        # save_layout = QtWidgets.QVBoxLayout(save_tab)
 
-        self.main_tab_widget.addTab(save_tab, "Save")
+        # self.main_tab_widget.addTab(save_tab, "Save")
 
-        # Tab 4: Publish
-        publish_tab = QtWidgets.QWidget()
-        publish_layout = QtWidgets.QVBoxLayout(publish_tab)
+        # # Tab 4: Publish
+        # publish_tab = QtWidgets.QWidget()
+        # publish_layout = QtWidgets.QVBoxLayout(publish_tab)
 
-        self.main_tab_widget.addTab(publish_tab, "Publish")
+        # self.main_tab_widget.addTab(publish_tab, "Publish")
 
-        # Tab 5: Import/Reference
-        import_tab = QtWidgets.QWidget()
-        import_layout = QtWidgets.QVBoxLayout(import_tab)
+        # # Tab 5: Import/Reference
+        # import_tab = QtWidgets.QWidget()
+        # import_layout = QtWidgets.QVBoxLayout(import_tab)
 
-        self.main_tab_widget.addTab(import_tab, "Import/Reference")
+        # self.main_tab_widget.addTab(import_tab, "Import/Reference")
 
-        # Tab 6: Information
-        information_tab = QtWidgets.QWidget()
-        information_layout = QtWidgets.QVBoxLayout(information_tab)
-        information_layout.addWidget(self.generate_btn)
+        # # Tab 6: Information
+        # information_tab = QtWidgets.QWidget()
+        # information_layout = QtWidgets.QVBoxLayout(information_tab)
+        # information_layout.addWidget(self.generate_btn)
 
-        self.main_tab_widget.addTab(information_tab, "Information")
+        # self.main_tab_widget.addTab(information_tab, "Information")
         
+        self.main_tab_widget.setCurrentIndex(2)
+
         main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.addWidget(self.main_tab_widget)
 
@@ -118,6 +120,3 @@ class PixieDustDialog(QtWidgets.QDialog):
         """Create all connections for the UI"""
         self.main_tab_widget.tabBarClicked.connect(self.creation_tab.show_creation_type)
         self.main_tab_widget.tabBarClicked.connect(self.assignment_tab.show_asset_assignment_table)
-
-if __name__ == "__main__":
-    PixieDustDialog.show_dialog()
