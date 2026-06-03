@@ -15,13 +15,16 @@ from dcc_manager.dcc_interface import DCCInterface
 import utils.file_folder_utils as ffu
 
 class MayaInterface(DCCInterface):
+    def __init__(self, config_path: str):
+        super().__init__(config_path)
+
     def get_main_window(self) -> QtWidgets.QWidget:
         main_window_ptr = omui.MQtUtil.mainWindow()
         return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
     def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
-        main_folder_path = ffu.get_main_folder_path()
-        folder = main_folder_path / "assets" / asset_type / asset_name / asset_part / file_state_folder
+        main_workspace_path = ffu.get_main_workspace_path()
+        folder = main_workspace_path / "assets" / asset_type / asset_name / asset_part / file_state_folder
 
         pattern = re.compile(r"_v(\d{4})\.mb$")
 
@@ -38,8 +41,8 @@ class MayaInterface(DCCInterface):
         return sorted_files
 
     def get_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
-        main_folder_path = ffu.get_main_folder_path()
-        folder = main_folder_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder
+        main_workspace_path = ffu.get_main_workspace_path()
+        folder = main_workspace_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder
 
         pattern = re.compile(r"_v(\d{4})\.mb$")
 
@@ -57,8 +60,8 @@ class MayaInterface(DCCInterface):
 
     def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
         cmds.file(new=True)
-        main_folder_path = ffu.get_main_folder_path()
-        file_path = str(main_folder_path / "assets" / asset_type / asset_name / asset_part 
+        main_workspace_path = ffu.get_main_workspace_path()
+        file_path = str(main_workspace_path / "assets" / asset_type / asset_name / asset_part 
                         / "wip" / f"{asset_type}_{asset_name}_{asset_part}_v0000.mb")
 
         cmds.file(rename=f"{str(file_path)}")
@@ -67,8 +70,8 @@ class MayaInterface(DCCInterface):
     
     def create_new_shot_task_file(self, sequence: str, shot: str, department: str, task: str, ) -> str:
         cmds.file(new=True)
-        main_folder_path = ffu.get_main_folder_path()
-        file_path = str(main_folder_path / "sequences" / sequence / shot / "departments" / department / task
+        main_workspace_path = ffu.get_main_workspace_path()
+        file_path = str(main_workspace_path / "sequences" / sequence / shot / "departments" / department / task
                         / "wip" / f"{sequence}_{shot}_{department}_{task}_v0000.mb")
 
         cmds.file(rename=f"{str(file_path)}")
@@ -91,8 +94,8 @@ class MayaInterface(DCCInterface):
     def verify_file(self) -> bool:
         scene_path = Path(cmds.file(q=True, sceneName=True))
 
-        main_folder_path = ffu.get_main_folder_path()
-        relative_path = scene_path.relative_to(main_folder_path)
+        main_workspace_path = ffu.get_main_workspace_path()
+        relative_path = scene_path.relative_to(main_workspace_path)
         relative_parts = relative_path.parts
 
         file_name = relative_path.name

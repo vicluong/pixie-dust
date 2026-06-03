@@ -52,14 +52,9 @@ class PixieDustDialog(QtWidgets.QDialog):
         if sys.platform == "darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
-        config_path = ffu.get_code_dir() / "config.json"
-
-        with open(str(config_path), 'r') as file:
-            config_data = json.load(file)
-            self.main_folder_path = Path(config_data["main_folder_path"])
-            self.assignment_data_path = Path(config_data["assignment_data_path"])
-
-        self.assignment_data = ffu.get_assignment_data()
+        self.config_path = dcc_interface.config_path
+        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
+        self.assignment_data = ffu.get_assignment_data(self.config_path)
 
         self.create_widgets()
         self.create_layout()
@@ -81,11 +76,11 @@ class PixieDustDialog(QtWidgets.QDialog):
         self.main_tab_widget = QtWidgets.QTabWidget()
 
         # Tab 1: Creation
-        self.creation_tab = CreationTab()
+        self.creation_tab = CreationTab(self.dcc_interface)
         self.main_tab_widget.addTab(self.creation_tab, "Creation")
 
         # Tab 2: Assignment
-        self.assignment_tab = AssignmentTab()
+        self.assignment_tab = AssignmentTab(self.dcc_interface)
         self.main_tab_widget.addTab(self.assignment_tab, "Assignment")
 
         # Tab 3: Production

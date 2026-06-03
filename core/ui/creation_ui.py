@@ -8,20 +8,18 @@ except:
     from PySide2 import QtWidgets
 
 import utils.file_folder_utils as ffu
+from dcc_manager.dcc_interface import DCCInterface
 from ui.asset_tree_ui import AssetTreeWidget
 from ui.shot_task_tree_ui import ShotTaskTreeWidget
 
 
 class CreationTab(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, dcc_interface: DCCInterface):
         super().__init__()
 
-        config_path = ffu.get_code_dir() / "config.json"
-
-        with open(str(config_path), 'r') as file:
-            config_data = json.load(file)
-            self.main_folder_path = Path(config_data["main_folder_path"])
-            self.assignment_data_path = Path(config_data["assignment_data_path"])
+        self.dcc_interface = dcc_interface
+        self.config_path = dcc_interface.config_path
+        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
 
         self.create_widgets()
         self.create_layout()
@@ -53,8 +51,8 @@ class CreationTab(QtWidgets.QWidget):
         self.create_shot_task_label = QtWidgets.QLabel("Select a shot department")
         self.create_shot_task_btn = QtWidgets.QPushButton("Create Shot Task")
 
-        self.asset_tree = AssetTreeWidget(extra_info=False)
-        self.shot_tree = ShotTaskTreeWidget(extra_info=False)
+        self.asset_tree = AssetTreeWidget(self.dcc_interface, extra_info=False)
+        self.shot_tree = ShotTaskTreeWidget(self.dcc_interface, extra_info=True)
         self.shot_tree.setVisible(False)
 
     def create_layout(self):
@@ -179,7 +177,7 @@ class CreationTab(QtWidgets.QWidget):
             return
 
         try:
-            ffu.create_asset_folders(self.main_folder_path, asset_type, asset_name)
+            ffu.create_asset_folders(self.main_workspace_path, asset_type, asset_name)
             QtWidgets.QMessageBox.information(
                 None, 
                 "Creation Succeeded", 
@@ -201,7 +199,7 @@ class CreationTab(QtWidgets.QWidget):
 
     def create_sequence(self):
         sequence_name = self.create_sequence_le.text()
-        sequence_path = self.main_folder_path / "sequences" / sequence_name
+        sequence_path = self.main_workspace_path / "sequences" / sequence_name
 
         if not sequence_name:
             QtWidgets.QMessageBox.warning(
@@ -238,7 +236,7 @@ class CreationTab(QtWidgets.QWidget):
         if not selected_item.parent():
             sequence_name = selected_item.text(0)
             shot_name = self.create_shot_le.text()
-            shot_path = self.main_folder_path / "sequences" / sequence_name / shot_name
+            shot_path = self.main_workspace_path / "sequences" / sequence_name / shot_name
 
             if not shot_name:
                 QtWidgets.QMessageBox.warning(
@@ -290,7 +288,7 @@ class CreationTab(QtWidgets.QWidget):
             dep_name = selected_item.text(0)
             shot_name = selected_item.parent().text(0)
             sequence_name = selected_item.parent().parent().text(0)
-            shot_task_path = self.main_folder_path / "sequences" / sequence_name / shot_name / "departments" / dep_name / shot_task_name
+            shot_task_path = self.main_workspace_path / "sequences" / sequence_name / shot_name / "departments" / dep_name / shot_task_name
 
             if not shot_task_name:
                 QtWidgets.QMessageBox.warning(

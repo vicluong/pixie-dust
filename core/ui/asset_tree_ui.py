@@ -10,19 +10,15 @@ except:
     from PySide2 import QtWidgets
 
 import utils.file_folder_utils as ffu
+from dcc_manager.dcc_interface import DCCInterface 
 
 
 class AssetTreeWidget(QtWidgets.QTreeWidget):
-    def __init__(self, extra_info: bool = True):
+    def __init__(self, dcc_interface: DCCInterface, extra_info: bool = True):
         super().__init__()
 
-        config_path = ffu.get_code_dir() / "config.json"
-
-        with open(str(config_path), 'r') as file:
-            config_data = json.load(file)
-            self.main_folder_path = Path(config_data["main_folder_path"])
-            self.assignment_data_path = Path(config_data["assignment_data_path"])
-
+        self.config_path = dcc_interface.config_path
+        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
         self.extra_info = extra_info
 
         if self.extra_info:
@@ -36,9 +32,9 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
         tree_model = self.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = ffu.get_assignment_data()
+        self.assignment_data = ffu.get_assignment_data(self.config_path)
 
-        assets_path = self.main_folder_path / "assets"
+        assets_path = self.main_workspace_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
 
         top_level_items = []
@@ -81,7 +77,7 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                                 assignees_names = []
 
                                 for assignee_uid in assignment["assignees"]:
-                                    assignee_name = ffu.get_user_name(assignee_uid)
+                                    assignee_name = ffu.get_user_name(self.config_path, assignee_uid)
                                     assignees_names.append(assignee_name)
 
                                 asset_part_item.setText(1, ", ".join(assignees_names))

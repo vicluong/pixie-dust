@@ -2,25 +2,30 @@ from pathlib import Path
 import json
 import sys
 
-def get_code_dir():
-    code_dir = Path("/mnt/ala/mav/2026/sandbox/friday_short_film/pixie_dust/pixie-dust")
-    return code_dir
+# def get_core_dir():
+#     code_dir = Path("/mnt/ala/mav/2026/sandbox/friday_short_film/pixie_dust/pixie-dust")
+#     return code_dir
 
-def path_append_code_dir():
-    sys.path.append(str(get_code_dir()))
+# def get_config_path(core_dir):
+#     config_path = core_dir / "config.json"
 
-def get_main_folder_path():
-    config_path = get_code_dir() / "config.json"
+#     return config_path
 
+def get_main_workspace_path(config_path):
     with open(str(config_path), 'r') as file:
         config_data = json.load(file)
-        main_folder_path = Path(config_data["main_folder_path"])
+        main_workspace_path = Path(config_data["main_workspace_path"])
 
-    return main_folder_path
+    return main_workspace_path
 
-def get_assignment_data():
-    config_path = get_code_dir() / "config.json"
+def get_assignment_data_path(config_path):
+    with open(str(config_path), 'r') as file:
+        config_data = json.load(file)
+        assignment_data_path = Path(config_data["assignment_data_path"])
 
+    return assignment_data_path
+
+def get_assignment_data(config_path):
     with open(str(config_path), 'r') as file:
         config_data = json.load(file)
         assignment_data_path = Path(config_data["assignment_data_path"])
@@ -30,9 +35,7 @@ def get_assignment_data():
 
     return assignment_data
 
-def get_users_data():
-    config_path = get_code_dir() / "config.json"
-
+def get_users_data(config_path: Path):
     with open(str(config_path), 'r') as file:
         config_data = json.load(file)
         users_data_path = Path(config_data["users_data_path"])
@@ -42,8 +45,8 @@ def get_users_data():
 
     return users_data
 
-def get_users():
-    users_data = get_users_data()
+def get_users(config_path: Path):
+    users_data = get_users_data(config_path)
 
     users = []
 
@@ -52,15 +55,15 @@ def get_users():
 
     return users
 
-def get_user_name(uid: str):
-    users_data = get_users_data()
+def get_user_name(config_path: Path, uid: str):
+    users_data = get_users_data(config_path)
 
     user_name = users_data[uid]["name"]
 
     return user_name
 
-def get_uid(name: str):
-    users_data = get_users_data()
+def get_uid(config_path: Path, name: str):
+    users_data = get_users_data(config_path)
 
     for uid, data in users_data.items():
         if data["name"] == name:
@@ -70,8 +73,8 @@ def get_uid(name: str):
 
 # ---------------------------FOLDER CREATION ----------------------------
 
-def create_asset_folders(main_folder_path: Path, asset_type: str, asset_name: str):
-    asset_path = main_folder_path / "assets" / asset_type / asset_name
+def create_asset_folders(main_workspace_path: Path, asset_type: str, asset_name: str):
+    asset_path = main_workspace_path / "assets" / asset_type / asset_name
     asset_path.mkdir()
 
     asset_parts = []

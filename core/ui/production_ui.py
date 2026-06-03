@@ -14,21 +14,17 @@ from dcc_manager.dcc_interface import DCCInterface
 from ui.production_assets_ui import ProductionAssetsTab
 from ui.production_shot_tasks_ui import ProductionShotTasksTab
 
+
 class ProductionTab(QtWidgets.QWidget):
     def __init__(self, dcc_interface: DCCInterface):
         super().__init__()
 
         self.dcc_interface = dcc_interface
+        self.config_path = dcc_interface.config_path
+        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
 
-        config_path = ffu.get_code_dir() / "config.json"
-
-        with open(str(config_path), 'r') as file:
-            config_data = json.load(file)
-            self.main_folder_path = Path(config_data["main_folder_path"])
-            self.assignment_data_path = Path(config_data["assignment_data_path"])
-
-        self.assignment_data = ffu.get_assignment_data()
-        self.users = ffu.get_users()
+        self.assignment_data = ffu.get_assignment_data(self.config_path)
+        self.users = ffu.get_users(self.config_path)
 
         self.create_widgets()
         self.create_layout()
@@ -74,7 +70,7 @@ class ProductionTab(QtWidgets.QWidget):
         card_data = []
 
         for assignment in self.assignment_data.values():
-            current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
+            current_assignee_uid = ffu.get_uid(self.config_path, self.current_user_dropdown.currentText())
             if current_assignee_uid in assignment["assignees"]: 
                 card_data.append((assignment["asset_name"], assignment["asset_part"]))
 

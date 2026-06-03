@@ -10,23 +10,21 @@ except:
     from PySide2 import QtWidgets
 
 import utils.file_folder_utils as ffu
+from dcc_manager.dcc_interface import DCCInterface
 from ui.asset_tree_ui import AssetTreeWidget
 from ui.shot_task_tree_ui import ShotTaskTreeWidget
 
+
 class AssignmentTab(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, dcc_interface: DCCInterface):
         super().__init__()
 
-        config_path = ffu.get_code_dir() / "config.json"
-
-        with open(str(config_path), 'r') as file:
-            config_data = json.load(file)
-            self.main_folder_path = Path(config_data["main_folder_path"])
-            self.assignment_data_path = Path(config_data["assignment_data_path"])
-
-        self.assignment_data = ffu.get_assignment_data()
-
-        self.users = ffu.get_users()
+        self.dcc_interface = dcc_interface
+        self.config_path = dcc_interface.config_path
+        self.main_workspace_path = ffu.get_main_workspace_path(self.config_path)
+        self.assignment_data_path = ffu.get_assignment_data_path(self.config_path)
+        self.assignment_data = ffu.get_assignment_data(self.config_path)
+        self.users = ffu.get_users(self.config_path)
 
         self.create_widgets()
         self.create_layout()
@@ -45,9 +43,9 @@ class AssignmentTab(QtWidgets.QWidget):
         self.assignment_btn = QtWidgets.QPushButton("Toggle Assignment")
         self.toggle_progress_btn = QtWidgets.QPushButton("Toggle Progress")
 
-        self.assets_tree = AssetTreeWidget(extra_info=True)
+        self.assets_tree = AssetTreeWidget(self.dcc_interface, extra_info=True)
 
-        self.shot_tasks_tree = ShotTaskTreeWidget(extra_info=True)
+        self.shot_tasks_tree = ShotTaskTreeWidget(self.dcc_interface, extra_info=True)
         self.shot_tasks_tree.setVisible(False)
 
     def create_layout(self):
@@ -104,7 +102,7 @@ class AssignmentTab(QtWidgets.QWidget):
             )
             return
 
-        selected_user = ffu.get_uid(selected_user_item.text())
+        selected_user = ffu.get_uid(self.config_path, selected_user_item.text())
         assignment_table_item = self.assets_tree.currentItem()
         assignment_table_item_index = self.assets_tree.currentIndex()
 
@@ -127,7 +125,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data()
+            self.assignment_data = ffu.get_assignment_data(self.config_path)
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
@@ -175,7 +173,7 @@ class AssignmentTab(QtWidgets.QWidget):
             )
             return
 
-        selected_user = ffu.get_uid(selected_user_item.text())
+        selected_user = ffu.get_uid(self.config_path, selected_user_item.text())
         assignment_table_item = self.shot_tasks_tree.currentItem()
 
         count = 0
@@ -196,7 +194,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data()
+            self.assignment_data = ffu.get_assignment_data(self.config_path)
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
@@ -264,7 +262,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data()
+            self.assignment_data = ffu.get_assignment_data(self.config_path)
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
@@ -314,7 +312,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data()
+            self.assignment_data = ffu.get_assignment_data(self.config_path)
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
