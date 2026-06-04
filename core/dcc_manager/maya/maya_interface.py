@@ -59,7 +59,22 @@ class MayaInterface(DCCInterface):
         return sorted_files
 
     def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
-        cmds.file(new=True)
+        if cmds.file(q=True, modified=True):
+            result = cmds.confirmDialog(
+                title="Save Changes",
+                message="Save changes to the current scene before creating a new scene?",
+                button=["Save", "Don't Save", "Cancel"],
+                defaultButton="Save",
+                cancelButton="Cancel",
+            )
+            if result == "Save":
+                cmds.file(save=True)
+                cmds.file(new=True, force=True)
+            elif result == "Don't Save":
+                cmds.file(new=True, force=True)
+        else:
+            return
+
         main_workspace_path = ffu.get_main_workspace_path()
         file_path = str(main_workspace_path / "assets" / asset_type / asset_name / asset_part 
                         / "wip" / f"{asset_type}_{asset_name}_{asset_part}_v0000.mb")
@@ -69,7 +84,22 @@ class MayaInterface(DCCInterface):
         return str(file_path)
     
     def create_new_shot_task_file(self, sequence: str, shot: str, department: str, task: str, ) -> str:
-        cmds.file(new=True)
+        if cmds.file(q=True, modified=True):
+            result = cmds.confirmDialog(
+                title="Save Changes",
+                message="Save changes to the current scene before creating a new scene?",
+                button=["Save", "Don't Save", "Cancel"],
+                defaultButton="Save",
+                cancelButton="Cancel",
+            )
+            if result == "Save":
+                cmds.file(save=True)
+                cmds.file(new=True, force=True)
+            elif result == "Don't Save":
+                cmds.file(new=True, force=True)
+        else:
+            return
+        
         main_workspace_path = ffu.get_main_workspace_path()
         file_path = str(main_workspace_path / "sequences" / sequence / shot / "departments" / department / task
                         / "wip" / f"{sequence}_{shot}_{department}_{task}_v0000.mb")
@@ -112,8 +142,6 @@ class MayaInterface(DCCInterface):
                     return True
         elif relative_parts[0] == "sequences":
             # Check relative folders match with the file name
-            print(file_parts)
-            print(relative_parts)
             if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[4] and  file_parts[3] == relative_parts[5] and "wip" == relative_parts[6]:
                 # Check if the version and file type are correct
                 if file_stem[0] == "v" and len(file_stem[1:]) == 4 and file_stem[1:].isdigit() and file_ext in self.get_file_extensions():
@@ -147,7 +175,21 @@ class MayaInterface(DCCInterface):
         return latest_version + 1
 
     def open_file(self, file_path: Path) -> None:
-        cmds.file(str(file_path), open=True)
+        if cmds.file(q=True, modified=True):
+            result = cmds.confirmDialog(
+                title="Save Changes",
+                message="Save changes to the current scene?",
+                button=["Save", "Don't Save", "Cancel"],
+                defaultButton="Save",
+                cancelButton="Cancel",
+            )
+            if result == "Save":
+                cmds.file(save=True)
+                cmds.file(str(file_path), open=True)
+            elif result == "Don't Save":
+                cmds.file(str(file_path), open=True)
+        else:
+            cmds.file(str(file_path), open=True)
 
     def save_file(self, file_path: Path) -> bool:
         if cmds.file(q=True, modified=True):
