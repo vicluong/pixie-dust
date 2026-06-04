@@ -37,7 +37,7 @@ class ProductionTab(QtWidgets.QWidget):
     def create_widgets(self):
         """Create all widgets for the UI"""
         # Tab 3: Assignment
-
+        return
 
     def create_layout(self):
         """Create all layouts and add widgets to them"""
