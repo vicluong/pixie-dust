@@ -75,18 +75,15 @@ class PublishDialog(QtWidgets.QDialog):
 
         self.export_checkboxes = {}
 
-        self.file_types = {
-            ".mb": "Maya Binary Scene",
-            ".usd": "Universal Scene Description",
-            ".fbx": "FBX Exchange Format",
-            # ".abc": "Alembic Cache",
-            ".obj": "OBJ Geometry",
-        }
+        self.file_types = self.dcc_interface.get_publish_file_extensions()
 
-        for ext, description in self.file_types.items():
+        for i, (ext, description) in enumerate(self.file_types.items()):
             checkbox = QtWidgets.QCheckBox(f"{ext} — {description}")
             checkbox.setMinimumHeight(24)
             checkbox.setChecked(True)
+
+            if i == 0:
+                checkbox.setDisabled(True)
 
             self.export_layout.addWidget(checkbox)
             self.export_checkboxes[ext] = checkbox
@@ -171,11 +168,5 @@ class PublishDialog(QtWidgets.QDialog):
                     message="All exports completed successfully.",
                     button=["OK"]
                 )
-        else:
-            QtWidgets.QMessageBox.warning(
-                self,
-                "Save Error",
-                "Current file failed verification."
-            )
 
         self.close()

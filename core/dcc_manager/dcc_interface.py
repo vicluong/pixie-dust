@@ -60,5 +60,9 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
+    def get_publish_file_extensions(self) -> QtWidgets.QWidget:
+        pass
+
+    @abstractmethod
     def publish_file(self, publishes_folder: Path, extension: str) -> bool:
         pass

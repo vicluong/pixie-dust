@@ -163,11 +163,5 @@ class SaveDialog(QtWidgets.QDialog):
                     message=f"Saved:\n{path}",
                     button=["OK"]
                 )
-        else:
-            QtWidgets.QMessageBox.warning(
-                self,
-                "Save Error",
-                "Current file failed verification."
-            )
 
         self.close()
