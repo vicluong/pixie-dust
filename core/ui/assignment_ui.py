@@ -124,7 +124,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data(self.config_path)
+            self.assignment_data = ffu.get_assignment_data()
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
@@ -193,7 +193,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data(self.config_path)
+            self.assignment_data = ffu.get_assignment_data()
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
@@ -261,7 +261,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data(self.config_path)
+            self.assignment_data = ffu.get_assignment_data()
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
@@ -311,7 +311,7 @@ class AssignmentTab(QtWidgets.QWidget):
         assignment_cell_data = assignment_table_item.data(1, QtCore.Qt.UserRole)
 
         if assignment_cell_data:
-            self.assignment_data = ffu.get_assignment_data(self.config_path)
+            self.assignment_data = ffu.get_assignment_data()
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users

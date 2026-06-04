@@ -106,10 +106,8 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
         if parents == 3:
             department_item = task_item.parent()
             department = department_item.text(0)
-
             shot_item = department_item.parent()
             shot = shot_item.text(0)
-
             sequence_item = shot_item.parent()
             sequence = sequence_item.text(0)
             

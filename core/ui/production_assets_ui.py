@@ -35,28 +35,22 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         self.current_user_dropdown.addItems([x for x in self.users])
 
         self.assets_tree = AssetTreeWidget(extra_info=False)
-        self.assets_tree.generate_tree()
 
         self.wip_label = QtWidgets.QLabel("WIP Versions")
         self.wip_label.setAlignment(QtCore.Qt.AlignCenter) 
         self.wip_list = QtWidgets.QTreeWidget()
         self.wip_list.setHeaderLabels(["Version"])
-        # item = QtWidgets.QTreeWidgetItem(["v0001"])
-        # self.wip_list.addTopLevelItem(item)
 
         self.publish_label = QtWidgets.QLabel("Published Versions")
         self.publish_label.setAlignment(QtCore.Qt.AlignCenter) 
         self.publish_list = QtWidgets.QTreeWidget()
         self.publish_list.setHeaderLabels(["Version"])
-        # item = QtWidgets.QTreeWidgetItem(["v0001"])
-        # self.publish_list.addTopLevelItem(item)
 
         self.new_file_btn = QtWidgets.QPushButton("New File")
         self.open_file_btn = QtWidgets.QPushButton("Open File")
 
     def create_layout(self):
         """Create all layouts and add widgets to them"""
-        # Tab 3: Production
         assets_layout = QtWidgets.QVBoxLayout(self)
         assets_info_layout = QtWidgets.QHBoxLayout()
         assets_info_layout.addWidget(self.assets_tree)
@@ -104,10 +98,8 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         if parents == 2:
             asset_part_item = self.assets_tree.currentItem()
             asset_part = asset_part_item.text(0)
-
             asset_name_item = asset_part_item.parent()
             asset_name = asset_name_item.text(0)
-
             asset_type_item = asset_name_item.parent()
             asset_type = asset_type_item.text(0)
             
