@@ -128,7 +128,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
 
         asset_name_index = asset_part_index.parent()
         if asset_name_index.isValid():
-            asset_name = asset_name_index.data() # Returns the text of the parent
+            asset_name = asset_name_index.data()
             print(f"Asset Name: {asset_name}")
         else:
             QtWidgets.QMessageBox.warning(
@@ -140,7 +140,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
 
         asset_type_index = asset_name_index.parent()
         if asset_type_index.isValid():
-            asset_type = asset_type_index.data() # Returns the text of the parent
+            asset_type = asset_type_index.data()
             print(f"Asset Type: {asset_type}")
         else:
             QtWidgets.QMessageBox.warning(

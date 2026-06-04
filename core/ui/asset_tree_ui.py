@@ -29,7 +29,6 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
             self.generate_tree()
         else:
             self.generate_specific_user_tree(uid)
-            print(uid)
 
     def generate_tree(self):
         tree_model = self.model()

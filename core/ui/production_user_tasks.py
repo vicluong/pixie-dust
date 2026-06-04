@@ -88,7 +88,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
         self.asset_task_trees.clearSelection()
         self.shot_task_trees.clearSelection()
 
-        if list_item_widget:
+        if isinstance(list_item_widget, QtWidgets.QTreeWidgetItem):
             list_item_widget.treeWidget().setCurrentItem(list_item_widget)
             self.selected_item = list_item_widget
 
