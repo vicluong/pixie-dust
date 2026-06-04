@@ -67,7 +67,8 @@ class SaveDialog(QtWidgets.QDialog):
         self.version_label = QtWidgets.QLabel("Version")
         self.version_spin = QtWidgets.QSpinBox()
         self.version_spin.setMinimum(1)
-        self.next_version = self.dcc_interface.get_next_available_version()
+        parent_folder_path = self.dcc_interface.get_parent_folder_from_scene()
+        self.next_version = self.dcc_interface.get_next_available_version(parent_folder_path)
         self.version_spin.setValue(self.next_version)
         self.version_spin.setMaximum(9999)
         self.version_spin.setEnabled(False)
@@ -137,7 +138,8 @@ class SaveDialog(QtWidgets.QDialog):
         )
 
         if self.next_version_check.isChecked():
-            self.next_version = self.dcc_interface.get_next_available_version()
+            parent_folder_path = self.dcc_interface.get_parent_folder_from_scene()
+            self.next_version = self.dcc_interface.get_next_available_version(parent_folder_path)
             self.version_spin.setValue(self.next_version)
 
     def update_filename_preview(self):

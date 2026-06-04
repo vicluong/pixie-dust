@@ -14,7 +14,7 @@ from dcc_manager.dcc_interface import DCCInterface
 
 
 class AssetTreeWidget(QtWidgets.QTreeWidget):
-    def __init__(self, extra_info: bool = True):
+    def __init__(self, extra_info: bool, uid: str = ""):
         super().__init__()
 
         self.main_workspace_path = ffu.get_main_workspace_path()
@@ -25,13 +25,17 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
         else:
             self.setHeaderLabels(["Assets"])
 
-        self.generate_tree()
+        if not uid:
+            self.generate_tree()
+        else:
+            self.generate_specific_user_tree(uid)
+            print(uid)
 
     def generate_tree(self):
         tree_model = self.model()
         tree_model.removeRows(0, tree_model.rowCount())
 
-        self.assignment_data = ffu.get_assignment_data()
+        assignments = ffu.get_assignment_data()
 
         assets_path = self.main_workspace_path / "assets"
         assets_types = [x for x in assets_path.iterdir() if x.is_dir()]
@@ -61,7 +65,6 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                     asset_name_item.addChild(asset_part_item)
 
                     if self.extra_info:
-                        assignments = self.assignment_data
                         assignees = []
                         completed = False
 
@@ -99,6 +102,32 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                         }
 
                         asset_part_item.setData(1, QtCore.Qt.UserRole, assignment_data)
+
+        self.addTopLevelItems(top_level_items)
+        self.expandAll()
+        self.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+
+    def generate_specific_user_tree(self, uid: str):
+        tree_model = self.model()
+        tree_model.removeRows(0, tree_model.rowCount())
+
+        assignments = ffu.get_assignment_data()
+
+        top_level_items = []
+
+        for assignment in assignments.values():
+            if assignment["entity_type"] == "asset" and uid in assignment["assignees"]:
+                asset_type_item = QtWidgets.QTreeWidgetItem()
+                asset_type_item.setText(0, assignment["asset_type"])
+                top_level_items.append(asset_type_item)
+
+                asset_name_item = QtWidgets.QTreeWidgetItem()
+                asset_name_item.setText(0, assignment["asset_name"])
+                asset_type_item.addChild(asset_name_item)
+
+                asset_part_item = QtWidgets.QTreeWidgetItem()
+                asset_part_item.setText(0, assignment["asset_part"])
+                asset_name_item.addChild(asset_part_item)                
 
         self.addTopLevelItems(top_level_items)
         self.expandAll()

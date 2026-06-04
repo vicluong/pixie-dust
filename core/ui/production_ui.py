@@ -13,6 +13,8 @@ import utils.file_folder_utils as ffu
 from dcc_manager.dcc_interface import DCCInterface
 from ui.production_assets_ui import ProductionAssetsTab
 from ui.production_shot_tasks_ui import ProductionShotTasksTab
+from ui.asset_tree_ui import AssetTreeWidget
+from ui.shot_task_tree_ui import ShotTaskTreeWidget
 
 
 class ProductionTab(QtWidgets.QWidget):
@@ -25,6 +27,8 @@ class ProductionTab(QtWidgets.QWidget):
         self.assignment_data = ffu.get_assignment_data()
         self.users = ffu.get_users()
 
+        self.selected_item = None
+
         self.create_widgets()
         self.create_layout()
         self.create_connections()
@@ -35,8 +39,12 @@ class ProductionTab(QtWidgets.QWidget):
         self.current_user_dropdown = QtWidgets.QComboBox()
         self.current_user_dropdown.addItems([x for x in self.users])
 
-            # Bottom File Buttons
-        self.get_tasks_btn = QtWidgets.QPushButton("Get Tasks")
+        self.wip_label = QtWidgets.QLabel("WIP Versions")
+        self.wip_label.setAlignment(QtCore.Qt.AlignCenter) 
+        self.wip_list = QtWidgets.QTreeWidget()
+        self.wip_list.setHeaderLabels(["Version"])
+
+        self.open_file_btn = QtWidgets.QPushButton("Open File")
 
     def create_layout(self):
         """Create all layouts and add widgets to them"""
@@ -45,89 +53,105 @@ class ProductionTab(QtWidgets.QWidget):
         production_main_tab = QtWidgets.QTabWidget()
 
         production_tasks_tab = QtWidgets.QWidget()
+    
+        production_tasks_layout = QtWidgets.QVBoxLayout(production_tasks_tab)
+
         current_user_layout = QtWidgets.QFormLayout()
         current_user_layout.addRow("Current User:", self.current_user_dropdown)
+        production_tasks_layout.addLayout(current_user_layout)
 
-        production_assets_tab = ProductionAssetsTab(self.dcc_interface)
-        production_shots_tab = ProductionShotTasksTab(self.dcc_interface)
+        current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
+        production_tasks_trees_layout = QtWidgets.QHBoxLayout()
+        self.asset_task_trees = AssetTreeWidget(extra_info=False, uid=current_assignee_uid)
+        self.shot_task_trees = ShotTaskTreeWidget(extra_info=False, uid=current_assignee_uid)
+        production_tasks_trees_layout.addWidget(self.asset_task_trees)
+        production_tasks_trees_layout.addWidget(self.shot_task_trees)
+
+        wip_layout = QtWidgets.QVBoxLayout(self)
+        wip_layout.addWidget(self.wip_label)
+        wip_layout.addWidget(self.wip_list)
+        production_tasks_trees_layout.addLayout(wip_layout)
+
+        production_tasks_layout.addLayout(production_tasks_trees_layout)
+
+        open_file_layout = QtWidgets.QHBoxLayout()
+        open_file_layout.addWidget(self.open_file_btn)
+        production_tasks_layout.addLayout(open_file_layout)
 
         production_main_tab.addTab(production_tasks_tab, "My Tasks")
+
+        production_assets_tab = ProductionAssetsTab(self.dcc_interface)
         production_main_tab.addTab(production_assets_tab, "Assets")
+
+        production_shots_tab = ProductionShotTasksTab(self.dcc_interface)
         production_main_tab.addTab(production_shots_tab, "Shots / Sequences")
+
         production_layout.addWidget(production_main_tab)
-
-        production_tasks_layout = QtWidgets.QHBoxLayout(production_tasks_tab)
-        production_tasks_layout.addLayout(current_user_layout)
-        self.tasks_table_layout = QtWidgets.QHBoxLayout()
-        production_tasks_layout.addLayout(self.tasks_table_layout)
-
         production_main_tab.setCurrentIndex(1)
 
     def create_connections(self):
         """Create all connections for the UI"""
-        self.get_tasks_btn.pressed.connect(self.show_tasks_table)
-        self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_table)
+        self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_trees)
+        self.asset_task_trees.itemClicked.connect(self.focus_list)
+        self.shot_task_trees.itemClicked.connect(self.focus_list)
+        self.open_file_btn.pressed.connect(self.open_file)
 
-    def show_tasks_table(self):
-        self.clear_layout(self.tasks_table_layout)
+    def show_tasks_trees(self):
+        current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
 
-        card_data = []
+        self.asset_task_trees.generate_specific_user_tree(current_assignee_uid)
+        self.shot_task_trees.generate_specific_user_tree(current_assignee_uid)
 
-        for assignment in self.assignment_data.values():
-            current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
-            if current_assignee_uid in assignment["assignees"]: 
-                if "asset_name" in assignment and "asset_part" in assignment:
-                    card_data.append((assignment["asset_name"], assignment["asset_part"]))
-                elif "task_name" in assignment and "sequence_name" in assignment and "shot_name" in assignment:
-                    card_data.append((assignment["task_name"], f"{assignment['sequence_name']}, {assignment['shot_name']}"))
+    def focus_list(self, list_item_widget):
+        self.asset_task_trees.clearSelection()
+        self.shot_task_trees.clearSelection()
 
-        card_data.sort()
+        list_item_widget.treeWidget().setCurrentItem(list_item_widget)
+        self.selected_item = list_item_widget
 
-        print(card_data)
+        self.show_versions()
 
-        for card in card_data:
-            card_widget = Card(card[0], card[1])
-            card_widget.setMaximumWidth(300)
-            card_widget.setMaximumHeight(200)
-            self.tasks_table_layout.addWidget(card_widget)
-        
-        self.tasks_table_layout.addStretch()
+    def show_versions(self):
+        count = 0
+        parent = self.selected_item.parent()
 
-    def clear_layout(self, layout):
-        while layout.count():
-            item = layout.takeAt(0)
+        while parent:
+            count += 1
+            parent = parent.parent()
 
-            widget = item.widget()
-            child_layout = item.layout()
+        if self.selected_item.treeWidget() == self.asset_task_trees and count == 2:
+            asset_part_item = self.selected_item
+            asset_part = asset_part_item.text(0)
+            asset_name_item = asset_part_item.parent()
+            asset_name = asset_name_item.text(0)
+            asset_type_item = asset_name_item.parent()
+            asset_type = asset_type_item.text(0)
+            
+            wip_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "wip")
+            self.wip_list.clear()
+            for wip_file in reversed(wip_files):
+                wip_version = wip_file.stem.rsplit("_", 1)[1]
+                wip_item = QtWidgets.QTreeWidgetItem([wip_version])
+                wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
+                self.wip_list.addTopLevelItem(wip_item)
+        elif self.selected_item.treeWidget() == self.shot_task_trees and count == 3:
+            task_item = self.selected_item
+            task = task_item.text(0)
+            department_item = task_item.parent()
+            department = department_item.text(0)
+            shot_item = department_item.parent()
+            shot = shot_item.text(0)
+            sequence_item = shot_item.parent()
+            sequence = sequence_item.text(0)
+            
+            wip_files = self.dcc_interface.get_shot_task_files(sequence, shot, department, task, "wip")
+            self.wip_list.clear()
+            for wip_file in reversed(wip_files):
+                wip_version = wip_file.stem.rsplit("_", 1)[1]
+                wip_item = QtWidgets.QTreeWidgetItem([wip_version])
+                wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
+                self.wip_list.addTopLevelItem(wip_item)
 
-            if widget is not None:
-                widget.setParent(None)
-                widget.deleteLater()
-
-            elif child_layout is not None:
-                self.clear_layout(child_layout)
-
-class Card(QtWidgets.QFrame):
-    def __init__(self, title: str, content: str):
-        super().__init__()
-
-        self.setObjectName("card")
-
-        layout = QtWidgets.QVBoxLayout(self)
-
-        title_label = QtWidgets.QLabel(title)
-        content_label = QtWidgets.QLabel(content)
-
-        layout.addWidget(title_label)
-        layout.addWidget(content_label)
-
-        self.setStyleSheet("""
-        QFrame#card {
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            padding: 10px;
-        }
-        QLabel {
-            font-size: 30px;
-        }
-        """)
+    def open_file(self):
+        file_path = self.wip_list.currentItem().data(0, QtCore.Qt.UserRole)
+        self.dcc_interface.open_file(file_path)

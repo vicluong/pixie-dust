@@ -14,7 +14,7 @@ from dcc_manager.dcc_interface import DCCInterface
 
 
 class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
-    def __init__(self, extra_info: bool = True):
+    def __init__(self, extra_info: bool = True, uid: str = ""):
         super().__init__()
 
         self.main_workspace_path = ffu.get_main_workspace_path()
@@ -25,7 +25,10 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
         else:
             self.setHeaderLabels(["Shot Tasks"])
 
-        self.generate_tree()
+        if not uid:
+            self.generate_tree()
+        else:
+            self.generate_specific_user_tree(uid)
 
     def generate_tree(self):
         tree_model = self.model()
@@ -108,6 +111,36 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                             }
 
                             task_item.setData(1, QtCore.Qt.UserRole, assignment_data)
+
+        self.addTopLevelItems(top_level_items)
+        self.expandAll()
+        self.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+
+    def generate_specific_user_tree(self, uid: str):
+        tree_model = self.model()
+        tree_model.removeRows(0, tree_model.rowCount())
+
+        assignments = ffu.get_assignment_data()
+
+        top_level_items = []
+
+        for assignment in assignments.values():
+            if assignment["entity_type"] == "shot" and uid in assignment["assignees"]:
+                seqeunce_item = QtWidgets.QTreeWidgetItem()
+                seqeunce_item.setText(0, assignment["sequence_name"])
+                top_level_items.append(seqeunce_item)
+
+                shot_item = QtWidgets.QTreeWidgetItem()
+                shot_item.setText(0, assignment["shot_name"])
+                seqeunce_item.addChild(shot_item)
+
+                shot_dep_item = QtWidgets.QTreeWidgetItem()
+                shot_dep_item.setText(0, assignment["shot_dep"])
+                shot_item.addChild(shot_dep_item)   
+
+                task_item = QtWidgets.QTreeWidgetItem()
+                task_item.setText(0, assignment["task_name"])
+                shot_dep_item.addChild(task_item)                 
 
         self.addTopLevelItems(top_level_items)
         self.expandAll()

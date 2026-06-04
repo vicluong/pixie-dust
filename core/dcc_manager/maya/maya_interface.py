@@ -72,8 +72,10 @@ class MayaInterface(DCCInterface):
                 cmds.file(new=True, force=True)
             elif result == "Don't Save":
                 cmds.file(new=True, force=True)
+            else:
+                return
         else:
-            return
+            cmds.file(new=True, force=True)
 
         main_workspace_path = ffu.get_main_workspace_path()
         file_path = str(main_workspace_path / "assets" / asset_type / asset_name / asset_part 
@@ -97,8 +99,10 @@ class MayaInterface(DCCInterface):
                 cmds.file(new=True, force=True)
             elif result == "Don't Save":
                 cmds.file(new=True, force=True)
+            else:
+                return
         else:
-            return
+            cmds.file(new=True, force=True)
         
         main_workspace_path = ffu.get_main_workspace_path()
         file_path = str(main_workspace_path / "sequences" / sequence / shot / "departments" / department / task
@@ -154,16 +158,19 @@ class MayaInterface(DCCInterface):
         )
         return False
 
-    # Usually performed after verify_file or before save_file
-    def get_next_available_version(self) -> int:
+    def get_parent_folder_from_scene(self) -> Path:
         scene_path = Path(cmds.file(q=True, sceneName=True))
-        task_folder = scene_path.parent
+        task_wip_folder_path = scene_path.parent
 
+        return task_wip_folder_path
+
+    # Usually performed after verify_file or before save_file
+    def get_next_available_version(self, folder_path) -> int:
         pattern = re.compile(r"_v(\d{4})$")
 
         latest_version = -1
 
-        for file in task_folder.iterdir():
+        for file in folder_path.iterdir():
             version_match = pattern.search(file.stem)
 
             if version_match and file.suffix in self.get_file_extensions():
@@ -185,9 +192,9 @@ class MayaInterface(DCCInterface):
             )
             if result == "Save":
                 cmds.file(save=True)
-                cmds.file(str(file_path), open=True)
+                cmds.file(str(file_path), open=True, force=True)
             elif result == "Don't Save":
-                cmds.file(str(file_path), open=True)
+                cmds.file(str(file_path), open=True, force=True)
         else:
             cmds.file(str(file_path), open=True)
 
