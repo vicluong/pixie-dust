@@ -79,7 +79,7 @@ def delete_modules(reload_directory: str) -> None:
 
 from pathlib import Path
 
-root_folder = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust")
+root_folder = Path("/mnt/ala/mav/2026/sandbox/friday_short_film/pixie_dust/")
 
 for folder in root_folder.rglob("*"):
     if folder.is_dir():
