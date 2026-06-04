@@ -75,6 +75,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
         self.shot_task_trees.itemClicked.connect(self.focus_list)
 
         self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_trees)
+        self.current_user_dropdown.currentTextChanged.connect(self.focus_list)
         self.open_file_btn.pressed.connect(self.open_file)
 
     def show_tasks_trees(self):
@@ -87,12 +88,15 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
         self.asset_task_trees.clearSelection()
         self.shot_task_trees.clearSelection()
 
-        list_item_widget.treeWidget().setCurrentItem(list_item_widget)
-        self.selected_item = list_item_widget
+        if list_item_widget:
+            list_item_widget.treeWidget().setCurrentItem(list_item_widget)
+            self.selected_item = list_item_widget
 
-        self.show_versions()
+            self.show_versions()
 
     def show_versions(self):
+        self.wip_list.clear()
+
         count = 0
         parent = self.selected_item.parent()
 
@@ -109,7 +113,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             asset_type = asset_type_item.text(0)
             
             wip_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "wip")
-            self.wip_list.clear()
+            
             for wip_file in reversed(wip_files):
                 wip_version = wip_file.stem.rsplit("_", 1)[1]
                 wip_item = QtWidgets.QTreeWidgetItem([wip_version])
@@ -126,7 +130,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             sequence = sequence_item.text(0)
             
             wip_files = self.dcc_interface.get_shot_task_files(sequence, shot, department, task, "wip")
-            self.wip_list.clear()
+
             for wip_file in reversed(wip_files):
                 wip_version = wip_file.stem.rsplit("_", 1)[1]
                 wip_item = QtWidgets.QTreeWidgetItem([wip_version])
@@ -136,3 +140,5 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
     def open_file(self):
         file_path = self.wip_list.currentItem().data(0, QtCore.Qt.UserRole)
         self.dcc_interface.open_file(file_path)
+
+        self.window().close()

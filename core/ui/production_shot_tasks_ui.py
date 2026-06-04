@@ -156,7 +156,11 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
                 "Please select an asset part to create a new file for."
             )
             return
+        
+        self.window().close()
 
     def open_file(self):
         file_path = self.focused_version_item.data(0, QtCore.Qt.UserRole)
         self.dcc_interface.open_file(file_path)
+
+        self.window().close()

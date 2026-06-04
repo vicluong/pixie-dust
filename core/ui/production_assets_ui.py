@@ -88,6 +88,9 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         self.focused_version_item = list_item_widget
 
     def show_asset_versions(self, tree_item):
+        self.wip_list.clear()
+        self.publish_list.clear()
+        
         parents = 0
         parent = tree_item.parent()
 
@@ -104,20 +107,20 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             asset_type = asset_type_item.text(0)
             
             wip_asset_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "wip")
-            self.wip_list.clear()
-            for wip_asset_file in reversed(wip_asset_files):
-                wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
-                wip_asset_item = QtWidgets.QTreeWidgetItem([wip_asset_version])
-                wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
-                self.wip_list.addTopLevelItem(wip_asset_item)
+            if wip_asset_files:
+                for wip_asset_file in reversed(wip_asset_files):
+                    wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
+                    wip_asset_item = QtWidgets.QTreeWidgetItem([wip_asset_version])
+                    wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
+                    self.wip_list.addTopLevelItem(wip_asset_item)
                 
             published_asset_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "publishes")
-            self.publish_list.clear()
-            for published_asset_file in reversed(published_asset_files):
-                published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
-                published_asset_item = QtWidgets.QTreeWidgetItem([published_asset_version])
-                published_asset_item.setData(0, QtCore.Qt.UserRole, published_asset_file)
-                self.publish_list.addTopLevelItem(published_asset_item)
+            if published_asset_files:
+                for published_asset_file in reversed(published_asset_files):
+                    published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
+                    published_asset_item = QtWidgets.QTreeWidgetItem([published_asset_version])
+                    published_asset_item.setData(0, QtCore.Qt.UserRole, published_asset_file)
+                    self.publish_list.addTopLevelItem(published_asset_item)
 
     def create_new_file(self):
         asset_part_index = self.assets_tree.currentIndex()
@@ -149,6 +152,10 @@ class ProductionAssetsTab(QtWidgets.QWidget):
         
         self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_part)
 
+        self.window().close()
+
     def open_file(self):
         file_path = self.focused_version_item.data(0, QtCore.Qt.UserRole)
         self.dcc_interface.open_file(file_path)
+
+        self.window().close()

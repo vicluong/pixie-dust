@@ -42,15 +42,15 @@ class CreationTab(QtWidgets.QWidget):
 
             # Shot
         self.create_shot_le = QtWidgets.QLineEdit()
-        self.create_shot_label = QtWidgets.QLabel("Select a sequence")
+        self.create_shot_label = QtWidgets.QLabel("Select a sequence from the list to the right.")
         self.create_shot_btn = QtWidgets.QPushButton("Create Shot")
 
             # Shot Task
         self.create_shot_task_le = QtWidgets.QLineEdit()
-        self.create_shot_task_label = QtWidgets.QLabel("Select a shot department")
+        self.create_shot_task_label = QtWidgets.QLabel("Select a shot department from the list to the right.")
         self.create_shot_task_btn = QtWidgets.QPushButton("Create Shot Task")
 
-        self.asset_tree = AssetTreeWidget(extra_info=False)
+        self.asset_tree = AssetTreeWidget(extra_info=True)
         self.shot_tree = ShotTaskTreeWidget(extra_info=True)
         self.shot_tree.setVisible(False)
 
@@ -320,7 +320,7 @@ class CreationTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Assignment Error", 
-                "Select a department of a shot."
+                "Select the department of a shot."
             )
             return
 

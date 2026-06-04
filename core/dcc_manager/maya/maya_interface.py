@@ -24,39 +24,63 @@ class MayaInterface(DCCInterface):
 
     def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
-        folder = main_workspace_path / "assets" / asset_type / asset_name / asset_part / file_state_folder
 
-        pattern = re.compile(r"_v(\d{4})\.mb$")
+        if file_state_folder == "publishes":
+            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_part / file_state_folder / "mb"
+        elif file_state_folder == "wip":
+            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_part / file_state_folder
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Asset Retrieval Error", 
+                f"Invalid file state given."
+            )
+            return
 
-        versions = []
+        if folder.exists():
+            pattern = re.compile(r"_v(\d{4})\.mb$")
 
-        for file in folder.iterdir():
-            match = pattern.search(file.name)
-            if match:
-                versions.append((int(match.group(1)), file))
+            versions = []
 
-        versions.sort(key=lambda x: x[0])
-        sorted_files = [f for _, f in versions]
+            for file in folder.iterdir():
+                match = pattern.search(file.name)
+                if match:
+                    versions.append((int(match.group(1)), file))
 
-        return sorted_files
+            versions.sort(key=lambda x: x[0])
+            sorted_files = [f for _, f in versions]
+
+            return sorted_files
 
     def get_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
-        folder = main_workspace_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder
+        
+        if file_state_folder == "publishes":
+            folder = main_workspace_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder / "mb"
+        elif file_state_folder == "wip":
+            folder = main_workspace_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder / "mb"
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Asset Retrieval Error", 
+                f"Invalid file state given."
+            )
+            return
+        
+        if folder.exists():
+            pattern = re.compile(r"_v(\d{4})\.mb$")
 
-        pattern = re.compile(r"_v(\d{4})\.mb$")
+            versions = []
 
-        versions = []
+            for file in folder.iterdir():
+                match = pattern.search(file.name)
+                if match:
+                    versions.append((int(match.group(1)), file))
 
-        for file in folder.iterdir():
-            match = pattern.search(file.name)
-            if match:
-                versions.append((int(match.group(1)), file))
+            versions.sort(key=lambda x: x[0])
+            sorted_files = [f for _, f in versions]
 
-        versions.sort(key=lambda x: x[0])
-        sorted_files = [f for _, f in versions]
-
-        return sorted_files
+            return sorted_files
 
     def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
         if cmds.file(q=True, modified=True):
@@ -126,6 +150,14 @@ class MayaInterface(DCCInterface):
         return scene_folder
 
     def verify_file(self) -> bool:
+        if not (cmds.file(q=True, sceneName=True)):
+            QtWidgets.QMessageBox.warning(
+                None,
+                "Verification Error",
+                "Ensure you are saving a non-empty scene."
+            )
+            return False
+
         scene_path = Path(cmds.file(q=True, sceneName=True))
 
         main_workspace_path = ffu.get_main_workspace_path()
@@ -150,12 +182,13 @@ class MayaInterface(DCCInterface):
                 # Check if the version and file type are correct
                 if file_stem[0] == "v" and len(file_stem[1:]) == 4 and file_stem[1:].isdigit() and file_ext in self.get_file_extensions():
                     return True
-
-        QtWidgets.QMessageBox.warning(
-            None,
-            "File Verification Error",
-            "Ensure your file is within either the main assets or sequences folders."
-        )
+        else:
+            QtWidgets.QMessageBox.warning(
+                None,
+                "File Verification Error",
+                "Ensure your file is within either the main assets or sequences folders."
+            )
+            return False
         return False
 
     def get_parent_folder_from_scene(self) -> Path:
@@ -182,6 +215,13 @@ class MayaInterface(DCCInterface):
         return latest_version + 1
 
     def open_file(self, file_path: Path) -> None:
+        if not file_path:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Open Error", 
+                f"Ensure there is a valid file path to open."
+            )
+            return
         if cmds.file(q=True, modified=True):
             result = cmds.confirmDialog(
                 title="Save Changes",
@@ -199,6 +239,13 @@ class MayaInterface(DCCInterface):
             cmds.file(str(file_path), open=True)
 
     def save_file(self, file_path: Path) -> bool:
+        if not file_path:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Open Error", 
+                f"Ensure there is a valid file path to open."
+            )
+            return
         if cmds.file(q=True, modified=True):
             cmds.file(rename=file_path)
             cmds.file(save=True)
@@ -210,6 +257,17 @@ class MayaInterface(DCCInterface):
                 f"Changes need to be made first before saving."
             )
             return
+
+    def get_publish_file_extensions(self) -> QtWidgets.QWidget:
+        file_types = {
+            ".mb": "Maya Binary Scene",
+            ".usd": "Universal Scene Description",
+            ".fbx": "FBX Exchange Format",
+            # ".abc": "Alembic Cache",
+            ".obj": "OBJ Geometry",
+        }
+
+        return file_types
 
     def publish_file(self, publishes_folder: Path, extension: str) -> bool:
         if extension == ".mb":
