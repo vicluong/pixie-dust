@@ -13,37 +13,56 @@ import sys
 
 from env_vars import CONFIG_PATH
 
+def _load_config():
+    try:
+        with open(str(CONFIG_PATH), 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Config file not found at {CONFIG_PATH}")
+    except Exception as e:
+        raise RuntimeError(f"Failed to read config file {CONFIG_PATH}: {e}")
+
 def get_main_workspace_path():
-    with open(str(CONFIG_PATH), 'r') as file:
-        config_data = json.load(file)
+    config_data = _load_config()
+    try:
         main_workspace_path = Path(config_data["main_workspace_path"])
+    except KeyError:
+        raise KeyError(f"Missing key 'main_workspace_path' in config {CONFIG_PATH}. Available keys: {list(config_data.keys())}")
 
     return main_workspace_path
 
 def get_assignment_data_path():
-    with open(str(CONFIG_PATH), 'r') as file:
-        config_data = json.load(file)
+    config_data = _load_config()
+    try:
         assignment_data_path = Path(config_data["assignment_data_path"])
+    except KeyError:
+        raise KeyError(f"Missing key 'assignment_data_path' in config {CONFIG_PATH}. Available keys: {list(config_data.keys())}")
 
     return assignment_data_path
 
 def get_assignment_data():
-    with open(str(CONFIG_PATH), 'r') as file:
-        config_data = json.load(file)
-        assignment_data_path = Path(config_data["assignment_data_path"])
+    assignment_data_path = get_assignment_data_path()
 
-    with open(str(assignment_data_path), 'r') as file:
-        assignment_data = json.load(file)
+    try:
+        with open(str(assignment_data_path), 'r') as file:
+            assignment_data = json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Assignment data file not found at {assignment_data_path}")
 
     return assignment_data
 
 def get_users_data():
-    with open(str(CONFIG_PATH), 'r') as file:
-        config_data = json.load(file)
+    config_data = _load_config()
+    try:
         users_data_path = Path(config_data["users_data_path"])
+    except KeyError:
+        raise KeyError(f"Missing key 'users_data_path' in config {CONFIG_PATH}. Available keys: {list(config_data.keys())}")
 
-    with open(str(users_data_path), 'r') as file:
-        users_data = json.load(file)
+    try:
+        with open(str(users_data_path), 'r') as file:
+            users_data = json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Users data file not found at {users_data_path}")
 
     return users_data
 
