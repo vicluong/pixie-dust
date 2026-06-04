@@ -12,7 +12,5 @@ from ui.publish_ui import PublishDialog
 from dcc_manager.dcc_manager import DCCManager
 
 
-config_path = Path("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust\\config.json")
-
 dcc_interface = DCCManager("maya").dcc_interface
 PublishDialog.show_dialog(dcc_interface)
