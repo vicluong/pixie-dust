@@ -91,12 +91,15 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                                 else:
                                     asset_part_item.setText(2, "In Progress")
 
+                        asset_path = str(ffu.get_main_workspace_path() / "assets" / assets_type.name / asset.name / asset_part.name)
+
                         # Store assignment information in all asset part cells for later use
                         assignment_data = {
                             "entity_type": "asset",
                             "asset_type": assets_type.name,
                             "asset_name": asset.name,
                             "asset_part": asset_part.name,
+                            "task_path": str(asset_path),
                             "assignees": assignees,
                             "completed": completed
                         }

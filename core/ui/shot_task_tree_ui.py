@@ -99,6 +99,9 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                         task_item.setText(2, "Completed")
                                     else:
                                         task_item.setText(2, "In Progress")
+
+                            shot_task_path = str(ffu.get_main_workspace_path() / "sequences" / sequence / shot / "departments" / department / task)
+
                             # Store assignment information in all asset part cells for later use
                             assignment_data = {
                                 "entity_type": "shot",
@@ -106,6 +109,7 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                 "shot_name": shot.name,
                                 "shot_dep": department.name,
                                 "task_name": task.name,
+                                "task_path": shot_task_path,
                                 "assignees": assignees,
                                 "completed": completed
                             }
