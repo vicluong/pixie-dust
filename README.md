@@ -36,17 +36,18 @@ What is my purpose in this project?
     - Use the verify_file method
     - This can be changed when the database is made
 - [x] Get shots and sequences working for production
+- [x] Decide if I should use just ".ma" files
+  - I'm using just ".mb" files
+- [x] Get publishing complete for Maya
+- [ ] Export in different file types (in Maya) (for assets only)
+- [ ] Implement USD exports too (in Maya)
 
 ## Specific Priority
 
-- [ ] Decide if I should use just ".ma" files
-- [ ] Clean up unused imports and variables
-- [ ] Remove "**main**" and "**name**"
+- [ ] Add docstrings and useful comments while removing bad comments
 
 ## Top Priority
 
-- [ ] Get publishing complete for Maya
-  - Get publishing showing up in production tab
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
 - [ ] Further investigate and find a way to import and export data to master production document
@@ -60,13 +61,10 @@ What is my purpose in this project?
 - [ ] Find a way to assign a user a name on startup
   - Either automatically on first use or first time on every session
   - Could be changed in the information section (?) or some sort of settings section
-- [ ] Export in different file types (at least for Maya)
-- [ ] Implement USD exports too
 - [ ] Get Pixie Dust working for Houdini
 - [ ] Get Pixie Dust working for Katana
 - [ ] Get Pixie Dust working for Nuke
 - [ ] Get USD working
-  - Seems like a large change for something that wouldn't be suitable for the time I have
 
 ## Low Priority
 
