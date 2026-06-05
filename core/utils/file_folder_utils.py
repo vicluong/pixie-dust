@@ -126,8 +126,6 @@ def create_asset_folders(main_workspace_path: Path, asset_type: str, asset_name:
         asset_part_path.mkdir()
         publishes_path = asset_part_path / "publishes"
         publishes_path.mkdir()
-        latest_publish_path = publishes_path / "latest"
-        latest_publish_path.mkdir()
         wip_path = asset_part_path / "wip"
         wip_path.mkdir()
 

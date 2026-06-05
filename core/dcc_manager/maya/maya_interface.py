@@ -274,11 +274,15 @@ class MayaInterface(DCCInterface):
             folder_ext_path = publishes_folder / "mb"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
+
             file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".mb")
             cmds.file(str(file_path), exportAll=True, force=True, type="mayaBinary")
+
+            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.mb")
+            cmds.file(str(latest_file_path), exportAll=True, force=True, type="mayaBinary")
+
         elif extension == ".usd":
             cmds.loadPlugin("mayaUsdPlugin", quiet=True)
-
             folder_ext_path = publishes_folder / "usd"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
@@ -286,19 +290,32 @@ class MayaInterface(DCCInterface):
             cmds.mayaUSDExport(
                 file=file_path,
             )
+
+            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest")
+            cmds.mayaUSDExport(
+                file=latest_file_path,
+            )
+
         elif extension == ".fbx":
             folder_ext_path = publishes_folder / "fbx"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
             file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".fbx")
             cmds.file(str(file_path), exportAll=True, force=True, type="FBX export")
+
+            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.fbx")
+            cmds.file(str(latest_file_path), exportAll=True, force=True, type="FBX export")
+
         elif extension == ".obj":
             folder_ext_path = publishes_folder / "obj"
             if not folder_ext_path.exists():
                 folder_ext_path.mkdir()
             file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".obj")
             cmds.file(str(file_path), exportAll=True, force=True, type="OBJexport")
+
+            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.obj")
+            cmds.file(str(latest_file_path), exportAll=True, force=True, type="OBJexport")
+
         else:
-            # raise ValueError(f"Unsupported export: {extension}")
             return False
         return True
