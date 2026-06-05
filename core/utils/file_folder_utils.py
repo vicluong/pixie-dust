@@ -100,7 +100,9 @@ def create_asset_folders(main_workspace_path: Path, asset_type: str, asset_name:
 
     asset_parts = []
 
-    if asset_type == "camera":
+    if asset_type == "audio":
+        asset_parts = ["audio"]
+    elif asset_type == "camera":
         asset_parts = ["layout", "rig"]
     elif asset_type == "character":
         asset_parts = ["animation", "art", "charfx", "model", "rig", "surfacing"]
@@ -108,6 +110,10 @@ def create_asset_folders(main_workspace_path: Path, asset_type: str, asset_name:
         asset_parts = ["charfx"]
     elif asset_type == "fx":
         asset_parts = ["art", "fx", "model", "rig", "surfacing"]
+    elif asset_type == "lighting":
+        asset_parts = ["lighting"]
+    elif asset_type == "mattePainting":
+        asset_parts = ["mattePainting"]
     elif asset_type == "prop":
         asset_parts = ["art", "model", "rig", "surfacing"]
     elif asset_type == "set":
