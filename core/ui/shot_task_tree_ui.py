@@ -56,9 +56,7 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                 shot_item.setText(0, shot.name)
                 sequence_item.addChild(shot_item)
 
-                department_path = shot / "departments"
-
-                departments = [x for x in department_path.iterdir() if x.is_dir()]
+                departments = [x for x in shot.iterdir() if x.is_dir()]
 
                 for department in departments:
                     department_item = QtWidgets.QTreeWidgetItem()
@@ -100,7 +98,7 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                     else:
                                         task_item.setText(2, "In Progress")
 
-                            shot_task_path = str(ffu.get_main_workspace_path() / "sequences" / sequence / shot / "departments" / department / task)
+                            shot_task_path = str(ffu.get_main_workspace_path() / "sequences" / sequence / shot / department / task)
 
                             # Store assignment information in all asset part cells for later use
                             assignment_data = {

@@ -56,9 +56,9 @@ class MayaInterface(DCCInterface):
         main_workspace_path = ffu.get_main_workspace_path()
         
         if file_state_folder == "publishes":
-            folder = main_workspace_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder / "mb"
+            folder = main_workspace_path / "sequences" / sequence / shot / department / task / file_state_folder / "mb"
         elif file_state_folder == "wip":
-            folder = main_workspace_path / "sequences" / sequence / shot / "departments" / department / task / file_state_folder / "mb"
+            folder = main_workspace_path / "sequences" / sequence / shot / department / task / file_state_folder / "mb"
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
@@ -129,7 +129,7 @@ class MayaInterface(DCCInterface):
             cmds.file(new=True, force=True)
         
         main_workspace_path = ffu.get_main_workspace_path()
-        file_path = str(main_workspace_path / "sequences" / sequence / shot / "departments" / department / task
+        file_path = str(main_workspace_path / "sequences" / sequence / shot / department / task
                         / "wip" / f"{sequence}_{shot}_{department}_{task}_v0000.mb")
 
         cmds.file(rename=f"{str(file_path)}")

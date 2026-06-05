@@ -3,8 +3,10 @@ import json
 import sys
 
 try:
+    from PySide6 import QtCore
     from PySide6 import QtWidgets
 except:
+    from PySide2 import QtCore
     from PySide2 import QtWidgets
 
 import utils.file_folder_utils as ffu
@@ -198,7 +200,6 @@ class CreationTab(QtWidgets.QWidget):
 
     def create_sequence(self):
         sequence_name = self.create_sequence_le.text()
-        sequence_path = self.main_workspace_path / "sequences" / sequence_name
 
         if not sequence_name:
             QtWidgets.QMessageBox.warning(
@@ -207,6 +208,8 @@ class CreationTab(QtWidgets.QWidget):
                 f"Please input a name for the asset."
             )
             return
+
+        sequence_path = self.main_workspace_path / "sequences" / sequence_name
 
         try:
             sequence_path.mkdir()
@@ -235,7 +238,6 @@ class CreationTab(QtWidgets.QWidget):
         if not selected_item.parent():
             sequence_name = selected_item.text(0)
             shot_name = self.create_shot_le.text()
-            shot_path = self.main_workspace_path / "sequences" / sequence_name / shot_name
 
             if not shot_name:
                 QtWidgets.QMessageBox.warning(
@@ -244,6 +246,8 @@ class CreationTab(QtWidgets.QWidget):
                     f"Please input a name for the shot."
                 )
                 return
+
+            shot_path = self.main_workspace_path / "sequences" / sequence_name / shot_name
 
             try:
                 ffu.create_shot_folders(shot_path)
@@ -284,10 +288,6 @@ class CreationTab(QtWidgets.QWidget):
 
         if count == 2:
             shot_task_name = self.create_shot_task_le.text()
-            dep_name = selected_item.text(0)
-            shot_name = selected_item.parent().text(0)
-            sequence_name = selected_item.parent().parent().text(0)
-            shot_task_path = self.main_workspace_path / "sequences" / sequence_name / shot_name / "departments" / dep_name / shot_task_name
 
             if not shot_task_name:
                 QtWidgets.QMessageBox.warning(
@@ -296,6 +296,11 @@ class CreationTab(QtWidgets.QWidget):
                     f"Please input a name for the shot task."
                 )
                 return
+
+            dep_name = selected_item.text(0)
+            shot_name = selected_item.parent().text(0)
+            sequence_name = selected_item.parent().parent().text(0)
+            shot_task_path = self.main_workspace_path / "sequences" / sequence_name / shot_name / dep_name / shot_task_name
 
             try:
                 ffu.create_shot_task_folders(shot_task_path)
