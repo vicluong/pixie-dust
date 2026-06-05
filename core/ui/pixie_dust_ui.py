@@ -113,3 +113,7 @@ class PixieDustDialog(QtWidgets.QDialog):
         """Create all connections for the UI"""
         self.main_tab_widget.tabBarClicked.connect(self.creation_tab.show_creation_type)
         self.main_tab_widget.tabBarClicked.connect(self.assignment_tab.show_asset_assignment_table)
+        self.main_tab_widget.tabBarClicked.connect(self.refresh_view)
+
+    def refresh_view(self):
+        self.production_tab.refresh_view()

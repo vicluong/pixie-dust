@@ -35,20 +35,24 @@ class ProductionTab(QtWidgets.QWidget):
         """Create all layouts and add widgets to them"""
         # Tab 3: Production
         production_layout = QtWidgets.QVBoxLayout(self)
-        production_main_tab = QtWidgets.QTabWidget()
+        self.production_main_tab = QtWidgets.QTabWidget()
 
-        production_user_tasks_tab = ProductionUserTasksTab(self.dcc_interface)
-        production_main_tab.addTab(production_user_tasks_tab, "My Tasks")
+        self.production_user_tasks_tab = ProductionUserTasksTab(self.dcc_interface)
+        self.production_main_tab.addTab(self.production_user_tasks_tab, "My Tasks")
 
-        production_assets_tab = ProductionAssetsTab(self.dcc_interface)
-        production_main_tab.addTab(production_assets_tab, "Assets")
+        self.production_assets_tab = ProductionAssetsTab(self.dcc_interface)
+        self.production_main_tab.addTab(self.production_assets_tab, "Assets")
 
-        production_shots_tab = ProductionShotTasksTab(self.dcc_interface)
-        production_main_tab.addTab(production_shots_tab, "Shots / Sequences")
+        self.production_shots_tab = ProductionShotTasksTab(self.dcc_interface)
+        self.production_main_tab.addTab(self.production_shots_tab, "Shots / Sequences")
 
-        production_layout.addWidget(production_main_tab)
-        production_main_tab.setCurrentIndex(1)
+        production_layout.addWidget(self.production_main_tab)
+        self.production_main_tab.setCurrentIndex(1)
 
     def create_connections(self):
         """Create all connections for the UI"""
-        return
+        self.production_main_tab.tabBarClicked.connect(self.refresh_view)
+
+    def refresh_view(self):
+        self.production_assets_tab.assets_tree.generate_tree()
+        self.production_shots_tab.shot_tasks_tree.generate_tree()
