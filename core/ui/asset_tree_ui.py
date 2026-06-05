@@ -1,7 +1,3 @@
-from pathlib import Path
-import json
-import sys
-
 try:
     from PySide6 import QtCore
     from PySide6 import QtWidgets
@@ -10,7 +6,6 @@ except:
     from PySide2 import QtWidgets
 
 import utils.file_folder_utils as ffu
-from dcc_manager.dcc_interface import DCCInterface 
 
 
 class AssetTreeWidget(QtWidgets.QTreeWidget):

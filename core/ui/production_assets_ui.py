@@ -1,7 +1,3 @@
-from pathlib import Path
-import json
-import sys
-
 try:
     from PySide6 import QtCore
     from PySide6 import QtWidgets

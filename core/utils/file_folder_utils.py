@@ -1,6 +1,5 @@
 from pathlib import Path
 import json
-import sys
 
 # def get_core_dir():
 #     code_dir = Path("/mnt/ala/mav/2026/sandbox/friday_short_film/pixie_dust/pixie-dust")

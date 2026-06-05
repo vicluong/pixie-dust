@@ -1,18 +1,11 @@
-from pathlib import Path
-import json
 import sys
-from functools import partial
 
 try:
     from PySide6 import QtCore
     from PySide6 import QtWidgets
-    from PySide6 import QtGui
-    from shiboken6 import wrapInstance
 except:
     from PySide2 import QtCore
     from PySide2 import QtWidgets
-    from PySide2 import QtGui
-    from shiboken2 import wrapInstance
 
 import utils.file_folder_utils as ffu
 from dcc_manager.dcc_interface import DCCInterface

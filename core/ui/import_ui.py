@@ -1,5 +1,3 @@
-from pathlib import Path
-import json
 import sys
 
 try:
@@ -9,6 +7,7 @@ except:
 
 from dcc_manager.dcc_interface import DCCInterface
 from ui.asset_tree_ui import AssetTreeWidget
+
 
 class ImportDialog(QtWidgets.QDialog):
     dlg_instance = None
