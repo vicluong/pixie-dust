@@ -22,7 +22,7 @@ class MayaInterface(DCCInterface):
         main_window_ptr = omui.MQtUtil.mainWindow()
         return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
-    def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
+    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
 
         if file_state_folder == "publishes":
@@ -52,7 +52,7 @@ class MayaInterface(DCCInterface):
 
             return sorted_files
 
-    def get_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
+    def get_native_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
         
         if file_state_folder == "publishes":
@@ -319,3 +319,68 @@ class MayaInterface(DCCInterface):
         else:
             return False
         return True
+    
+    def get_latest_published_files(self, asset_name: str, asset_type: str, asset_part: str) -> list[tuple[Path, Path]]:
+        main_workspace_path = ffu.get_main_workspace_path()
+        publishes_path = main_workspace_path / "assets" / asset_type / asset_name / asset_part / "publishes"
+
+        latest_files = []
+
+        for exts_folder in publishes_path.iterdir():
+            if exts_folder.is_dir():
+                latest_file = next(
+                    (p for p in exts_folder.glob("*_latest.*") if p.suffix != ".mtl"),
+                    None,
+                )
+                latest_ver = max(
+                    (p for p in exts_folder.glob("*_v*") if p.suffix != ".mtl"),
+                    key=lambda p: int(p.stem.rpartition("_v")[2]),
+                    default=None,
+                )
+                if latest_file and latest_ver:
+                    latest_files.append((latest_file, latest_ver))
+
+        return latest_files
+
+    def import_file(self, file: Path) -> None:
+        if file.exists():
+            if file.suffix == "usd":
+                if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
+                    cmds.loadPlugin("mayaUsdPlugin")
+                cmds.mayaUSDImport(file=file, primPath="/")
+            else:
+                cmds.file(str(file), i=True)
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Import Error", 
+                f"Invalid file given for importing."
+            )
+            return
+
+    def reference_file(self, file: Path) -> None:
+        if file.exists():
+            if file.suffix[1:] == "usd":
+                if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
+                    cmds.loadPlugin("mayaUsdPlugin")
+                task_name = file.stem.split("_")[1]
+                proxy_shape = cmds.createNode("mayaUsdProxyShape", name=f"{task_name}StageShape")
+                cmds.setAttr(f"{proxy_shape}.filePath", file, type="string")
+                parent_transform = cmds.listRelatives(proxy_shape, parent=True)[0]
+                cmds.rename(parent_transform, f"{task_name}Stage")
+            elif file.suffix == "mb":
+                cmds.file(file, reference=True)
+            else:
+                QtWidgets.QMessageBox.warning(
+                None, 
+                "Reference Error", 
+                f"Unable to reference file of this type. Choose either .mb or .usd"
+            )
+            return
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Reference Error", 
+                f"Invalid file given for referencing."
+            )
+            return

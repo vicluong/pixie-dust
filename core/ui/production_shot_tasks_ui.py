@@ -111,7 +111,7 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
             sequence_item = shot_item.parent()
             sequence = sequence_item.text(0)
             
-            wip_asset_files = self.dcc_interface.get_shot_task_files(sequence, shot, department, task, "wip")
+            wip_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, department, task, "wip")
             self.wip_list.clear()
             for wip_asset_file in reversed(wip_asset_files):
                 wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
@@ -119,7 +119,7 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
                 wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
                 self.wip_list.addTopLevelItem(wip_asset_item)
                 
-            published_asset_files = self.dcc_interface.get_shot_task_files(sequence, shot, department, task, "publishes")
+            published_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, department, task, "publishes")
             self.publish_list.clear()
             for published_asset_file in reversed(published_asset_files):
                 published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]

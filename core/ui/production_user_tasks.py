@@ -112,7 +112,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             asset_type_item = asset_name_item.parent()
             asset_type = asset_type_item.text(0)
             
-            wip_files = self.dcc_interface.get_asset_files(asset_name, asset_type, asset_part, "wip")
+            wip_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_part, "wip")
             
             for wip_file in reversed(wip_files):
                 wip_version = wip_file.stem.rsplit("_", 1)[1]
@@ -129,7 +129,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             sequence_item = shot_item.parent()
             sequence = sequence_item.text(0)
             
-            wip_files = self.dcc_interface.get_shot_task_files(sequence, shot, department, task, "wip")
+            wip_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, department, task, "wip")
 
             for wip_file in reversed(wip_files):
                 wip_version = wip_file.stem.rsplit("_", 1)[1]

@@ -16,11 +16,11 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_asset_files(self, asset_name: str, asset_type: str, asset_part: str, parent_folder: str) -> list[Path]:
+    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
         pass
 
     @abstractmethod
-    def get_shot_task_files(self, sequence: str, shot: str, department: str, task: str, parent_folder: str) -> list[Path]:
+    def get_native_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
         pass
 
     @abstractmethod
@@ -65,4 +65,16 @@ class DCCInterface(ABC):
 
     @abstractmethod
     def publish_file(self, publishes_folder: Path, extension: str) -> bool:
+        pass
+
+    @abstractmethod
+    def get_latest_published_files(self, asset_name: str, asset_type: str, asset_part: str) -> list[tuple[Path, Path]]:
+        pass
+
+    @abstractmethod
+    def import_file(self, file: Path) -> None:
+        pass
+
+    @abstractmethod
+    def reference_file(self, file: Path) -> None:
         pass
