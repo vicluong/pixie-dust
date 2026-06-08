@@ -270,6 +270,13 @@ class MayaInterface(DCCInterface):
         return file_types
 
     def publish_file(self, publishes_folder: Path, extension: str) -> bool:
+        if cmds.file(q=True, modified=True):
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Publish Error", 
+                f"Ensure that you have saved the scene and that there are no modifications that need to be saved."
+            )
+            return
         if extension == ".mb":
             folder_ext_path = publishes_folder / "mb"
             if not folder_ext_path.exists():
