@@ -76,13 +76,11 @@ class PublishDialog(QtWidgets.QDialog):
 
         self.file_types = self.dcc_interface.get_publish_file_extensions()
 
-        for i, (ext, description) in enumerate(self.file_types.items()):
+        for i, (ext, (description, is_locked, is_checked)) in enumerate(self.file_types.items()):
             checkbox = QtWidgets.QCheckBox(f"{ext} — {description}")
             checkbox.setMinimumHeight(24)
-            checkbox.setChecked(True)
-
-            if i == 0:
-                checkbox.setDisabled(True)
+            checkbox.setChecked(is_checked)
+            checkbox.setDisabled(is_locked)
 
             self.export_layout.addWidget(checkbox)
             self.export_checkboxes[ext] = checkbox

@@ -28,10 +28,6 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_file_extensions(self) -> list[str]:
-        pass
-
-    @abstractmethod
     def get_scene_name(self) -> str:
         pass
 
@@ -60,7 +56,7 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_publish_file_extensions(self) -> QtWidgets.QWidget:
+    def get_publish_file_extensions(self) -> dict[str, tuple[str, bool, bool]]:
         pass
 
     @abstractmethod

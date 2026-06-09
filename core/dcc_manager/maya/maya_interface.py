@@ -258,13 +258,19 @@ class MayaInterface(DCCInterface):
             )
             return
 
-    def get_publish_file_extensions(self) -> QtWidgets.QWidget:
+    def get_publish_file_extensions(self) -> dict[str, tuple[str, bool, bool]]:
+        """Get the publish file extensions and additional info for the UI
+
+        Returns:
+            dict[str, tuple[str, bool, bool]]: Key is file extension while value is a tuple containing
+                what the file extension is then if is_locked then is_checked
+        """
         file_types = {
-            ".mb": "Maya Binary Scene",
-            ".usd": "Universal Scene Description",
-            ".fbx": "FBX Exchange Format",
+            ".mb": ("Maya Binary Scene", True, True),
+            ".usd": ("Universal Scene Description", False, True),
+            ".fbx": ("FBX Exchange Format", False, False),
             # ".abc": "Alembic Cache",
-            ".obj": "OBJ Geometry",
+            ".obj": ("OBJ Geometry", False, False),
         }
 
         return file_types
