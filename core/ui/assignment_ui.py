@@ -63,7 +63,7 @@ class AssignmentTab(QtWidgets.QWidget):
 
     def create_connections(self):
         """Create all connections for the UI"""
-        self.assignment_btn.pressed.connect(self.assign_task_to_user)
+        self.assignment_btn.pressed.connect(self.toggle_assignment_of_task)
         self.toggle_progress_btn.pressed.connect(self.toggle_progress_of_task)
         self.assignment_type_dropdown.currentIndexChanged.connect(self.show_assignment_table)
 
@@ -83,13 +83,13 @@ class AssignmentTab(QtWidgets.QWidget):
     def show_shot_task_assignment_table(self):
         self.shot_tasks_tree.generate_tree()
 
-    def assign_task_to_user(self):
+    def toggle_assignment_of_task(self):
         if self.assignment_type_dropdown.currentText() == "Asset":
-            self.assign_asset_to_user()
+            self.toggle_assignment_of_asset()
         else:
-            self.assign_shot_task_to_user()
+            self.toggle_assignment_of_shot_task()
 
-    def assign_asset_to_user(self):
+    def toggle_assignment_of_asset(self):
         selected_user_item = self.users_list.currentItem()
         if not selected_user_item:
             QtWidgets.QMessageBox.warning(
@@ -160,7 +160,7 @@ class AssignmentTab(QtWidgets.QWidget):
             )
             return
         
-    def assign_shot_task_to_user(self):
+    def toggle_assignment_of_shot_task(self):
         selected_user_item = self.users_list.currentItem()
         if not selected_user_item:
             QtWidgets.QMessageBox.warning(
