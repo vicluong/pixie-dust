@@ -380,7 +380,7 @@ class MayaInterface(DCCInterface):
                 usd_shapes = cmds.ls(type="mayaUsdProxyShape") or []
                 ref_paths = [Path(cmds.getAttr(f"{shape}.filePath")) for shape in usd_shapes]
                 if file in ref_paths:
-                    QtWidgets.QMessageBox.information(
+                    QtWidgets.QMessageBox.warning(
                         None, 
                         "Reference Error", 
                         f"USD Stage already loaded: {file.name}"
@@ -397,7 +397,7 @@ class MayaInterface(DCCInterface):
                 ref_paths = [Path(ref) for ref in existing_refs]
 
                 if file in ref_paths:
-                    QtWidgets.QMessageBox.information(
+                    QtWidgets.QMessageBox.warning(
                         None, 
                         "Reference Error", 
                         f"Maya file is already referenced: {file.name}"

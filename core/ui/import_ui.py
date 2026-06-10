@@ -41,7 +41,7 @@ class ImportDialog(QtWidgets.QDialog):
 
         size = self.main_window.screen().size()
         screen_w, screen_h = size.width(), size.height()
-        self.resize(int(screen_w * 0.25), int(screen_h * 0.3))
+        self.resize(int(screen_w * 0.17), int(screen_h * 0.3))
 
         if sys.platform == "darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
@@ -65,7 +65,8 @@ class ImportDialog(QtWidgets.QDialog):
         self.import_btn = QtWidgets.QPushButton("Import")
 
     def create_layout(self):
-        main_layout = QtWidgets.QHBoxLayout(self)
+        main_layout = QtWidgets.QVBoxLayout(self)
+        list_layout = QtWidgets.QHBoxLayout()
 
         assets_layout = QtWidgets.QVBoxLayout()
         assets_layout.addWidget(self.assets_tree)
@@ -74,13 +75,13 @@ class ImportDialog(QtWidgets.QDialog):
         extensions_layout.addWidget(self.files_list)
 
         import_layout = QtWidgets.QVBoxLayout()
-        # import_layout.addStretch()
-        import_layout.addWidget(self.file_info_le)
         import_layout.addWidget(self.reference_btn)
         import_layout.addWidget(self.import_btn)
 
-        main_layout.addLayout(assets_layout)
-        main_layout.addLayout(extensions_layout)
+        list_layout.addLayout(assets_layout, stretch=3)
+        list_layout.addLayout(extensions_layout, stretch=1)
+
+        main_layout.addLayout(list_layout)
         main_layout.addLayout(import_layout)
 
     def create_connections(self):
@@ -115,17 +116,30 @@ class ImportDialog(QtWidgets.QDialog):
 
     def import_file(self):
         item = self.files_list.currentItem()
-        path = item.data(QtCore.Qt.UserRole)
-        
-        print(f"Importing: {path.name}")
+        if item:
+            path = item.data(QtCore.Qt.UserRole)
+            
+            print(f"Importing: {path.name}")
 
-        self.dcc_interface.import_file(path)
-
+            self.dcc_interface.import_file(path)
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Reference Error", 
+                f"Select a file to import."
+            )
 
     def reference_file(self):
         item = self.files_list.currentItem()
-        path = item.data(QtCore.Qt.UserRole)
-        
-        print(f"Referencing: {path.name}")
+        if item:
+            path = item.data(QtCore.Qt.UserRole)
+            
+            print(f"Referencing: {path.name}")
 
-        self.dcc_interface.reference_file(path)
+            self.dcc_interface.reference_file(path)
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Reference Error", 
+                f"Select a file to reference."
+            )
