@@ -74,7 +74,7 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                 if (assignment["entity_type"] == "shot"
                                     and assignment["sequence_name"] == sequence.name
                                     and assignment["shot_name"] == shot.name
-                                    and assignment["shot_dep"] == step.name
+                                    and assignment["step_name"] == step.name
                                     and assignment["task_name"] == task.name 
                                     ):
                                     assignees = assignment["assignees"]
@@ -100,7 +100,7 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                 "entity_type": "shot",
                                 "sequence_name": sequence.name,
                                 "shot_name": shot.name,
-                                "shot_dep": step.name,
+                                "step_name": step.name,
                                 "task_name": task.name,
                                 "task_path": shot_task_path,
                                 "assignees": assignees,
@@ -131,13 +131,13 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                 shot_item.setText(0, assignment["shot_name"])
                 seqeunce_item.addChild(shot_item)
 
-                shot_dep_item = QtWidgets.QTreeWidgetItem()
-                shot_dep_item.setText(0, assignment["shot_dep"])
-                shot_item.addChild(shot_dep_item)   
+                step_name_item = QtWidgets.QTreeWidgetItem()
+                step_name_item.setText(0, assignment["step_name"])
+                shot_item.addChild(step_name_item)   
 
                 task_item = QtWidgets.QTreeWidgetItem()
                 task_item.setText(0, assignment["task_name"])
-                shot_dep_item.addChild(task_item)                 
+                step_name_item.addChild(task_item)                 
 
         self.addTopLevelItems(top_level_items)
         self.expandAll()

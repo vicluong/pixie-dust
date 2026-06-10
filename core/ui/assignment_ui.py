@@ -199,7 +199,7 @@ class AssignmentTab(QtWidgets.QWidget):
                 if (assignment["entity_type"] == "shot"
                     and assignment["sequence_name"] == assignment_cell_data["sequence_name"]
                     and assignment["shot_name"] == assignment_cell_data["shot_name"]
-                    and assignment["shot_dep"] == assignment_cell_data["shot_dep"]
+                    and assignment["step_name"] == assignment_cell_data["step_name"]
                     and assignment["task_name"] == assignment_cell_data["task_name"]
                     ):
                     if selected_user in assignment["assignees"]:

@@ -130,7 +130,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 self,
                 "Wrong Selection",
-                "Please select an asset part to create a new file for."
+                "Please select an asset step to create a new file for."
             )
             return
 
@@ -142,7 +142,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 self,
                 "Wrong Selection",
-                "Please select an asset part to create a new file for."
+                "Please select an asset step to create a new file for."
             )
             return
         

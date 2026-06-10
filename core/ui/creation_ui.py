@@ -291,10 +291,10 @@ class CreationTab(QtWidgets.QWidget):
                 )
                 return
 
-            dep_name = selected_item.text(0)
+            step_name = selected_item.text(0)
             shot_name = selected_item.parent().text(0)
             sequence_name = selected_item.parent().parent().text(0)
-            shot_task_path = self.main_workspace_path / "sequences" / sequence_name / shot_name / dep_name / shot_task_name
+            shot_task_path = self.main_workspace_path / "sequences" / sequence_name / shot_name / step_name / shot_task_name
 
             try:
                 ffu.create_shot_task_folders(shot_task_path)
