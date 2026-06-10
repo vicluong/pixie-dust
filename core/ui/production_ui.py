@@ -54,7 +54,6 @@ class ProductionTab(QtWidgets.QWidget):
         self.production_main_tab.tabBarClicked.connect(self.refresh_view)
 
     def refresh_view(self):
-        self.production_user_tasks_tab.asset_task_trees.generate_tree()
-        self.production_user_tasks_tab.shot_task_trees.generate_tree()
+        self.production_user_tasks_tab.show_tasks_trees()
         self.production_assets_tab.assets_tree.generate_tree()
         self.production_shots_tab.shot_tasks_tree.generate_tree()
