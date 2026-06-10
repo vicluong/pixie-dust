@@ -108,7 +108,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             asset_type_item = asset_name_item.parent()
             asset_type = asset_type_item.text(0)
             
-            wip_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_step, "wip")
+            wip_files = self.dcc_interface.get_native_asset_files(asset_type, asset_name, asset_step, "wip")
             
             for wip_file in reversed(wip_files):
                 wip_version = wip_file.stem.rsplit("_", 1)[1]

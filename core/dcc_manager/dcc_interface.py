@@ -16,7 +16,7 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_step: str, file_state_folder: str) -> list[Path]:
+    def get_native_asset_files(self, asset_type: str, asset_name: str, asset_step: str, file_state_folder: str) -> list[Path]:
         pass
 
     @abstractmethod
@@ -24,7 +24,7 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_step: str) -> str:
+    def create_new_asset_file(self, asset_type: str, asset_name: str, asset_step: str) -> str:
         pass
 
     @abstractmethod

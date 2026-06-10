@@ -102,7 +102,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             asset_type_item = asset_name_item.parent()
             asset_type = asset_type_item.text(0)
             
-            wip_asset_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_step, "wip")
+            wip_asset_files = self.dcc_interface.get_native_asset_files(asset_type, asset_name, asset_step, "wip")
             if wip_asset_files:
                 for wip_asset_file in reversed(wip_asset_files):
                     wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
@@ -110,7 +110,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
                     wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
                     self.wip_list.addTopLevelItem(wip_asset_item)
                 
-            published_asset_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_step, "publishes")
+            published_asset_files = self.dcc_interface.get_native_asset_files(asset_type, asset_name, asset_step, "publishes")
             if published_asset_files:
                 for published_asset_file in reversed(published_asset_files):
                     published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
@@ -146,7 +146,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             )
             return
         
-        self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_step)
+        self.dcc_interface.create_new_asset_file(asset_type, asset_name, asset_step)
 
         self.window().close()
 

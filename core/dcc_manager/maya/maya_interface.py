@@ -22,7 +22,7 @@ class MayaInterface(DCCInterface):
         main_window_ptr = omui.MQtUtil.mainWindow()
         return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
-    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_step: str, file_state_folder: str) -> list[Path]:
+    def get_native_asset_files(self, asset_type: str, asset_name: str, asset_step: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
 
         if file_state_folder == "publishes":
@@ -82,7 +82,7 @@ class MayaInterface(DCCInterface):
 
             return sorted_files
 
-    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_step: str) -> str:
+    def create_new_asset_file(self, asset_type: str, asset_name: str, asset_step: str) -> str:
         if cmds.file(q=True, modified=True):
             result = cmds.confirmDialog(
                 title="Save Changes",
