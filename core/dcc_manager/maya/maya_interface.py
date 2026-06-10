@@ -58,7 +58,7 @@ class MayaInterface(DCCInterface):
         if file_state_folder == "publishes":
             folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder / "mb"
         elif file_state_folder == "wip":
-            folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder / "mb"
+            folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
@@ -178,7 +178,7 @@ class MayaInterface(DCCInterface):
                     return True
         elif relative_parts[0] == "sequences":
             # Check relative folders match with the file name
-            if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[4] and  file_parts[3] == relative_parts[5] and "wip" == relative_parts[6]:
+            if file_parts[0] == relative_parts[1] and file_parts[1] == relative_parts[2] and file_parts[2] == relative_parts[3] and  file_parts[3] == relative_parts[4] and "wip" == relative_parts[5]:
                 # Check if the version and file type are correct
                 if file_stem[0] == "v" and len(file_stem[1:]) == 4 and file_stem[1:].isdigit() and file_ext in self.get_file_extensions():
                     return True
@@ -239,6 +239,7 @@ class MayaInterface(DCCInterface):
             cmds.file(str(file_path), open=True)
 
     def save_file(self, file_path: Path) -> bool:
+        print(file_path)
         if not file_path:
             QtWidgets.QMessageBox.warning(
                 None, 
