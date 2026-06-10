@@ -36,6 +36,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
         self.wip_list = QtWidgets.QTreeWidget()
         self.wip_list.setHeaderLabels(["Version"])
 
+        self.new_file_btn = QtWidgets.QPushButton("New File")
         self.open_file_btn = QtWidgets.QPushButton("Open File")
 
         current_assignee_uid = ffu.get_uid(self.current_user_dropdown.currentText())
@@ -61,9 +62,10 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
 
         production_tasks_layout.addLayout(production_tasks_trees_layout)
 
-        open_file_layout = QtWidgets.QHBoxLayout()
-        open_file_layout.addWidget(self.open_file_btn)
-        production_tasks_layout.addLayout(open_file_layout)
+        file_creation_layout = QtWidgets.QHBoxLayout()
+        file_creation_layout.addWidget(self.new_file_btn)
+        file_creation_layout.addWidget(self.open_file_btn)
+        production_tasks_layout.addLayout(file_creation_layout)
 
     def create_connections(self):
         """Create all connections for the UI"""
@@ -72,6 +74,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
 
         self.current_user_dropdown.currentTextChanged.connect(self.show_tasks_trees)
         self.current_user_dropdown.currentTextChanged.connect(self.focus_list)
+        self.new_file_btn.pressed.connect(self.create_new_file)
         self.open_file_btn.pressed.connect(self.open_file)
 
     def show_tasks_trees(self):
@@ -135,8 +138,60 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
                     wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
                     self.wip_list.addTopLevelItem(wip_item)
 
-    def open_file(self):
-        file_path = self.wip_list.currentItem().data(0, QtCore.Qt.UserRole)
-        self.dcc_interface.open_file(file_path)
+    def create_new_file(self):
+        if self.selected_item:
+            count = 0
+            parent = self.selected_item.parent()
 
-        self.window().close()
+            while parent:
+                count += 1
+                parent = parent.parent()
+
+            if self.selected_item.treeWidget() == self.asset_task_trees and count == 2:
+                asset_step_item = self.selected_item
+                asset_step = asset_step_item.text(0)
+                asset_name_item = asset_step_item.parent()
+                asset_name = asset_name_item.text(0)
+                asset_type_item = asset_name_item.parent()
+                asset_type = asset_type_item.text(0)
+
+                self.dcc_interface.create_new_asset_file(asset_type, asset_name, asset_step)
+                self.window().close()
+
+            elif self.selected_item.treeWidget() == self.shot_task_trees and count == 3:
+                task_item = self.selected_item
+                task = task_item.text(0)
+                step_item = task_item.parent()
+                step = step_item.text(0)
+                shot_item = step_item.parent()
+                shot = shot_item.text(0)
+                sequence_item = shot_item.parent()
+                sequence = sequence_item.text(0)
+
+                self.dcc_interface.create_new_shot_task_file(sequence, shot, step, task)
+                self.window().close()
+            else:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "Wrong Selection",
+                    "Please select either an asset step or shot task to create a new file for."
+                )
+        else:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Wrong Selection",
+                "Please select either an asset step or shot task to create a new file for."
+            )
+
+    def open_file(self):
+        if self.wip_list.currentItem():
+            file_path = self.wip_list.currentItem().data(0, QtCore.Qt.UserRole)
+            self.dcc_interface.open_file(file_path)
+
+            self.window().close()
+        else:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Wrong Selection",
+                "Please select WIP version to open."
+            )

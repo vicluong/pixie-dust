@@ -109,7 +109,7 @@ class MayaInterface(DCCInterface):
 
         return str(file_path)
     
-    def create_new_shot_task_file(self, sequence: str, shot: str, step: str, task: str, ) -> str:
+    def create_new_shot_task_file(self, sequence: str, shot: str, step: str, task: str) -> str:
         if cmds.file(q=True, modified=True):
             result = cmds.confirmDialog(
                 title="Save Changes",

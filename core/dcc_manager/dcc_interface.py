@@ -28,6 +28,10 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
+    def create_new_shot_task_file(self, sequence: str, shot: str, step: str, task: str) -> str:
+        pass
+
+    @abstractmethod
     def get_scene_name(self) -> str:
         pass
 
