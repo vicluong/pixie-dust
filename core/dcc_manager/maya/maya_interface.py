@@ -186,7 +186,7 @@ class MayaInterface(DCCInterface):
             QtWidgets.QMessageBox.warning(
                 None,
                 "File Verification Error",
-                "Ensure your file is within either the main assets or sequences folders."
+                "Ensure your file is within either the main assets or sequences folders and is a WIP file."
             )
             return False
         return False
@@ -388,11 +388,11 @@ class MayaInterface(DCCInterface):
                     )
                     return
 
-                task_name = file.stem.split("_")[1]
-                proxy_shape = cmds.createNode("mayaUsdProxyShape", name=f"{task_name}StageShape")
+                task = file.stem.split("_")[1]
+                proxy_shape = cmds.createNode("mayaUsdProxyShape", name=f"{task}StageShape")
                 cmds.setAttr(f"{proxy_shape}.filePath", file, type="string")
                 parent_transform = cmds.listRelatives(proxy_shape, parent=True)[0]
-                cmds.rename(parent_transform, f"{task_name}Stage")
+                cmds.rename(parent_transform, f"{task}Stage")
             elif file.suffix == ".mb":
                 existing_refs = cmds.file(query=True, reference=True) or []
                 ref_paths = [Path(ref) for ref in existing_refs]

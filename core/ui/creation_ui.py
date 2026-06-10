@@ -193,9 +193,9 @@ class CreationTab(QtWidgets.QWidget):
         self.show_creation_type()
 
     def create_sequence(self):
-        sequence_name = self.create_sequence_le.text()
+        sequence = self.create_sequence_le.text()
 
-        if not sequence_name:
+        if not sequence:
             QtWidgets.QMessageBox.warning(
                 None, 
                 "File Error", 
@@ -203,14 +203,14 @@ class CreationTab(QtWidgets.QWidget):
             )
             return
 
-        sequence_path = self.main_workspace_path / "sequences" / sequence_name
+        sequence_path = self.main_workspace_path / "sequences" / sequence
 
         try:
             sequence_path.mkdir()
             QtWidgets.QMessageBox.information(
                 None, 
                 "Creation Succeeded", 
-                f"Sequence {sequence_name} has been created."
+                f"Sequence {sequence} has been created."
             )
         except FileNotFoundError as e:
             QtWidgets.QMessageBox.warning(
@@ -222,7 +222,7 @@ class CreationTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 None, 
                 "File Error", 
-                f"There is already a sequence called {sequence_name}."
+                f"There is already a sequence called {sequence}."
             )
         self.show_creation_type()
 
@@ -230,10 +230,10 @@ class CreationTab(QtWidgets.QWidget):
         selected_item = self.shot_tree.currentItem()
 
         if not selected_item.parent():
-            sequence_name = selected_item.text(0)
-            shot_name = self.create_shot_le.text()
+            sequence = selected_item.text(0)
+            shot = self.create_shot_le.text()
 
-            if not shot_name:
+            if not shot:
                 QtWidgets.QMessageBox.warning(
                     None, 
                     "File Error", 
@@ -241,14 +241,14 @@ class CreationTab(QtWidgets.QWidget):
                 )
                 return
 
-            shot_path = self.main_workspace_path / "sequences" / sequence_name / shot_name
+            shot_path = self.main_workspace_path / "sequences" / sequence / shot
 
             try:
                 ffu.create_shot_folders(shot_path)
                 QtWidgets.QMessageBox.information(
                     None, 
                     "Creation Succeeded", 
-                    f"Shot {shot_name} has been created."
+                    f"Shot {shot} has been created."
                 )
             except FileNotFoundError as e:
                 QtWidgets.QMessageBox.warning(
@@ -260,7 +260,7 @@ class CreationTab(QtWidgets.QWidget):
                 QtWidgets.QMessageBox.warning(
                     None, 
                     "File Error", 
-                    f"There is already a shot called {shot_name}."
+                    f"There is already a shot called {shot}."
                 )
         else:
             QtWidgets.QMessageBox.warning(
@@ -281,9 +281,9 @@ class CreationTab(QtWidgets.QWidget):
             item_iter = item_iter.parent()
 
         if count == 2:
-            shot_task_name = self.create_shot_task_le.text()
+            shot_task = self.create_shot_task_le.text()
 
-            if not shot_task_name:
+            if not shot_task:
                 QtWidgets.QMessageBox.warning(
                     None, 
                     "File Error", 
@@ -291,17 +291,17 @@ class CreationTab(QtWidgets.QWidget):
                 )
                 return
 
-            step_name = selected_item.text(0)
-            shot_name = selected_item.parent().text(0)
-            sequence_name = selected_item.parent().parent().text(0)
-            shot_task_path = self.main_workspace_path / "sequences" / sequence_name / shot_name / step_name / shot_task_name
+            step = selected_item.text(0)
+            shot = selected_item.parent().text(0)
+            sequence = selected_item.parent().parent().text(0)
+            shot_task_path = self.main_workspace_path / "sequences" / sequence / shot / step / shot_task
 
             try:
                 ffu.create_shot_task_folders(shot_task_path)
                 QtWidgets.QMessageBox.information(
                     None, 
                     "Creation Succeeded", 
-                    f"Shot task {shot_task_name} has been created."
+                    f"Shot task {shot_task} has been created."
                 )
             except FileNotFoundError as e:
                 QtWidgets.QMessageBox.warning(
@@ -313,7 +313,7 @@ class CreationTab(QtWidgets.QWidget):
                 QtWidgets.QMessageBox.warning(
                     None, 
                     "File Error", 
-                    f"There is already a shot task called {shot_task_name}."
+                    f"There is already a shot task called {shot_task}."
                 )
         else:
             QtWidgets.QMessageBox.warning(

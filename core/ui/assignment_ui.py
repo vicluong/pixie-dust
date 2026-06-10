@@ -197,10 +197,10 @@ class AssignmentTab(QtWidgets.QWidget):
             # If the assignment already exists, remove or add the uid from the existing users
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == "shot"
-                    and assignment["sequence_name"] == assignment_cell_data["sequence_name"]
-                    and assignment["shot_name"] == assignment_cell_data["shot_name"]
-                    and assignment["step_name"] == assignment_cell_data["step_name"]
-                    and assignment["task_name"] == assignment_cell_data["task_name"]
+                    and assignment["sequence"] == assignment_cell_data["sequence"]
+                    and assignment["shot"] == assignment_cell_data["shot"]
+                    and assignment["step"] == assignment_cell_data["step"]
+                    and assignment["task"] == assignment_cell_data["task"]
                     ):
                     if selected_user in assignment["assignees"]:
                         self.assignment_data[ass_id]["assignees"].remove(selected_user)
@@ -315,10 +315,10 @@ class AssignmentTab(QtWidgets.QWidget):
             # If the assignment already exists, remove or add the uid from the existing users
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == "shot"
-                    and assignment["sequence_name"] == assignment_cell_data["sequence_name"]
-                    and assignment["shot_name"] == assignment_cell_data["shot_name"]
-                    and assignment["step_name"] == assignment_cell_data["step_name"]
-                    and assignment["task_name"] == assignment_cell_data["task_name"]
+                    and assignment["sequence"] == assignment_cell_data["sequence"]
+                    and assignment["shot"] == assignment_cell_data["shot"]
+                    and assignment["step"] == assignment_cell_data["step"]
+                    and assignment["task"] == assignment_cell_data["task"]
                     ):
                     self.assignment_data[ass_id]["completed"] = not assignment_cell_data["completed"]
                     assignment_exists = True

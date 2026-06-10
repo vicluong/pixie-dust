@@ -1,9 +1,9 @@
 {
     "ass0001": {
-        "sequence_name": "seq010",
-        "shot_name": "shot0010",
-        "step_name": "fx",
-        "task_name": "fxCoinFlip",
+        "sequence": "seq010",
+        "shot": "shot0010",
+        "step": "fx",
+        "task": "fxCoinFlip",
         "entity_type": "shot",
         "assignees": ["u0003"],
         "completed": false

@@ -72,10 +72,10 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
 
                             for assignment in assignments.values():
                                 if (assignment["entity_type"] == "shot"
-                                    and assignment["sequence_name"] == sequence.name
-                                    and assignment["shot_name"] == shot.name
-                                    and assignment["step_name"] == step.name
-                                    and assignment["task_name"] == task.name 
+                                    and assignment["sequence"] == sequence.name
+                                    and assignment["shot"] == shot.name
+                                    and assignment["step"] == step.name
+                                    and assignment["task"] == task.name 
                                     ):
                                     assignees = assignment["assignees"]
                                     assignees_names = []
@@ -98,10 +98,10 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                             # Store assignment information in all asset part cells for later use
                             assignment_data = {
                                 "entity_type": "shot",
-                                "sequence_name": sequence.name,
-                                "shot_name": shot.name,
-                                "step_name": step.name,
-                                "task_name": task.name,
+                                "sequence": sequence.name,
+                                "shot": shot.name,
+                                "step": step.name,
+                                "task": task.name,
                                 "task_path": shot_task_path,
                                 "assignees": assignees,
                                 "completed": completed
@@ -124,20 +124,20 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
         for assignment in assignments.values():
             if assignment["entity_type"] == "shot" and uid in assignment["assignees"]:
                 seqeunce_item = QtWidgets.QTreeWidgetItem()
-                seqeunce_item.setText(0, assignment["sequence_name"])
+                seqeunce_item.setText(0, assignment["sequence"])
                 top_level_items.append(seqeunce_item)
 
                 shot_item = QtWidgets.QTreeWidgetItem()
-                shot_item.setText(0, assignment["shot_name"])
+                shot_item.setText(0, assignment["shot"])
                 seqeunce_item.addChild(shot_item)
 
-                step_name_item = QtWidgets.QTreeWidgetItem()
-                step_name_item.setText(0, assignment["step_name"])
-                shot_item.addChild(step_name_item)   
+                step_item = QtWidgets.QTreeWidgetItem()
+                step_item.setText(0, assignment["step"])
+                shot_item.addChild(step_item)   
 
                 task_item = QtWidgets.QTreeWidgetItem()
-                task_item.setText(0, assignment["task_name"])
-                step_name_item.addChild(task_item)                 
+                task_item.setText(0, assignment["task"])
+                step_item.addChild(task_item)                 
 
         self.addTopLevelItems(top_level_items)
         self.expandAll()
