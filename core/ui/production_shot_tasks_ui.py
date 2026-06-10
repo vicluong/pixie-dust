@@ -109,19 +109,21 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
             
             wip_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, step, task, "wip")
             self.wip_list.clear()
-            for wip_asset_file in reversed(wip_asset_files):
-                wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
-                wip_asset_item = QtWidgets.QTreeWidgetItem([wip_asset_version])
-                wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
-                self.wip_list.addTopLevelItem(wip_asset_item)
+            if wip_asset_files:
+                for wip_asset_file in reversed(wip_asset_files):
+                    wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
+                    wip_asset_item = QtWidgets.QTreeWidgetItem([wip_asset_version])
+                    wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
+                    self.wip_list.addTopLevelItem(wip_asset_item)
                 
             published_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, step, task, "publishes")
             self.publish_list.clear()
-            for published_asset_file in reversed(published_asset_files):
-                published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
-                published_asset_item = QtWidgets.QTreeWidgetItem([published_asset_version])
-                published_asset_item.setData(0, QtCore.Qt.UserRole, published_asset_file)
-                self.publish_list.addTopLevelItem(published_asset_item)
+            if published_asset_files:
+                for published_asset_file in reversed(published_asset_files):
+                    published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
+                    published_asset_item = QtWidgets.QTreeWidgetItem([published_asset_version])
+                    published_asset_item.setData(0, QtCore.Qt.UserRole, published_asset_file)
+                    self.publish_list.addTopLevelItem(published_asset_item)
 
     def create_new_file(self):
         task_item = self.shot_tasks_tree.currentItem()

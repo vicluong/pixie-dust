@@ -373,16 +373,38 @@ class MayaInterface(DCCInterface):
 
     def reference_file(self, file: Path) -> None:
         if file.exists():
-            if file.suffix[1:] == "usd":
+            if file.suffix == ".usd":
                 if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
                     cmds.loadPlugin("mayaUsdPlugin")
+
+                usd_shapes = cmds.ls(type="mayaUsdProxyShape") or []
+                ref_paths = [Path(cmds.getAttr(f"{shape}.filePath")) for shape in usd_shapes]
+                if file in ref_paths:
+                    QtWidgets.QMessageBox.information(
+                        None, 
+                        "Reference Error", 
+                        f"USD Stage already loaded: {file.name}"
+                    )
+                    return
+
                 task_name = file.stem.split("_")[1]
                 proxy_shape = cmds.createNode("mayaUsdProxyShape", name=f"{task_name}StageShape")
                 cmds.setAttr(f"{proxy_shape}.filePath", file, type="string")
                 parent_transform = cmds.listRelatives(proxy_shape, parent=True)[0]
                 cmds.rename(parent_transform, f"{task_name}Stage")
-            elif file.suffix == "mb":
-                cmds.file(file, reference=True)
+            elif file.suffix == ".mb":
+                existing_refs = cmds.file(query=True, reference=True) or []
+                ref_paths = [Path(ref) for ref in existing_refs]
+
+                if file in ref_paths:
+                    QtWidgets.QMessageBox.information(
+                        None, 
+                        "Reference Error", 
+                        f"Maya file is already referenced: {file.name}"
+                    )
+                    return
+                else:
+                    cmds.file(file, reference=True)
             else:
                 QtWidgets.QMessageBox.warning(
                 None, 

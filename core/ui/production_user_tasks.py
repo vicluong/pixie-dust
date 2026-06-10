@@ -110,10 +110,11 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             
             wip_files = self.dcc_interface.get_native_asset_files(asset_type, asset_name, asset_step, "wip")
             
-            for wip_file in reversed(wip_files):
-                wip_version = wip_file.stem.rsplit("_", 1)[1]
-                wip_item = QtWidgets.QTreeWidgetItem([wip_version])
-                wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
+            if wip_files:
+                for wip_file in reversed(wip_files):
+                    wip_version = wip_file.stem.rsplit("_", 1)[1]
+                    wip_item = QtWidgets.QTreeWidgetItem([wip_version])
+                    wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
                 self.wip_list.addTopLevelItem(wip_item)
         elif self.selected_item.treeWidget() == self.shot_task_trees and count == 3:
             task_item = self.selected_item
@@ -127,11 +128,12 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
             
             wip_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, step, task, "wip")
 
-            for wip_file in reversed(wip_files):
-                wip_version = wip_file.stem.rsplit("_", 1)[1]
-                wip_item = QtWidgets.QTreeWidgetItem([wip_version])
-                wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
-                self.wip_list.addTopLevelItem(wip_item)
+            if wip_files:
+                for wip_file in reversed(wip_files):
+                    wip_version = wip_file.stem.rsplit("_", 1)[1]
+                    wip_item = QtWidgets.QTreeWidgetItem([wip_version])
+                    wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
+                    self.wip_list.addTopLevelItem(wip_item)
 
     def open_file(self):
         file_path = self.wip_list.currentItem().data(0, QtCore.Qt.UserRole)
