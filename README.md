@@ -39,8 +39,8 @@ What is my purpose in this project?
 - [x] Decide if I should use just ".ma" files
   - I'm using just ".mb" files
 - [x] Get publishing complete for Maya
-- [ ] Export in different file types (in Maya) (for assets only)
-- [ ] Implement USD exports too (in Maya)
+- [x] Export in different file types (in Maya) (for assets only)
+- [x] Implement USD exports too (in Maya)
 
 ## Specific Priority
 
