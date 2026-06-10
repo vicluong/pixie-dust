@@ -100,14 +100,14 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
             parent = parent.parent()
 
         if parents == 3:
-            department_item = task_item.parent()
-            department = department_item.text(0)
-            shot_item = department_item.parent()
+            step_item = task_item.parent()
+            step = step_item.text(0)
+            shot_item = step_item.parent()
             shot = shot_item.text(0)
             sequence_item = shot_item.parent()
             sequence = sequence_item.text(0)
             
-            wip_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, department, task, "wip")
+            wip_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, step, task, "wip")
             self.wip_list.clear()
             for wip_asset_file in reversed(wip_asset_files):
                 wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
@@ -115,7 +115,7 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
                 wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
                 self.wip_list.addTopLevelItem(wip_asset_item)
                 
-            published_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, department, task, "publishes")
+            published_asset_files = self.dcc_interface.get_native_shot_task_files(sequence, shot, step, task, "publishes")
             self.publish_list.clear()
             for published_asset_file in reversed(published_asset_files):
                 published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
@@ -135,16 +135,16 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
             parent = parent.parent()
 
         if parents == 3:
-            department_item = task_item.parent()
-            department = department_item.text(0)
+            step_item = task_item.parent()
+            step = step_item.text(0)
 
-            shot_item = department_item.parent()
+            shot_item = step_item.parent()
             shot = shot_item.text(0)
 
             sequence_item = shot_item.parent()
             sequence = sequence_item.text(0)
 
-            self.dcc_interface.create_new_shot_task_file(sequence, shot, department, task)
+            self.dcc_interface.create_new_shot_task_file(sequence, shot, step, task)
         else: 
             QtWidgets.QMessageBox.warning(
                 self,

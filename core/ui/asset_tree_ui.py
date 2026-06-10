@@ -51,12 +51,12 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                 asset_name_item.setText(0, asset.name)
                 asset_type_item.addChild(asset_name_item)
 
-                asset_parts = [x for x in asset.iterdir() if x.is_dir()]
+                asset_steps = [x for x in asset.iterdir() if x.is_dir()]
 
-                for asset_part in asset_parts:
-                    asset_part_item = QtWidgets.QTreeWidgetItem()
-                    asset_part_item.setText(0, asset_part.name)
-                    asset_name_item.addChild(asset_part_item)
+                for asset_step in asset_steps:
+                    asset_step_item = QtWidgets.QTreeWidgetItem()
+                    asset_step_item.setText(0, asset_step.name)
+                    asset_name_item.addChild(asset_step_item)
 
                     if self.extra_info:
                         assignees = []
@@ -66,7 +66,7 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                             if (assignment["entity_type"] == "asset" 
                                 and assignment["asset_type"] == assets_type.name
                                 and assignment["asset_name"] == asset.name
-                                and assignment["asset_part"] == asset_part.name 
+                                and assignment["asset_step"] == asset_step.name 
                                 ):
 
                                 assignees = assignment["assignees"]
@@ -76,29 +76,29 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                                     assignee_name = ffu.get_user_name(assignee_uid)
                                     assignees_names.append(assignee_name)
 
-                                asset_part_item.setText(1, ", ".join(assignees_names))
+                                asset_step_item.setText(1, ", ".join(assignees_names))
 
                                 completed = assignment["completed"]
 
                                 if assignment["completed"]:
-                                    asset_part_item.setText(2, "Completed")
+                                    asset_step_item.setText(2, "Completed")
                                 else:
-                                    asset_part_item.setText(2, "In Progress")
+                                    asset_step_item.setText(2, "In Progress")
 
-                        asset_path = str(ffu.get_main_workspace_path() / "assets" / assets_type.name / asset.name / asset_part.name)
+                        asset_path = str(ffu.get_main_workspace_path() / "assets" / assets_type.name / asset.name / asset_step.name)
 
                         # Store assignment information in all asset part cells for later use
                         assignment_data = {
                             "entity_type": "asset",
                             "asset_type": assets_type.name,
                             "asset_name": asset.name,
-                            "asset_part": asset_part.name,
+                            "asset_step": asset_step.name,
                             "task_path": str(asset_path),
                             "assignees": assignees,
                             "completed": completed
                         }
 
-                        asset_part_item.setData(1, QtCore.Qt.UserRole, assignment_data)
+                        asset_step_item.setData(1, QtCore.Qt.UserRole, assignment_data)
 
         self.addTopLevelItems(top_level_items)
         self.expandAll()
@@ -122,9 +122,9 @@ class AssetTreeWidget(QtWidgets.QTreeWidget):
                 asset_name_item.setText(0, assignment["asset_name"])
                 asset_type_item.addChild(asset_name_item)
 
-                asset_part_item = QtWidgets.QTreeWidgetItem()
-                asset_part_item.setText(0, assignment["asset_part"])
-                asset_name_item.addChild(asset_part_item)                
+                asset_step_item = QtWidgets.QTreeWidgetItem()
+                asset_step_item.setText(0, assignment["asset_step"])
+                asset_name_item.addChild(asset_step_item)                
 
         self.addTopLevelItems(top_level_items)
         self.expandAll()

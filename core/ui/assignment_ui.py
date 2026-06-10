@@ -129,7 +129,7 @@ class AssignmentTab(QtWidgets.QWidget):
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == assignment_cell_data["entity_type"]
                     and assignment["asset_name"] == assignment_cell_data["asset_name"]
-                    and assignment["asset_part"] == assignment_cell_data["asset_part"]):
+                    and assignment["asset_step"] == assignment_cell_data["asset_step"]):
                     if selected_user in assignment["assignees"]:
                         self.assignment_data[ass_id]["assignees"].remove(selected_user)
                     else:
@@ -266,7 +266,7 @@ class AssignmentTab(QtWidgets.QWidget):
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == assignment_cell_data["entity_type"]
                     and assignment["asset_name"] == assignment_cell_data["asset_name"]
-                    and assignment["asset_part"] == assignment_cell_data["asset_part"]
+                    and assignment["asset_step"] == assignment_cell_data["asset_step"]
                     ):
                     self.assignment_data[ass_id]["completed"] = not assignment_cell_data["completed"]
                     assignment_exists = True

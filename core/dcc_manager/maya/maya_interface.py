@@ -22,13 +22,13 @@ class MayaInterface(DCCInterface):
         main_window_ptr = omui.MQtUtil.mainWindow()
         return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
-    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
+    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_step: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
 
         if file_state_folder == "publishes":
-            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_part / file_state_folder / "mb"
+            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_step / file_state_folder / "mb"
         elif file_state_folder == "wip":
-            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_part / file_state_folder
+            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_step / file_state_folder
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
@@ -52,13 +52,13 @@ class MayaInterface(DCCInterface):
 
             return sorted_files
 
-    def get_native_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
+    def get_native_shot_task_files(self, sequence: str, shot: str, step: str, task: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
         
         if file_state_folder == "publishes":
-            folder = main_workspace_path / "sequences" / sequence / shot / department / task / file_state_folder / "mb"
+            folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder / "mb"
         elif file_state_folder == "wip":
-            folder = main_workspace_path / "sequences" / sequence / shot / department / task / file_state_folder / "mb"
+            folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder / "mb"
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
@@ -82,7 +82,7 @@ class MayaInterface(DCCInterface):
 
             return sorted_files
 
-    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
+    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_step: str) -> str:
         if cmds.file(q=True, modified=True):
             result = cmds.confirmDialog(
                 title="Save Changes",
@@ -102,14 +102,14 @@ class MayaInterface(DCCInterface):
             cmds.file(new=True, force=True)
 
         main_workspace_path = ffu.get_main_workspace_path()
-        file_path = str(main_workspace_path / "assets" / asset_type / asset_name / asset_part 
-                        / "wip" / f"{asset_type}_{asset_name}_{asset_part}_v0000.mb")
+        file_path = str(main_workspace_path / "assets" / asset_type / asset_name / asset_step 
+                        / "wip" / f"{asset_type}_{asset_name}_{asset_step}_v0000.mb")
 
         cmds.file(rename=f"{str(file_path)}")
 
         return str(file_path)
     
-    def create_new_shot_task_file(self, sequence: str, shot: str, department: str, task: str, ) -> str:
+    def create_new_shot_task_file(self, sequence: str, shot: str, step: str, task: str, ) -> str:
         if cmds.file(q=True, modified=True):
             result = cmds.confirmDialog(
                 title="Save Changes",
@@ -129,8 +129,8 @@ class MayaInterface(DCCInterface):
             cmds.file(new=True, force=True)
         
         main_workspace_path = ffu.get_main_workspace_path()
-        file_path = str(main_workspace_path / "sequences" / sequence / shot / department / task
-                        / "wip" / f"{sequence}_{shot}_{department}_{task}_v0000.mb")
+        file_path = str(main_workspace_path / "sequences" / sequence / shot / step / task
+                        / "wip" / f"{sequence}_{shot}_{step}_{task}_v0000.mb")
 
         cmds.file(rename=f"{str(file_path)}")
 
@@ -333,9 +333,9 @@ class MayaInterface(DCCInterface):
             return False
         return True
     
-    def get_latest_published_files(self, asset_name: str, asset_type: str, asset_part: str) -> list[tuple[Path, Path]]:
+    def get_latest_published_files(self, asset_name: str, asset_type: str, asset_step: str) -> list[tuple[Path, Path]]:
         main_workspace_path = ffu.get_main_workspace_path()
-        publishes_path = main_workspace_path / "assets" / asset_type / asset_name / asset_part / "publishes"
+        publishes_path = main_workspace_path / "assets" / asset_type / asset_name / asset_step / "publishes"
 
         latest_files = []
 

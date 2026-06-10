@@ -97,44 +97,44 @@ def create_asset_folders(main_workspace_path: Path, asset_type: str, asset_name:
     asset_path = main_workspace_path / "assets" / asset_type / asset_name
     asset_path.mkdir()
 
-    asset_parts = []
+    asset_steps = []
 
     if asset_type == "audio":
-        asset_parts = ["audio"]
+        asset_steps = ["audio"]
     elif asset_type == "camera":
-        asset_parts = ["layout", "rig"]
+        asset_steps = ["layout", "rig"]
     elif asset_type == "character":
-        asset_parts = ["animation", "art", "charfx", "model", "rig", "surfacing"]
+        asset_steps = ["animation", "art", "charfx", "model", "rig", "surfacing"]
     elif asset_type == "charfx":
-        asset_parts = ["charfx"]
+        asset_steps = ["charfx"]
     elif asset_type == "fx":
-        asset_parts = ["art", "fx", "model", "rig", "surfacing"]
+        asset_steps = ["art", "fx", "model", "rig", "surfacing"]
     elif asset_type == "lighting":
-        asset_parts = ["lighting"]
+        asset_steps = ["lighting"]
     elif asset_type == "mattePainting":
-        asset_parts = ["mattePainting"]
+        asset_steps = ["mattePainting"]
     elif asset_type == "prop":
-        asset_parts = ["art", "model", "rig", "surfacing"]
+        asset_steps = ["art", "model", "rig", "surfacing"]
     elif asset_type == "set":
-        asset_parts = ["art", "model", "surfacing"]
+        asset_steps = ["art", "model", "surfacing"]
     elif asset_type == "setPiece":
-        asset_parts = ["art", "fx", "model", "surfacing"]
+        asset_steps = ["art", "fx", "model", "surfacing"]
 
-    for asset_part in asset_parts:
-        asset_part_path = asset_path / asset_part
-        asset_part_path.mkdir()
-        publishes_path = asset_part_path / "publishes"
+    for asset_step in asset_steps:
+        asset_step_path = asset_path / asset_step
+        asset_step_path.mkdir()
+        publishes_path = asset_step_path / "publishes"
         publishes_path.mkdir()
-        wip_path = asset_part_path / "wip"
+        wip_path = asset_step_path / "wip"
         wip_path.mkdir()
 
 def create_shot_folders(shot_path: Path):
     shot_path.mkdir()
 
-    departments = ["animation", "charfx", "comp", "editorial", "fx", "layout", "light"]
-    for department in departments:
-        shot_department_path = shot_path / department
-        shot_department_path.mkdir()
+    steps = ["animation", "charfx", "comp", "editorial", "fx", "layout", "light"]
+    for step in steps:
+        shot_step_path = shot_path / step
+        shot_step_path.mkdir()
 
 def create_shot_task_folders(shot_task_path: Path):
     shot_task_path.mkdir()

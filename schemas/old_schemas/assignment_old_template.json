@@ -2,49 +2,49 @@
     "assignments": [
         {
             "asset_name": "char01",
-            "asset_part": "animation",
+            "asset_step": "animation",
             "asset_type": "character",
             "main_type": "asset",
             "assignee": "Victor"
         },
         {
             "asset_name": "camera01",
-            "asset_part": "rig",
+            "asset_step": "rig",
             "asset_type": "camera",
             "main_type": "asset",
             "assignee": "Tony"
         },
         {
             "asset_name": "camera01",
-            "asset_part": "rig",
+            "asset_step": "rig",
             "asset_type": "camera",
             "main_type": "asset",
             "assignee": "Victor"
         },
         {
             "asset_name": "camera01",
-            "asset_part": "layout",
+            "asset_step": "layout",
             "asset_type": "camera",
             "main_type": "asset",
             "assignee": "Tony"
         },
         {
             "asset_name": "camera02",
-            "asset_part": "layout",
+            "asset_step": "layout",
             "asset_type": "camera",
             "main_type": "asset",
             "assignee": "Tony"
         },
         {
             "asset_name": "camera03",
-            "asset_part": "layout",
+            "asset_step": "layout",
             "asset_type": "camera",
             "main_type": "asset",
             "assignee": "Ailish"
         },
         {
             "asset_name": "camera03",
-            "asset_part": "rig",
+            "asset_step": "rig",
             "asset_type": "camera",
             "main_type": "asset",
             "assignee": "Tony"

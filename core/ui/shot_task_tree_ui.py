@@ -51,19 +51,19 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                 shot_item.setText(0, shot.name)
                 sequence_item.addChild(shot_item)
 
-                departments = [x for x in shot.iterdir() if x.is_dir()]
+                steps = [x for x in shot.iterdir() if x.is_dir()]
 
-                for department in departments:
-                    department_item = QtWidgets.QTreeWidgetItem()
-                    department_item.setText(0, department.name)
-                    shot_item.addChild(department_item)
+                for step in steps:
+                    step_item = QtWidgets.QTreeWidgetItem()
+                    step_item.setText(0, step.name)
+                    shot_item.addChild(step_item)
 
-                    tasks = [x for x in department.iterdir() if x.is_dir()]
+                    tasks = [x for x in step.iterdir() if x.is_dir()]
 
                     for task in tasks:
                         task_item = QtWidgets.QTreeWidgetItem()
                         task_item.setText(0, task.name)
-                        department_item.addChild(task_item)
+                        step_item.addChild(task_item)
 
                         if self.extra_info:
                             assignments = self.assignment_data
@@ -74,7 +74,7 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                 if (assignment["entity_type"] == "shot"
                                     and assignment["sequence_name"] == sequence.name
                                     and assignment["shot_name"] == shot.name
-                                    and assignment["shot_dep"] == department.name
+                                    and assignment["shot_dep"] == step.name
                                     and assignment["task_name"] == task.name 
                                     ):
                                     assignees = assignment["assignees"]
@@ -93,14 +93,14 @@ class ShotTaskTreeWidget(QtWidgets.QTreeWidget):
                                     else:
                                         task_item.setText(2, "In Progress")
 
-                            shot_task_path = str(ffu.get_main_workspace_path() / "sequences" / sequence / shot / department / task)
+                            shot_task_path = str(ffu.get_main_workspace_path() / "sequences" / sequence / shot / step / task)
 
                             # Store assignment information in all asset part cells for later use
                             assignment_data = {
                                 "entity_type": "shot",
                                 "sequence_name": sequence.name,
                                 "shot_name": shot.name,
-                                "shot_dep": department.name,
+                                "shot_dep": step.name,
                                 "task_name": task.name,
                                 "task_path": shot_task_path,
                                 "assignees": assignees,

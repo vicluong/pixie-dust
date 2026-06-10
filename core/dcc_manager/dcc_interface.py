@@ -16,15 +16,15 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_part: str, file_state_folder: str) -> list[Path]:
+    def get_native_asset_files(self, asset_name: str, asset_type: str, asset_step: str, file_state_folder: str) -> list[Path]:
         pass
 
     @abstractmethod
-    def get_native_shot_task_files(self, sequence: str, shot: str, department: str, task: str, file_state_folder: str) -> list[Path]:
+    def get_native_shot_task_files(self, sequence: str, shot: str, step: str, task: str, file_state_folder: str) -> list[Path]:
         pass
 
     @abstractmethod
-    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_part: str) -> str:
+    def create_new_asset_file(self, asset_name: str, asset_type: str, asset_step: str) -> str:
         pass
 
     @abstractmethod
@@ -64,7 +64,7 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_latest_published_files(self, asset_name: str, asset_type: str, asset_part: str) -> list[tuple[Path, Path]]:
+    def get_latest_published_files(self, asset_name: str, asset_type: str, asset_step: str) -> list[tuple[Path, Path]]:
         pass
 
     @abstractmethod

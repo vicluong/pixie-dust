@@ -95,14 +95,14 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             parent = parent.parent()
 
         if parents == 2:
-            asset_part_item = self.assets_tree.currentItem()
-            asset_part = asset_part_item.text(0)
-            asset_name_item = asset_part_item.parent()
+            asset_step_item = self.assets_tree.currentItem()
+            asset_step = asset_step_item.text(0)
+            asset_name_item = asset_step_item.parent()
             asset_name = asset_name_item.text(0)
             asset_type_item = asset_name_item.parent()
             asset_type = asset_type_item.text(0)
             
-            wip_asset_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_part, "wip")
+            wip_asset_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_step, "wip")
             if wip_asset_files:
                 for wip_asset_file in reversed(wip_asset_files):
                     wip_asset_version = wip_asset_file.stem.rsplit("_", 1)[1]
@@ -110,7 +110,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
                     wip_asset_item.setData(0, QtCore.Qt.UserRole, wip_asset_file)
                     self.wip_list.addTopLevelItem(wip_asset_item)
                 
-            published_asset_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_part, "publishes")
+            published_asset_files = self.dcc_interface.get_native_asset_files(asset_name, asset_type, asset_step, "publishes")
             if published_asset_files:
                 for published_asset_file in reversed(published_asset_files):
                     published_asset_version = published_asset_file.stem.rsplit("_", 1)[1]
@@ -119,10 +119,10 @@ class ProductionAssetsTab(QtWidgets.QWidget):
                     self.publish_list.addTopLevelItem(published_asset_item)
 
     def create_new_file(self):
-        asset_part_index = self.assets_tree.currentIndex()
-        asset_part = asset_part_index.data()
+        asset_step_index = self.assets_tree.currentIndex()
+        asset_step = asset_step_index.data()
 
-        asset_name_index = asset_part_index.parent()
+        asset_name_index = asset_step_index.parent()
         if asset_name_index.isValid():
             asset_name = asset_name_index.data()
             print(f"Asset Name: {asset_name}")
@@ -146,7 +146,7 @@ class ProductionAssetsTab(QtWidgets.QWidget):
             )
             return
         
-        self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_part)
+        self.dcc_interface.create_new_asset_file(asset_name, asset_type, asset_step)
 
         self.window().close()
 

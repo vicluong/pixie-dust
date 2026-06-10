@@ -7,7 +7,7 @@ Pipeline for the Friday Short Film at ALA 2026
 What is my purpose in this project?
 
 - Allow for quicker file transfer that is supported by proper file organisation/management
-- Create an streamlined flow of data between each department
+- Create an streamlined flow of data between each step
 - Allow for the creation of tools that could help the project
 - Coordinate with Production and provide them with information about all files
 
@@ -27,7 +27,7 @@ What is my purpose in this project?
 - [x] Finalise .json structure
   - Finish shot schema
 - [x] Investigate how they created files for shots - which file types and how did wip vs. publish look like
-  - /mnt/ala/mav/2025/jobs/s125/sequences/pst01/pst01_020/departments/light/lighting/source/pst01_020_light_lighting.v010.katana
+  - /mnt/ala/mav/2025/jobs/s125/sequences/pst01/pst01_020/steps/light/lighting/source/pst01_020_light_lighting.v010.katana
   - Separate folders for separate file types
 - [x] Get shots and sequences working for assignment
 - [x] Get saving complete for Maya
@@ -49,7 +49,7 @@ What is my purpose in this project?
 
 ## Top Priority
 
-- [ ] Get Pixie Dust working as a standalone executable (for Production and Art Department)
+- [ ] Get Pixie Dust working as a standalone executable (for Production and Art step)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
 - [ ] Further investigate and find a way to import and export data to master production document
 
@@ -86,7 +86,7 @@ What is my purpose in this project?
 
 - Publishes are for review
 - Given we have no USD (as for now), all items NEED TO BE FINALISED AND APPROVED before being passed on
-  - prop_test_01 prop_test_approved which then becomes prop_test when given to another department
+  - prop_test_01 prop_test_approved which then becomes prop_test when given to another step
 
 ## Top Priority
 
@@ -117,7 +117,7 @@ TreeView containing asset path / ALL WIP Versions / ALL Publish Versions
 
 ALL WIP Versions and Publish Versions in one widget so that only one cell is selected at any one time
 
-Potential in the future for filtering based on type of job/department
+Potential in the future for filtering based on type of job/step
 
 ## To-Do
 

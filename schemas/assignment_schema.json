@@ -11,7 +11,7 @@
     "ass0002": {
         "asset_type": "camera",
         "asset_name": "camera01",
-        "asset_part": "rig",
+        "asset_step": "rig",
         "entity_type": "asset",
         "assignees": ["u0985"],
         "completed": false

@@ -99,14 +99,14 @@ class ImportDialog(QtWidgets.QDialog):
             parent = parent.parent()
 
         if parents == 2:
-            asset_part_item = self.assets_tree.currentItem()
-            asset_part = asset_part_item.text(0)
-            asset_name_item = asset_part_item.parent()
+            asset_step_item = self.assets_tree.currentItem()
+            asset_step = asset_step_item.text(0)
+            asset_name_item = asset_step_item.parent()
             asset_name = asset_name_item.text(0)
             asset_type_item = asset_name_item.parent()
             asset_type = asset_type_item.text(0)
 
-            latest_publishes = self.dcc_interface.get_latest_published_files(asset_name, asset_type, asset_part)
+            latest_publishes = self.dcc_interface.get_latest_published_files(asset_name, asset_type, asset_step)
             for latest_publish in latest_publishes:
                 latest_publish_info = latest_publish[0].suffix + " - " + latest_publish[1].stem.rsplit("_", 1)[1]
                 list_item = QtWidgets.QListWidgetItem(latest_publish_info)
