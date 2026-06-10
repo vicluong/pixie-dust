@@ -122,6 +122,7 @@ class ImportDialog(QtWidgets.QDialog):
             print(f"Importing: {path.name}")
 
             self.dcc_interface.import_file(path)
+            self.close()
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
@@ -137,6 +138,7 @@ class ImportDialog(QtWidgets.QDialog):
             print(f"Referencing: {path.name}")
 
             self.dcc_interface.reference_file(path)
+            self.close()
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
