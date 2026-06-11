@@ -170,6 +170,14 @@ class CreationTab(QtWidgets.QWidget):
                 f"Please input a name for the asset."
             )
             return
+        
+        if "_" in asset_name:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "File Error", 
+                f"Avoid using '_' in the name."
+            )
+            return
 
         try:
             ffu.create_asset_folders(self.main_workspace_path, asset_type, asset_name)
@@ -200,6 +208,14 @@ class CreationTab(QtWidgets.QWidget):
                 None, 
                 "File Error", 
                 f"Please input a name for the asset."
+            )
+            return
+
+        if "_" in sequence:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "File Error", 
+                f"Avoid using '_' in the name."
             )
             return
 
@@ -238,6 +254,14 @@ class CreationTab(QtWidgets.QWidget):
                     None, 
                     "File Error", 
                     f"Please input a name for the shot."
+                )
+                return
+            
+            if "_" in shot:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"Avoid using '_' in the name."
                 )
                 return
 
@@ -288,6 +312,14 @@ class CreationTab(QtWidgets.QWidget):
                     None, 
                     "File Error", 
                     f"Please input a name for the shot task."
+                )
+                return
+            
+            if "_" in shot:
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "File Error", 
+                    f"Avoid using '_' in the name."
                 )
                 return
 
