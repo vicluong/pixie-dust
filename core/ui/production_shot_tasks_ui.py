@@ -151,7 +151,7 @@ class ProductionShotTasksTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 self,
                 "Wrong Selection",
-                "Please select an asset part to create a new file for."
+                "Please select a shot task to create a new file for."
             )
             return
         

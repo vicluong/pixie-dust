@@ -245,7 +245,7 @@ class CreationTab(QtWidgets.QWidget):
     def create_shot(self):
         selected_item = self.shot_tree.currentItem()
 
-        if not selected_item.parent():
+        if selected_item and not selected_item.parent():
             sequence = selected_item.text(0)
             shot = self.create_shot_le.text()
 
@@ -298,6 +298,14 @@ class CreationTab(QtWidgets.QWidget):
     def create_shot_task(self):
         selected_item = self.shot_tree.currentItem()
 
+        if not selected_item:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Assignment Error", 
+                "Select the step of a shot."
+            )
+            return
+
         count = 0
         item_iter = selected_item
         while item_iter.parent():
@@ -315,7 +323,7 @@ class CreationTab(QtWidgets.QWidget):
                 )
                 return
             
-            if "_" in shot:
+            if "_" in shot_task:
                 QtWidgets.QMessageBox.warning(
                     None, 
                     "File Error", 

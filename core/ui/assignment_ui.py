@@ -183,7 +183,7 @@ class AssignmentTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Assignment Error", 
-                "Select an asset part."
+                "Select a shot task."
             )
             return
 
@@ -301,7 +301,7 @@ class AssignmentTab(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Assignment Error", 
-                "Select an asset part."
+                "Select a shot task."
             )
             return
 
