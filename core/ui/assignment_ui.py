@@ -126,12 +126,14 @@ class AssignmentTab(QtWidgets.QWidget):
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
-            for ass_id, assignment in self.assignment_data.items():
+            for ass_id, assignment in list(self.assignment_data.items()):
                 if (assignment["entity_type"] == assignment_cell_data["entity_type"]
                     and assignment["asset_name"] == assignment_cell_data["asset_name"]
                     and assignment["asset_step"] == assignment_cell_data["asset_step"]):
                     if selected_user in assignment["assignees"]:
                         self.assignment_data[ass_id]["assignees"].remove(selected_user)
+                        if self.assignment_data[ass_id]["assignees"] == []:
+                            del self.assignment_data[ass_id]
                     else:
                         self.assignment_data[ass_id]["assignees"].append(selected_user)
                     assignment_exists = True
@@ -195,7 +197,7 @@ class AssignmentTab(QtWidgets.QWidget):
 
             assignment_exists = False
             # If the assignment already exists, remove or add the uid from the existing users
-            for ass_id, assignment in self.assignment_data.items():
+            for ass_id, assignment in list(self.assignment_data.items()):
                 if (assignment["entity_type"] == "shot"
                     and assignment["sequence"] == assignment_cell_data["sequence"]
                     and assignment["shot"] == assignment_cell_data["shot"]
@@ -204,6 +206,8 @@ class AssignmentTab(QtWidgets.QWidget):
                     ):
                     if selected_user in assignment["assignees"]:
                         self.assignment_data[ass_id]["assignees"].remove(selected_user)
+                        if self.assignment_data[ass_id]["assignees"] == []:
+                            del self.assignment_data[ass_id]
                     else:
                         self.assignment_data[ass_id]["assignees"].append(selected_user)
                     assignment_exists = True
@@ -262,7 +266,7 @@ class AssignmentTab(QtWidgets.QWidget):
             self.assignment_data = ffu.get_assignment_data()
 
             assignment_exists = False
-            # If the assignment already exists, remove or add the uid from the existing users
+            # If the assignment already exists, toggle the progress
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == assignment_cell_data["entity_type"]
                     and assignment["asset_name"] == assignment_cell_data["asset_name"]
@@ -312,7 +316,7 @@ class AssignmentTab(QtWidgets.QWidget):
             self.assignment_data = ffu.get_assignment_data()
 
             assignment_exists = False
-            # If the assignment already exists, remove or add the uid from the existing users
+            # If the assignment already exists, toggle progress
             for ass_id, assignment in self.assignment_data.items():
                 if (assignment["entity_type"] == "shot"
                     and assignment["sequence"] == assignment_cell_data["sequence"]

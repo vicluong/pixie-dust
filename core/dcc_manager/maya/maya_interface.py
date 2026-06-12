@@ -264,11 +264,11 @@ class MayaInterface(DCCInterface):
 
         Returns:
             dict[str, tuple[str, bool, bool]]: Key is file extension while value is a tuple containing
-                what the file extension is then if is_locked then is_checked
+                what the file extension is, if is_locked, is_checked
         """
         file_types = {
             ".mb": ("Maya Binary Scene", True, True),
-            ".usd": ("Universal Scene Description", False, True),
+            ".usd": ("Universal Scene Description", True, True),
             ".fbx": ("FBX Exchange Format", False, False),
             # ".abc": "Alembic Cache",
             ".obj": ("OBJ Geometry", False, False),
