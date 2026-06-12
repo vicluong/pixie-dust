@@ -118,7 +118,7 @@ class ProductionUserTasksTab(QtWidgets.QWidget):
                     wip_version = wip_file.stem.rsplit("_", 1)[1]
                     wip_item = QtWidgets.QTreeWidgetItem([wip_version])
                     wip_item.setData(0, QtCore.Qt.UserRole, wip_file)
-                self.wip_list.addTopLevelItem(wip_item)
+                    self.wip_list.addTopLevelItem(wip_item)
         elif self.selected_item.treeWidget() == self.shot_task_trees and count == 3:
             task_item = self.selected_item
             task = task_item.text(0)
