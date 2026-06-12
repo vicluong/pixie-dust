@@ -11,7 +11,7 @@ def create_manual_folders(main_folder: Path):
             if (any(child.is_dir() for child in folder.glob("wip"))
                 and any(child.is_dir() for child in folder.glob("publishes"))):
                 manual_path = folder / "manual"
-                manual_path.mkdir()
+                manual_path.mkdir(exist_ok=True)
             create_manual_folders(folder)
 
 create_manual_folders(workspace_path)

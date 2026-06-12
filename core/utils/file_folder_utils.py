@@ -127,6 +127,8 @@ def create_asset_folders(main_workspace_path: Path, asset_type: str, asset_name:
         publishes_path.mkdir()
         wip_path = asset_step_path / "wip"
         wip_path.mkdir()
+        manual_path = asset_step_path / "manual"
+        manual_path.mkdir()
 
 def create_shot_folders(shot_path: Path):
     shot_path.mkdir()
@@ -144,3 +146,6 @@ def create_shot_task_folders(shot_task_path: Path):
     
     wip_path = shot_task_path / "wip"
     wip_path.mkdir()
+
+    manual_path = shot_task_path / "manual"
+    manual_path.mkdir()
