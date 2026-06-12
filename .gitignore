@@ -2,9 +2,6 @@
 assignment.json
 config.json
 users.json
-assignment_vvc.json
-config_vvc.json
-users_vvc.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
