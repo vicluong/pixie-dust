@@ -20,9 +20,9 @@ class DCCManager:
         if dcc == "maya":
             from dcc_manager.maya.maya_interface import MayaInterface
             return MayaInterface()
-        # elif dcc == "houdini":
-        #     from houdini_pipeline.houdini_tools.netcopy_houdini import HoudiniNetCopy
-        #     return HoudiniInterface()
+        elif dcc == "houdini":
+            from dcc_manager.houdini.houdini_interface import HoudiniInterface
+            return HoudiniInterface()
         # elif dcc == "nuke":
         #     from nuke_pipeline.netcopy_nuke import NukeNetCopy
         #     return NukeInterface()
