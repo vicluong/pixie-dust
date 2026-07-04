@@ -208,11 +208,6 @@ class HoudiniInterface(DCCInterface):
             return False
         return False
 
-    def get_parent_folder_from_scene(self) -> Path:
-        parent_folder = Path(hou.hipFile.path()).parent
-
-        return parent_folder
-
     # Usually performed after verify_file or before save_file
     def get_next_available_version(self, folder_path) -> int:
         pattern = re.compile(r"_v(\d{4})$")
