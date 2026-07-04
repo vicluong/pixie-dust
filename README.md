@@ -47,10 +47,11 @@ What is my purpose in this project?
 - [ ] Add docstrings and useful comments while removing bad comments
 - [ ] Fix windows not showing/hiding/minimising vs. creating entirely new windows
 
-- [ ] Create a common function for the save dialogs in maya_interface and houdini_interface
-- [ ] Blend get_parent_folder_from_scene() and get_scene_folder() together
-
 ## Top Priority
+
+- [ ] Get Pixie Dust working for Houdini
+  - [ ] Implementation of the Creation, Assignment, Production and Save should be implemented the same
+  - [ ] Implementation of Publish needs to be considered
 
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art step)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
