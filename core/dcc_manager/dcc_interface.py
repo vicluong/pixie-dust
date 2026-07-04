@@ -44,10 +44,6 @@ class DCCInterface(ABC):
         pass
 
     @abstractmethod
-    def get_parent_folder_from_scene(self) -> Path:
-        pass
-
-    @abstractmethod
     def get_next_available_version(self) -> int:
         pass
 
