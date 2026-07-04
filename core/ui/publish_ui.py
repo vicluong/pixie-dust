@@ -48,7 +48,7 @@ class PublishDialog(QtWidgets.QDialog):
         if sys.platform == "darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
-        self.scene_folder = self.dcc_interface.get_scene_folder()
+        self.publishes_folder = self.dcc_interface.get_scene_folder().parent / "publishes"
 
         self.create_widgets()
         self.create_layout()
@@ -61,7 +61,7 @@ class PublishDialog(QtWidgets.QDialog):
         self.preview_label = QtWidgets.QLabel("Publish Path")
         self.preview_edit = QtWidgets.QLineEdit()
         self.preview_edit.setReadOnly(True)
-        self.preview_edit.setText(str(self.scene_folder))
+        self.preview_edit.setText(str(self.publishes_folder))
 
         # Export section
         self.export_label = QtWidgets.QLabel("Export Types")
@@ -140,11 +140,10 @@ class PublishDialog(QtWidgets.QDialog):
         if self.dcc_interface.verify_file():
             failed_exports = []
 
-            publishes_folder = self.dcc_interface.get_scene_folder().parent / "publishes"
             for ext in selected_types:
                 try:
                     print(f"Publishing file extension: {ext}")
-                    publish_success = self.dcc_interface.publish_file(publishes_folder, ext)
+                    publish_success = self.dcc_interface.publish_file(self.publishes_folder, ext)
 
                     if not publish_success:
                         failed_exports.append(ext)

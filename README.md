@@ -49,6 +49,10 @@ What is my purpose in this project?
 
 ## Top Priority
 
+- [ ] Get Pixie Dust working for Houdini
+  - [ ] Implementation of the Creation, Assignment, Production and Save should be implemented the same
+  - [ ] Implementation of Publish needs to be considered
+
 - [ ] Get Pixie Dust working as a standalone executable (for Production and Art step)
 - [ ] Make things snake_case (or at least figure out when I should have items that are camelCase)
 - [ ] Further investigate and find a way to import and export data to master production document

@@ -14,6 +14,7 @@ import maya.OpenMayaUI as omui
 from dcc_manager.dcc_interface import DCCInterface
 import utils.file_folder_utils as ffu
 
+
 class MayaInterface(DCCInterface):
     # def __init__(self, config_path: str):
     #     super().__init__(config_path)
@@ -35,7 +36,7 @@ class MayaInterface(DCCInterface):
                 "Asset Retrieval Error", 
                 f"Invalid file state given."
             )
-            return
+            return []
 
         if folder.exists():
             pattern = re.compile(r"_v(\d{4})\.mb$")
@@ -51,7 +52,14 @@ class MayaInterface(DCCInterface):
             sorted_files = [f for _, f in versions]
 
             return sorted_files
-
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Asset Retrieval Error", 
+                f"WIP / Publish folder doesn't exist."
+            )
+            return []
+        
     def get_native_shot_task_files(self, sequence: str, shot: str, step: str, task: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
         
@@ -62,10 +70,10 @@ class MayaInterface(DCCInterface):
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
-                "Asset Retrieval Error", 
+                "Shot Task Retrieval Error", 
                 f"Invalid file state given."
             )
-            return
+            return []
         
         if folder.exists():
             pattern = re.compile(r"_v(\d{4})\.mb$")
@@ -81,6 +89,13 @@ class MayaInterface(DCCInterface):
             sorted_files = [f for _, f in versions]
 
             return sorted_files
+        else:
+            QtWidgets.QMessageBox.warning(
+                None, 
+                "Shot Task Retrieval Error", 
+                f"WIP / Publish folder doesn't exist."
+            )
+            return []
 
     def create_new_asset_file(self, asset_type: str, asset_name: str, asset_step: str) -> str:
         if cmds.file(q=True, modified=True):
@@ -191,12 +206,6 @@ class MayaInterface(DCCInterface):
             return False
         return False
 
-    def get_parent_folder_from_scene(self) -> Path:
-        scene_path = Path(cmds.file(q=True, sceneName=True))
-        task_wip_folder_path = scene_path.parent
-
-        return task_wip_folder_path
-
     # Usually performed after verify_file or before save_file
     def get_next_available_version(self, folder_path) -> int:
         pattern = re.compile(r"_v(\d{4})$")
@@ -235,6 +244,8 @@ class MayaInterface(DCCInterface):
                 cmds.file(str(file_path), open=True, force=True)
             elif result == "Don't Save":
                 cmds.file(str(file_path), open=True, force=True)
+            else:
+                return
         else:
             cmds.file(str(file_path), open=True)
 
