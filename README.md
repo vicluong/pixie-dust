@@ -44,6 +44,8 @@ What is my purpose in this project?
 
 ## Specific Priority
 
+- [ ] Create function for save/confirm dialog to avoid repetition
+
 - [ ] Add docstrings and useful comments while removing bad comments
 - [ ] Fix windows not showing/hiding/minimising vs. creating entirely new windows
 
