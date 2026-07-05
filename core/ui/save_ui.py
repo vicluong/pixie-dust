@@ -5,8 +5,6 @@ try:
 except:
     from PySide2 import QtWidgets, QtCore
 
-import maya.cmds as cmds
-
 from dcc_manager.dcc_interface import DCCInterface
 
 
@@ -156,10 +154,10 @@ class SaveDialog(QtWidgets.QDialog):
 
         if self.dcc_interface.verify_file():
             if self.dcc_interface.save_file(path):
-                cmds.confirmDialog(
-                    title="Saved",
-                    message=f"Saved:\n{path}",
-                    button=["OK"]
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "Saved", 
+                    f"Saved:\n{path}"
                 )
 
         self.close()

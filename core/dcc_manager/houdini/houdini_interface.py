@@ -26,7 +26,7 @@ class HoudiniInterface(DCCInterface):
         main_workspace_path = ffu.get_main_workspace_path()
 
         if file_state_folder == "publishes":
-            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_step / file_state_folder / "mb"
+            folder = main_workspace_path / "assets" / asset_type / asset_name / asset_step / file_state_folder / "hip"
         elif file_state_folder == "wip":
             folder = main_workspace_path / "assets" / asset_type / asset_name / asset_step / file_state_folder
         else:
@@ -38,7 +38,7 @@ class HoudiniInterface(DCCInterface):
             return []
 
         if folder.exists():
-            pattern = re.compile(r"_v(\d{4})\.mb$")
+            pattern = re.compile(r"_v(\d{4})\.(hip|hipnc)$")
 
             versions = []
 
@@ -51,19 +51,14 @@ class HoudiniInterface(DCCInterface):
             sorted_files = [f for _, f in versions]
 
             return sorted_files
-        else:
-            QtWidgets.QMessageBox.warning(
-                None, 
-                "Asset Retrieval Error", 
-                f"WIP / Publish folder doesn't exist."
-            )
-            return []
+        
+        return []
 
     def get_native_shot_task_files(self, sequence: str, shot: str, step: str, task: str, file_state_folder: str) -> list[Path]:
         main_workspace_path = ffu.get_main_workspace_path()
         
         if file_state_folder == "publishes":
-            folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder / "mb"
+            folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder / "hip"
         elif file_state_folder == "wip":
             folder = main_workspace_path / "sequences" / sequence / shot / step / task / file_state_folder
         else:
@@ -97,7 +92,7 @@ class HoudiniInterface(DCCInterface):
             return []
 
     def create_new_asset_file(self, asset_type: str, asset_name: str, asset_step: str) -> str:
-        if hou.hipFile.isModified():
+        if hou.hipFile.hasUnsavedChanges():
             result = hou.ui.displayMessage(
                 "Save changes to the current scene before creating a new scene?",
                 buttons=("Save", "Don't Save", "Cancel"),
@@ -118,14 +113,14 @@ class HoudiniInterface(DCCInterface):
 
         main_workspace_path = ffu.get_main_workspace_path()
         file_path = str(main_workspace_path / "assets" / asset_type / asset_name / asset_step 
-                        / "wip" / f"{asset_type}_{asset_name}_{asset_step}_v0000.mb")
+                        / "wip" / f"{asset_type}_{asset_name}_{asset_step}_v0000.hip")
 
         hou.hipFile.setName(str(file_path))
 
         return str(file_path)
     
     def create_new_shot_task_file(self, sequence: str, shot: str, step: str, task: str) -> str:
-        if hou.hipFile.isModified():
+        if hou.hipFile.hasUnsavedChanges():
             result = hou.ui.displayMessage(
                 "Save changes to the current scene before creating a new scene?",
                 buttons=("Save", "Don't Save", "Cancel"),
@@ -146,14 +141,14 @@ class HoudiniInterface(DCCInterface):
         
         main_workspace_path = ffu.get_main_workspace_path()
         file_path = str(main_workspace_path / "sequences" / sequence / shot / step / task
-                        / "wip" / f"{sequence}_{shot}_{step}_{task}_v0000.mb")
+                        / "wip" / f"{sequence}_{shot}_{step}_{task}_v0000.hip")
 
         hou.hipFile.setName(str(file_path))
 
         return str(file_path)
     
     def get_file_extensions(self) -> list[str]:
-        extensions = [".mb", ".ma"]
+        extensions = [".hip", ".hipnc"]
 
         return extensions
 
@@ -233,7 +228,7 @@ class HoudiniInterface(DCCInterface):
                 f"Ensure there is a valid file path to open."
             )
             return
-        if hou.hipFile.isModified():
+        if hou.hipFile.hasUnsavedChanges():
             result = hou.ui.displayMessage(
                 "Save changes to the current scene before opening a new scene?",
                 buttons=("Save", "Don't Save", "Cancel"),
@@ -261,8 +256,8 @@ class HoudiniInterface(DCCInterface):
                 f"Ensure there is a valid file path to open."
             )
             return False
-        if hou.hipFile.isModified():
-            hou.hipFile.setName(file_path)
+        if hou.hipFile.hasUnsavedChanges():
+            hou.hipFile.setName(str(file_path))
             hou.hipFile.save()
             return True
         else:
@@ -281,7 +276,7 @@ class HoudiniInterface(DCCInterface):
                 what the file extension is, if is_locked, is_checked
         """
         file_types = {
-            ".mb": ("Maya Binary Scene", True, True),
+            ".hip": ("Houdini File", True, True),
             ".usd": ("Universal Scene Description", True, True),
             ".fbx": ("FBX Exchange Format", False, False),
             # ".abc": "Alembic Cache",
