@@ -233,21 +233,24 @@ class HoudiniInterface(DCCInterface):
                 f"Ensure there is a valid file path to open."
             )
             return
-        if cmds.file(q=True, modified=True):
-            result = cmds.confirmDialog(
-                title="Save Changes",
-                message="Save changes to the current scene?",
-                button=["Save", "Don't Save", "Cancel"],
-                defaultButton="Save",
-                cancelButton="Cancel",
+        if hou.hipFile.isModified():
+            result = hou.ui.displayMessage(
+                "Save changes to the current scene before opening a new scene?",
+                buttons=("Save", "Don't Save", "Cancel"),
+                severity=hou.severityType.Message,
+                default_choice=0,
+                close_choice=2,
+                title="Save Changes"
             )
-            if result == "Save":
-                cmds.file(save=True)
-                cmds.file(str(file_path), open=True, force=True)
-            elif result == "Don't Save":
-                cmds.file(str(file_path), open=True, force=True)
+            if result == 0:
+                hou.hipFile.save()
+                hou.hipFile.load(str(file_path), suppress_save_prompt=True, ignore_load_warnings=True)
+            elif result == 1:
+                hou.hipFile.load(str(file_path), suppress_save_prompt=True, ignore_load_warnings=True)
+            else:
+                return
         else:
-            cmds.file(str(file_path), open=True)
+            hou.hipFile.load(str(file_path), suppress_save_prompt=True, ignore_load_warnings=True)
 
     def save_file(self, file_path: Path) -> bool:
         print(file_path)
@@ -257,18 +260,18 @@ class HoudiniInterface(DCCInterface):
                 "Open Error", 
                 f"Ensure there is a valid file path to open."
             )
-            return
-        if cmds.file(q=True, modified=True):
-            cmds.file(rename=file_path)
-            cmds.file(save=True)
-            return file_path
+            return False
+        if hou.hipFile.isModified():
+            hou.hipFile.setName(file_path)
+            hou.hipFile.save()
+            return True
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Save Error", 
                 f"Changes need to be made first before saving."
             )
-            return
+            return False
 
     def get_publish_file_extensions(self) -> dict[str, tuple[str, bool, bool]]:
         """Get the publish file extensions and additional info for the UI
@@ -288,139 +291,144 @@ class HoudiniInterface(DCCInterface):
         return file_types
 
     def publish_file(self, publishes_folder: Path, extension: str) -> bool:
-        if extension == ".mb":
-            folder_ext_path = publishes_folder / "mb"
-            if not folder_ext_path.exists():
-                folder_ext_path.mkdir()
+        # if extension == ".mb":
+        #     folder_ext_path = publishes_folder / "mb"
+        #     if not folder_ext_path.exists():
+        #         folder_ext_path.mkdir()
 
-            file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".mb")
-            cmds.file(str(file_path), exportAll=True, force=True, type="mayaBinary")
+        #     file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".mb")
+        #     cmds.file(str(file_path), exportAll=True, force=True, type="mayaBinary")
 
-            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.mb")
-            cmds.file(str(latest_file_path), exportAll=True, force=True, type="mayaBinary")
+        #     latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.mb")
+        #     cmds.file(str(latest_file_path), exportAll=True, force=True, type="mayaBinary")
 
-        elif extension == ".usd":
-            cmds.loadPlugin("mayaUsdPlugin", quiet=True)
-            folder_ext_path = publishes_folder / "usd"
-            if not folder_ext_path.exists():
-                folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name().split(".")[0])
-            cmds.mayaUSDExport(
-                file=file_path,
-            )
+        # elif extension == ".usd":
+        #     cmds.loadPlugin("mayaUsdPlugin", quiet=True)
+        #     folder_ext_path = publishes_folder / "usd"
+        #     if not folder_ext_path.exists():
+        #         folder_ext_path.mkdir()
+        #     file_path = folder_ext_path / (self.get_scene_name().split(".")[0])
+        #     cmds.mayaUSDExport(
+        #         file=file_path,
+        #     )
 
-            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest")
-            cmds.mayaUSDExport(
-                file=latest_file_path,
-            )
+        #     latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest")
+        #     cmds.mayaUSDExport(
+        #         file=latest_file_path,
+        #     )
 
-        elif extension == ".fbx":
-            folder_ext_path = publishes_folder / "fbx"
-            if not folder_ext_path.exists():
-                folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".fbx")
-            cmds.file(str(file_path), exportAll=True, force=True, type="FBX export")
+        # elif extension == ".fbx":
+        #     folder_ext_path = publishes_folder / "fbx"
+        #     if not folder_ext_path.exists():
+        #         folder_ext_path.mkdir()
+        #     file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".fbx")
+        #     cmds.file(str(file_path), exportAll=True, force=True, type="FBX export")
 
-            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.fbx")
-            cmds.file(str(latest_file_path), exportAll=True, force=True, type="FBX export")
+        #     latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.fbx")
+        #     cmds.file(str(latest_file_path), exportAll=True, force=True, type="FBX export")
 
-        elif extension == ".obj":
-            folder_ext_path = publishes_folder / "obj"
-            if not folder_ext_path.exists():
-                folder_ext_path.mkdir()
-            file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".obj")
-            cmds.file(str(file_path), exportAll=True, force=True, type="OBJexport")
+        # elif extension == ".obj":
+        #     folder_ext_path = publishes_folder / "obj"
+        #     if not folder_ext_path.exists():
+        #         folder_ext_path.mkdir()
+        #     file_path = folder_ext_path / (self.get_scene_name().split(".")[0] + ".obj")
+        #     cmds.file(str(file_path), exportAll=True, force=True, type="OBJexport")
 
-            latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.obj")
-            cmds.file(str(latest_file_path), exportAll=True, force=True, type="OBJexport")
+        #     latest_file_path = folder_ext_path / (self.get_scene_name().rsplit("_", 1)[0] + "_latest.obj")
+        #     cmds.file(str(latest_file_path), exportAll=True, force=True, type="OBJexport")
 
-        else:
-            return False
-        return True
+        # else:
+        #     return False
+        # return True
+
+        return False
     
     def get_latest_published_files(self, asset_name: str, asset_type: str, asset_step: str) -> list[tuple[Path, Path]]:
-        main_workspace_path = ffu.get_main_workspace_path()
-        publishes_path = main_workspace_path / "assets" / asset_type / asset_name / asset_step / "publishes"
+        # main_workspace_path = ffu.get_main_workspace_path()
+        # publishes_path = main_workspace_path / "assets" / asset_type / asset_name / asset_step / "publishes"
 
-        latest_files = []
+        # latest_files = []
 
-        for exts_folder in publishes_path.iterdir():
-            if exts_folder.is_dir():
-                latest_file = next(
-                    (p for p in exts_folder.glob("*_latest.*") if p.suffix != ".mtl"),
-                    None,
-                )
-                latest_ver = max(
-                    (p for p in exts_folder.glob("*_v*") if p.suffix != ".mtl"),
-                    key=lambda p: int(p.stem.rpartition("_v")[2]),
-                    default=None,
-                )
-                if latest_file and latest_ver:
-                    latest_files.append((latest_file, latest_ver))
+        # for exts_folder in publishes_path.iterdir():
+        #     if exts_folder.is_dir():
+        #         latest_file = next(
+        #             (p for p in exts_folder.glob("*_latest.*") if p.suffix != ".mtl"),
+        #             None,
+        #         )
+        #         latest_ver = max(
+        #             (p for p in exts_folder.glob("*_v*") if p.suffix != ".mtl"),
+        #             key=lambda p: int(p.stem.rpartition("_v")[2]),
+        #             default=None,
+        #         )
+        #         if latest_file and latest_ver:
+        #             latest_files.append((latest_file, latest_ver))
 
-        return latest_files
+        # return latest_files
+        return []
 
     def import_file(self, file: Path) -> None:
-        if file.exists():
-            if file.suffix == "usd":
-                if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
-                    cmds.loadPlugin("mayaUsdPlugin")
-                cmds.mayaUSDImport(file=file, primPath="/")
-            else:
-                cmds.file(str(file), i=True)
-        else:
-            QtWidgets.QMessageBox.warning(
-                None, 
-                "Import Error", 
-                f"Invalid file given for importing."
-            )
-            return
+        # if file.exists():
+        #     if file.suffix == "usd":
+        #         if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
+        #             cmds.loadPlugin("mayaUsdPlugin")
+        #         cmds.mayaUSDImport(file=file, primPath="/")
+        #     else:
+        #         cmds.file(str(file), i=True)
+        # else:
+        #     QtWidgets.QMessageBox.warning(
+        #         None, 
+        #         "Import Error", 
+        #         f"Invalid file given for importing."
+        #     )
+        #     return
+        return
 
     def reference_file(self, file: Path) -> None:
-        if file.exists():
-            if file.suffix == ".usd":
-                if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
-                    cmds.loadPlugin("mayaUsdPlugin")
+        # if file.exists():
+        #     if file.suffix == ".usd":
+        #         if not cmds.pluginInfo("mayaUsdPlugin", query=True, loaded=True):
+        #             cmds.loadPlugin("mayaUsdPlugin")
 
-                usd_shapes = cmds.ls(type="mayaUsdProxyShape") or []
-                ref_paths = [Path(cmds.getAttr(f"{shape}.filePath")) for shape in usd_shapes]
-                if file in ref_paths:
-                    QtWidgets.QMessageBox.warning(
-                        None, 
-                        "Reference Error", 
-                        f"USD Stage already loaded: {file.name}"
-                    )
-                    return
+        #         usd_shapes = cmds.ls(type="mayaUsdProxyShape") or []
+        #         ref_paths = [Path(cmds.getAttr(f"{shape}.filePath")) for shape in usd_shapes]
+        #         if file in ref_paths:
+        #             QtWidgets.QMessageBox.warning(
+        #                 None, 
+        #                 "Reference Error", 
+        #                 f"USD Stage already loaded: {file.name}"
+        #             )
+        #             return
 
-                task = file.stem.split("_")[1]
-                proxy_shape = cmds.createNode("mayaUsdProxyShape", name=f"{task}StageShape")
-                cmds.setAttr(f"{proxy_shape}.filePath", file, type="string")
-                parent_transform = cmds.listRelatives(proxy_shape, parent=True)[0]
-                cmds.rename(parent_transform, f"{task}Stage")
-            elif file.suffix == ".mb":
-                existing_refs = cmds.file(query=True, reference=True) or []
-                ref_paths = [Path(ref) for ref in existing_refs]
+        #         task = file.stem.split("_")[1]
+        #         proxy_shape = cmds.createNode("mayaUsdProxyShape", name=f"{task}StageShape")
+        #         cmds.setAttr(f"{proxy_shape}.filePath", file, type="string")
+        #         parent_transform = cmds.listRelatives(proxy_shape, parent=True)[0]
+        #         cmds.rename(parent_transform, f"{task}Stage")
+        #     elif file.suffix == ".mb":
+        #         existing_refs = cmds.file(query=True, reference=True) or []
+        #         ref_paths = [Path(ref) for ref in existing_refs]
 
-                if file in ref_paths:
-                    QtWidgets.QMessageBox.warning(
-                        None, 
-                        "Reference Error", 
-                        f"Maya file is already referenced: {file.name}"
-                    )
-                    return
-                else:
-                    cmds.file(file, reference=True)
-            else:
-                QtWidgets.QMessageBox.warning(
-                None, 
-                "Reference Error", 
-                f"Unable to reference file of this type. Choose either .mb or .usd"
-            )
-            return
-        else:
-            QtWidgets.QMessageBox.warning(
-                None, 
-                "Reference Error", 
-                f"Invalid file given for referencing."
-            )
-            return
+        #         if file in ref_paths:
+        #             QtWidgets.QMessageBox.warning(
+        #                 None, 
+        #                 "Reference Error", 
+        #                 f"Maya file is already referenced: {file.name}"
+        #             )
+        #             return
+        #         else:
+        #             cmds.file(file, reference=True)
+        #     else:
+        #         QtWidgets.QMessageBox.warning(
+        #         None, 
+        #         "Reference Error", 
+        #         f"Unable to reference file of this type. Choose either .mb or .usd"
+        #     )
+        #     return
+        # else:
+        #     QtWidgets.QMessageBox.warning(
+        #         None, 
+        #         "Reference Error", 
+        #         f"Invalid file given for referencing."
+        #     )
+        #     return
+        return

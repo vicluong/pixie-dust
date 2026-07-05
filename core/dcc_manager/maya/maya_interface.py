@@ -257,18 +257,18 @@ class MayaInterface(DCCInterface):
                 "Open Error", 
                 f"Ensure there is a valid file path to open."
             )
-            return
+            return False
         if cmds.file(q=True, modified=True):
             cmds.file(rename=file_path)
             cmds.file(save=True)
-            return file_path
+            return True
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Save Error", 
                 f"Changes need to be made first before saving."
             )
-            return
+            return False
 
     def get_publish_file_extensions(self) -> dict[str, tuple[str, bool, bool]]:
         """Get the publish file extensions and additional info for the UI
