@@ -206,12 +206,6 @@ class MayaInterface(DCCInterface):
             return False
         return False
 
-    def get_parent_folder_from_scene(self) -> Path:
-        scene_path = Path(cmds.file(q=True, sceneName=True))
-        task_wip_folder_path = scene_path.parent
-
-        return task_wip_folder_path
-
     # Usually performed after verify_file or before save_file
     def get_next_available_version(self, folder_path) -> int:
         pattern = re.compile(r"_v(\d{4})$")
@@ -263,18 +257,18 @@ class MayaInterface(DCCInterface):
                 "Open Error", 
                 f"Ensure there is a valid file path to open."
             )
-            return
+            return False
         if cmds.file(q=True, modified=True):
             cmds.file(rename=file_path)
             cmds.file(save=True)
-            return file_path
+            return True
         else:
             QtWidgets.QMessageBox.warning(
                 None, 
                 "Save Error", 
                 f"Changes need to be made first before saving."
             )
-            return
+            return False
 
     def get_publish_file_extensions(self) -> dict[str, tuple[str, bool, bool]]:
         """Get the publish file extensions and additional info for the UI

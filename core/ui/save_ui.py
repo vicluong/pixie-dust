@@ -5,8 +5,6 @@ try:
 except:
     from PySide2 import QtWidgets, QtCore
 
-import maya.cmds as cmds
-
 from dcc_manager.dcc_interface import DCCInterface
 
 
@@ -65,7 +63,7 @@ class SaveDialog(QtWidgets.QDialog):
         self.version_label = QtWidgets.QLabel("Version")
         self.version_spin = QtWidgets.QSpinBox()
         self.version_spin.setMinimum(1)
-        parent_folder_path = self.dcc_interface.get_parent_folder_from_scene()
+        parent_folder_path = self.dcc_interface.get_scene_folder()
         self.next_version = self.dcc_interface.get_next_available_version(parent_folder_path)
         self.version_spin.setValue(self.next_version)
         self.version_spin.setMaximum(9999)
@@ -136,7 +134,7 @@ class SaveDialog(QtWidgets.QDialog):
         )
 
         if self.next_version_check.isChecked():
-            parent_folder_path = self.dcc_interface.get_parent_folder_from_scene()
+            parent_folder_path = self.dcc_interface.get_scene_folder()
             self.next_version = self.dcc_interface.get_next_available_version(parent_folder_path)
             self.version_spin.setValue(self.next_version)
 
@@ -156,10 +154,10 @@ class SaveDialog(QtWidgets.QDialog):
 
         if self.dcc_interface.verify_file():
             if self.dcc_interface.save_file(path):
-                cmds.confirmDialog(
-                    title="Saved",
-                    message=f"Saved:\n{path}",
-                    button=["OK"]
+                QtWidgets.QMessageBox.warning(
+                    None, 
+                    "Saved", 
+                    f"Saved:\n{path}"
                 )
 
         self.close()
