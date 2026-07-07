@@ -86,6 +86,23 @@ insert_sql_statements = [
     INSERT INTO Projects
     VALUES
     ('1', 's126', 'in-progress', datetime('now'), datetime('now','+5 day','localtime'), 'Project of 2026', 'image.png');
+    """,
+    """
+    INSERT INTO Sequences
+    VALUES
+    ('1', 'seq0100', '1', 'First sequence');
+    """,
+    """
+    INSERT INTO Shots
+    VALUES
+    ('1', 'shot0010', '1', 'First shot', 'shot.png'),
+    ('2', 'shot0020', '1', 'Second shot', 'shot2.png');
+    """,
+    """
+    INSERT INTO Assets
+    VALUES
+    ('1', 'asset01', '1', 'First asset', 'character', 'asset.png'),
+    ('2', 'asset02', '1', 'Second asset', 'prop', 'asset2.png');
     """
 ]
 
