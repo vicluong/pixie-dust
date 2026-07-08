@@ -19,7 +19,7 @@ create_sql_statements = [
         name TEXT NOT NULL, 
         project_id INT NOT NULL, 
         description TEXT,
-        FOREIGN KEY (project_id) REFERENCES projects (id)
+        FOREIGN KEY (project_id) REFERENCES Projects (id)
             ON DELETE CASCADE 
             ON UPDATE CASCADE
     );
@@ -32,7 +32,7 @@ create_sql_statements = [
         sequence_id INT NOT NULL, 
         description TEXT,
         image TEXT,
-        FOREIGN KEY (sequence_id) REFERENCES sequences (id)
+        FOREIGN KEY (sequence_id) REFERENCES Sequences (id)
             ON DELETE CASCADE 
             ON UPDATE CASCADE
     );
@@ -46,7 +46,7 @@ create_sql_statements = [
         description TEXT,
         asset_type TEXT NOT NULL,
         image TEXT,
-        FOREIGN KEY (project_id) REFERENCES projects (id)
+        FOREIGN KEY (project_id) REFERENCES Projects (id)
             ON DELETE CASCADE 
             ON UPDATE CASCADE
     );
@@ -64,17 +64,83 @@ create_sql_statements = [
     CREATE TABLE IF NOT EXISTS Tasks (
         id INTEGER PRIMARY KEY, 
         name TEXT NOT NULL, 
-        priority INT, 
-        project_id INT NOT NULL, 
+        priority INT,
+        user_id INT NOT NULL,
         entity_id INT NOT NULL,
         status_id INT NOT NULL, 
         start_date TEXT NOT NULL, 
         end_date TEXT NOT NULL, 
         latest_publish TEXT,
-        FOREIGN KEY (project_id) REFERENCES projects (id)
+        FOREIGN KEY (entity_id) REFERENCES Entities (id)
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES Users (id)
             ON DELETE CASCADE 
             ON UPDATE CASCADE
-        FOREIGN KEY (entity_id) REFERENCES entities (id)
+    );
+    """,
+
+    """
+    CREATE TABLE IF NOT EXISTS Notes (
+        id INTEGER PRIMARY KEY, 
+        name TEXT NOT NULL, 
+        description TEXT NOT NULL,
+        reviewable_id INT NOT NULL,
+        FOREIGN KEY (reviewable_id) REFERENCES Reviewables (id)
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
+    );
+    """,
+
+    """
+    CREATE TABLE IF NOT EXISTS Users (
+        id INTEGER PRIMARY KEY, 
+        name TEXT NOT NULL, 
+        email TEXT NOT NULL, 
+        image TEXT NOT NULL, 
+        department TEXT NOT NULL
+    );
+    """,
+
+    """
+    CREATE TABLE IF NOT EXISTS Reviewables (
+        id INTEGER PRIMARY KEY, 
+        name TEXT NOT NULL, 
+        task_id INT NOT NULL,
+        creation_date TEXT NOT NULL,
+        user_id INT NOT NULL,
+        path TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES Users (id)
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
+    );
+    """,
+
+    """
+    CREATE TABLE IF NOT EXISTS WipFiles (
+        id INTEGER PRIMARY KEY, 
+        name TEXT NOT NULL, 
+        task_id INT NOT NULL,
+        creation_date TEXT NOT NULL,
+        version INT NOT NULL,
+        path TEXT NOT NULL,
+        thumbnail TEXT,
+        FOREIGN KEY (task_id) REFERENCES Tasks (id)
+            ON DELETE CASCADE 
+            ON UPDATE CASCADE
+    );
+    """,
+
+    """
+    CREATE TABLE IF NOT EXISTS PublishedFiles (
+        id INTEGER PRIMARY KEY, 
+        name TEXT NOT NULL, 
+        task_id INT NOT NULL,
+        creation_date TEXT NOT NULL,
+        version INT NOT NULL,
+        path TEXT NOT NULL,
+        thumbnail TEXT,
+        FOREIGN KEY (task_id) REFERENCES Tasks (id)
             ON DELETE CASCADE 
             ON UPDATE CASCADE
     );
@@ -108,7 +174,7 @@ insert_sql_statements = [
 
 # create a database connection
 try:
-    with sqlite3.connect('my.db') as conn:
+    with sqlite3.connect('pixie_dust_database.db') as conn:
         cursor = conn.cursor()
 
         for statement in create_sql_statements:
