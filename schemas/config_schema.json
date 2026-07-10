@@ -1,5 +1,7 @@
 {
     "main_workspace_path": "F:\\...\\03_production",
     "assignment_data_path": "F:\\...\\pixie-dust\\assignment.json",
-    "users_data_path": "F:\\...\\pixie-dust\\users.json"
+    "users_data_path": "F:\\...\\pixie-dust\\users.json",
+        "database_path": "F:\\...\\pixie-dust\\pixel_dust_database.db"
+
 }
