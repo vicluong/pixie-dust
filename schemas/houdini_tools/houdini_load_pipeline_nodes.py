@@ -1,0 +1,1 @@
+hou.hipFile.merge("F:\\ALA Projects\\Pixie Dust\\sheeping_beauty\\pixie-dust\\core\\file_templates\\houdini\\pipeline_template.hipnc", node_pattern="*", overwrite_on_conflict=False, ignore_load_warnings=True)
