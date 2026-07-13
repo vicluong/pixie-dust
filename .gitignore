@@ -2,6 +2,8 @@
 assignment.json
 config.json
 users.json
+*.bgeo.sc
+core/file_templates/houdini/backup/*.hipnc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
